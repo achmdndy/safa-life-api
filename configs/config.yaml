@@ -1,0 +1,33 @@
+app_name: "Safa Life API"
+port: 8080
+
+db:
+  host: "postgres"
+  user: "postgres"
+  password: "password"
+  name: "safa_life"
+  port: 5432
+  ssl_mode: "disable"
+  timezone: "UTC"
+
+redis:
+  host: "redis"
+  port: 6379
+  password: ""
+  db: 0
+
+server:
+  host: "0.0.0.0"
+  port: "8080"
+  env: "development"
+
+monitoring:
+  jaeger:
+    endpoint: "jaeger:4318"
+    service_name: "safa-life-api"
+    service_version: "1.0.0"
+    environment: "development"
+  
+  prometheus:
+    enabled: true
+    metrics_path: "/metrics"

@@ -1,0 +1,108 @@
+{
+	"explorer.compactFolders": false,
+	"go.toolsManagement.autoUpdate": true,
+	"go.useLanguageServer": true,
+	"go.lintOnSave": "package",
+	"go.formatTool": "goimports",
+	"go.lintTool": "golangci-lint",
+	"go.testFlags": ["-v", "-race"],
+	"go.coverOnSave": true,
+	"go.coverageDecorator": {
+		"type": "gutter",
+		"coveredHighlightColor": "rgba(64,128,64,0.5)",
+		"uncoveredHighlightColor": "rgba(128,64,64,0.25)",
+		"coveredGutterStyle": "blockgreen",
+		"uncoveredGutterStyle": "blockred"
+	},
+	"go.vetOnSave": "package",
+	"go.testOnSave": false,
+	"go.generateTestsFlags": ["-exported"],
+	"go.addTags": {
+		"tags": "json",
+		"options": "json=omitempty",
+		"promptForTags": false,
+		"transform": "camelcase"
+	},
+	"go.alternateTools": {
+		"go": "go",
+		"gofmt": "goimports"
+	},
+	"go.gocodeAutoBuild": true,
+	"go.inferGopath": true,
+	"go.gopath": "",
+	"go.goroot": "",
+	"go.buildTags": "",
+	"go.testTimeout": "30s",
+	"go.playground": {
+		"openbrowser": true,
+		"share": true
+	},
+	"files.associations": {
+		"*.go": "go",
+		"go.mod": "go.mod",
+		"go.sum": "go.sum",
+		"*.yaml": "yaml",
+		"*.yml": "yaml",
+		"Dockerfile*": "dockerfile",
+		"docker-compose*.yml": "yaml"
+	},
+	"files.exclude": {
+		"**/.git": true,
+		"**/.DS_Store": true,
+		"**/node_modules": true,
+		"**/vendor": true,
+		"**/*.exe": true,
+		"**/*.o": true,
+		"**/*.a": true,
+		"**/*.so": true,
+		"**/bin": true,
+		"**/tmp": true
+	},
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/vendor": true,
+		"**/bin": true,
+		"**/tmp": true,
+		"**/*.log": true
+	},
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "explicit"
+	},
+	"editor.rulers": [80, 120],
+	"editor.tabSize": 4,
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
+	"[go]": {
+		"editor.formatOnSave": true,
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": "explicit"
+		},
+		"editor.tabSize": 4,
+		"editor.insertSpaces": false,
+		"editor.wordWrap": "off"
+	},
+	"[yaml]": {
+		"editor.tabSize": 2,
+		"editor.insertSpaces": true
+	},
+	"[json]": {
+		"editor.tabSize": 2,
+		"editor.insertSpaces": true
+	},
+	"[dockerfile]": {
+		"editor.tabSize": 4,
+		"editor.insertSpaces": true
+	},
+	"terminal.integrated.env.osx": {
+		"GO111MODULE": "on"
+	},
+	"terminal.integrated.env.linux": {
+		"GO111MODULE": "on"
+	},
+	"terminal.integrated.env.windows": {
+		"GO111MODULE": "on"
+	},
+	"debug.console.fontSize": 14,
+	"debug.console.fontFamily": "Monaco, 'Courier New', monospace"
+}

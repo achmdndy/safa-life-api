@@ -1,0 +1,120 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Launch Safa Life API",
+			"type": "go",
+			"request": "launch",
+			"mode": "auto",
+			"program": "${workspaceFolder}/src/cmd/server/main.go",
+			"args": ["start"],
+			"env": {
+				"GO111MODULE": "on",
+				"SAFA_SERVER_HOST": "localhost",
+				"SAFA_SERVER_PORT": "8080",
+				"SAFA_DB_HOST": "localhost",
+				"SAFA_DB_PORT": "5432",
+				"SAFA_DB_USER": "postgres",
+				"SAFA_DB_PASSWORD": "password",
+				"SAFA_DB_NAME": "safa_life",
+				"SAFA_DB_SSL_MODE": "disable",
+				"SAFA_DB_TIMEZONE": "UTC",
+				"SAFA_REDIS_HOST": "localhost",
+				"SAFA_REDIS_PORT": "6379",
+				"SAFA_REDIS_PASSWORD": "",
+				"SAFA_REDIS_DB": "0",
+				"SAFA_MONITORING_JAEGER_ENDPOINT": "http://localhost:14268/api/traces",
+				"SAFA_MONITORING_JAEGER_SERVICE_NAME": "safa-life-api",
+				"SAFA_MONITORING_JAEGER_SERVICE_VERSION": "v1.0.0",
+				"SAFA_MONITORING_JAEGER_ENVIRONMENT": "development"
+			},
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal",
+			"showLog": true,
+			"trace": "verbose",
+			"logOutput": "rpc"
+		},
+		{
+			"name": "Launch with Config File",
+			"type": "go",
+			"request": "launch",
+			"mode": "auto",
+			"program": "${workspaceFolder}/src/cmd/server/main.go",
+			"args": ["start", "--config", "configs/config.yaml"],
+			"env": {
+				"GO111MODULE": "on"
+			},
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal",
+			"showLog": true
+		},
+		{
+			"name": "Launch Test Monitoring",
+			"type": "go",
+			"request": "launch",
+			"mode": "auto",
+			"program": "${workspaceFolder}/test_monitoring.go",
+			"env": {
+				"GO111MODULE": "on"
+			},
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal",
+			"showLog": true
+		},
+		{
+			"name": "Debug Current File",
+			"type": "go",
+			"request": "launch",
+			"mode": "auto",
+			"program": "${file}",
+			"env": {
+				"GO111MODULE": "on"
+			},
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal"
+		},
+		{
+			"name": "Debug Current Test",
+			"type": "go",
+			"request": "launch",
+			"mode": "test",
+			"program": "${workspaceFolder}",
+			"args": [
+				"-test.run",
+				"${input:testName}"
+			],
+			"env": {
+				"GO111MODULE": "on"
+			},
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal"
+		},
+		{
+			"name": "Debug Package Tests",
+			"type": "go",
+			"request": "launch",
+			"mode": "test",
+			"program": "${fileDirname}",
+			"env": {
+				"GO111MODULE": "on"
+			},
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal"
+		},
+		{
+			"name": "Attach to Process",
+			"type": "go",
+			"request": "attach",
+			"mode": "local",
+			"processId": "${command:pickProcess}"
+		}
+	],
+	"inputs": [
+		{
+			"id": "testName",
+			"description": "Enter test function name",
+			"default": "TestMain",
+			"type": "promptString"
+		}
+	]
+}
