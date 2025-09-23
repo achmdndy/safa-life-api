@@ -21,15 +21,11 @@ updates:
       - "dependencies"
       - "go"
       - "automated"
-    milestone: null
     target-branch: "develop"
-    vendor: false
-    versioning-strategy: "increase"
     allow:
       - dependency-type: "direct"
       - dependency-type: "indirect"
     ignore:
-      # Ignore major version updates for critical dependencies
       - dependency-name: "github.com/gin-gonic/gin"
         update-types: ["version-update:semver-major"]
       - dependency-name: "gorm.io/gorm"
