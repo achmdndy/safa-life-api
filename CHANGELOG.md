@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 
 
+### ⚙️ Miscellaneous
+
+- **github:** Add github workflow and configuration files
+([`970a8eb…`](https://github.com/achmdndy/safa-life-api/commit/970a8eb0b20a215d38461d473e2f64e0433eb1a7)) _(by Achmad Andy Dekanovy)_ 
+
+
+
 ### ✨ Features
 
 - Initialize safa life api with health check and monitoring
@@ -18,6 +25,9 @@ All notable changes to this project will be documented in this file.
 - Add changelog file to track project changes
 ([`e7cd181…`](https://github.com/achmdndy/safa-life-api/commit/e7cd18125f921a409197ae195d91acf220fa42c5)) _(by Achmad Andy Dekanovy)_ 
 
+- Update changelog format and git-cliff configuration
+([`a0c4d63…`](https://github.com/achmdndy/safa-life-api/commit/a0c4d63b5726621a90fba4b6cc1fd757cdac14b6)) _(by Achmad Andy Dekanovy)_ 
+
 
 
 
@@ -28,6 +38,10 @@ All notable changes to this project will be documented in this file.
 - Initialize safa life api with health check and monitoring ([`7d38c92…`](https://github.com/achmdndy/safa-life-api/commit/7d38c920b1e4250c29438e1cb37032e6d8796045))
 
 - Add changelog file to track project changes ([`e7cd181…`](https://github.com/achmdndy/safa-life-api/commit/e7cd18125f921a409197ae195d91acf220fa42c5))
+
+- Update changelog format and git-cliff configuration ([`a0c4d63…`](https://github.com/achmdndy/safa-life-api/commit/a0c4d63b5726621a90fba4b6cc1fd757cdac14b6))
+
+- Add github workflow and configuration files ([`970a8eb…`](https://github.com/achmdndy/safa-life-api/commit/970a8eb0b20a215d38461d473e2f64e0433eb1a7))
 
 
 
