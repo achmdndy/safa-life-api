@@ -1,0 +1,76 @@
+# CODEOWNERS file for Safa Life API
+# This file defines who owns different parts of the codebase
+# and who should be automatically requested for reviews
+
+# Global owners - these users will be requested for review on all PRs
+* @achmdndy
+
+# Core API and Business Logic
+/src/internal/domain/ @achmdndy
+/src/internal/usecase/ @achmdndy
+/src/internal/repository/ @achmdndy
+
+# Infrastructure and Configuration
+/src/internal/infrastructure/ @achmdndy
+/configs/ @achmdndy
+/docker-compose*.yml @achmdndy
+/Dockerfile @achmdndy
+/.env* @achmdndy
+
+# API Layer
+/src/internal/delivery/ @achmdndy
+/src/internal/handler/ @achmdndy
+/src/internal/middleware/ @achmdndy
+
+# Database and Migrations
+/src/internal/repository/postgres/ @achmdndy
+/migrations/ @achmdndy
+/scripts/db/ @achmdndy
+
+# Islamic Content and Features
+/src/internal/domain/quran/ @achmdndy
+/src/internal/domain/prayer/ @achmdndy
+/src/internal/usecase/quran/ @achmdndy
+/src/internal/usecase/prayer/ @achmdndy
+
+# Testing
+/tests/ @achmdndy
+/**/*_test.go @achmdndy
+/testdata/ @achmdndy
+
+# Documentation
+/docs/ @achmdndy
+/README.md @achmdndy
+/CHANGELOG.md @achmdndy
+/CONTRIBUTING.md @achmdndy
+
+# CI/CD and DevOps
+/.github/ @achmdndy
+/.github/workflows/ @achmdndy
+/scripts/ @achmdndy
+/monitoring/ @achmdndy
+
+# Security and Compliance
+/SECURITY.md @achmdndy
+/.github/SECURITY.md @achmdndy
+/.golangci.yaml @achmdndy
+
+# Go Module and Dependencies
+/go.mod @achmdndy
+/go.sum @achmdndy
+
+# Configuration Files
+/.gitignore @achmdndy
+/.dockerignore @achmdndy
+/Makefile @achmdndy
+
+# Monitoring and Observability
+/monitoring/grafana/ @achmdndy
+/monitoring/prometheus/ @achmdndy
+/src/internal/monitoring/ @achmdndy
+
+# Specific sensitive files that require extra review
+/configs/production.yaml @achmdndy
+/configs/staging.yaml @achmdndy
+/.github/workflows/cd.yml @achmdndy
+/.github/workflows/security.yml @achmdndy

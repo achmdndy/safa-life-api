@@ -1,0 +1,224 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement
+title: "[FEATURE] "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a new feature! Please fill out this form as completely as possible.
+        
+        **Before submitting:**
+        - Search existing issues to avoid duplicates
+        - Check if this feature aligns with Islamic values and project goals
+        - Consider if this could be implemented as a plugin or extension
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm you have completed the following
+      options:
+        - label: I have searched existing issues and this is not a duplicate
+          required: true
+        - label: I have checked the documentation and roadmap
+          required: true
+        - label: This feature aligns with Islamic values and principles
+          required: true
+
+  - type: dropdown
+    id: feature-category
+    attributes:
+      label: Feature Category
+      description: What category does this feature belong to?
+      options:
+        - API Enhancement
+        - Islamic Content (Quran, Hadith, Prayer times)
+        - Authentication/Authorization
+        - Database/Storage
+        - Monitoring/Observability
+        - Performance Optimization
+        - Developer Experience
+        - Documentation
+        - Testing
+        - Security
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature-summary
+    attributes:
+      label: Feature Summary
+      description: A brief, clear summary of the feature you're requesting
+      placeholder: Provide a concise summary of the feature
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-statement
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve?
+      placeholder: |
+        Describe the problem or limitation you're experiencing that this feature would address.
+        
+        Example: "As a Muslim developer, I need accurate prayer time calculations for different madhabs so that users can follow their preferred jurisprudential school."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your proposed solution in detail
+      placeholder: |
+        Provide a detailed description of how you envision this feature working.
+        
+        Include:
+        - User interface changes (if applicable)
+        - API endpoints (if applicable)
+        - Database changes (if applicable)
+        - Integration points
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Critical (Blocking current work)
+        - High (Important for upcoming work)
+        - Medium (Would be nice to have)
+        - Low (Future consideration)
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use Cases
+      description: Describe specific use cases for this feature
+      placeholder: |
+        Provide specific scenarios where this feature would be used:
+        
+        1. **Use Case 1:** As a [user type], I want to [action] so that [benefit]
+        2. **Use Case 2:** When [situation], I need [functionality] because [reason]
+        3. **Use Case 3:** ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define what "done" looks like for this feature
+      placeholder: |
+        List the specific criteria that must be met for this feature to be considered complete:
+        
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+        - [ ] All tests pass
+        - [ ] Documentation updated
+        - [ ] Islamic content validated (if applicable)
+    validations:
+      required: true
+
+  - type: textarea
+    id: islamic-considerations
+    attributes:
+      label: Islamic Considerations (if applicable)
+      description: If this feature involves Islamic content or practices, please provide relevant details
+      placeholder: |
+        - Quranic references or Hadith sources:
+        - Madhab considerations:
+        - Scholarly opinions consulted:
+        - Cultural sensitivity aspects:
+        - Accuracy requirements:
+    validations:
+      required: false
+
+  - type: textarea
+    id: technical-considerations
+    attributes:
+      label: Technical Considerations
+      description: Any technical aspects to consider for implementation
+      placeholder: |
+        - Performance implications:
+        - Security considerations:
+        - Scalability requirements:
+        - Third-party integrations:
+        - Database schema changes:
+        - API versioning impact:
+        - Backward compatibility:
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Describe any alternative solutions you've considered
+      placeholder: |
+        What other approaches could solve this problem?
+        Why is your proposed solution better than the alternatives?
+    validations:
+      required: false
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: Mockups/Examples
+      description: Provide mockups, examples, or references
+      placeholder: |
+        - Screenshots or mockups (if UI-related)
+        - Code examples (if API-related)
+        - Similar implementations in other projects
+        - External references or documentation
+    validations:
+      required: false
+
+  - type: dropdown
+    id: breaking-changes
+    attributes:
+      label: Breaking Changes
+      description: Would this feature introduce breaking changes?
+      options:
+        - "No breaking changes"
+        - "Minor breaking changes (with migration path)"
+        - "Major breaking changes"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context or information about the feature request
+      placeholder: |
+        - Related issues or PRs
+        - Community feedback
+        - Business justification
+        - Timeline considerations
+        - Any other relevant information
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      description: Are you willing to contribute to implementing this feature?
+      options:
+        - label: I would like to work on implementing this feature
+          required: false
+        - label: I can provide Islamic content expertise/validation
+          required: false
+        - label: I can help with testing and validation
+          required: false

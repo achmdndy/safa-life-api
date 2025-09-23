@@ -1,0 +1,185 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report a bug! Please fill out this form as completely as possible.
+        
+        **Before submitting:**
+        - Search existing issues to avoid duplicates
+        - Check if this is a security issue (report privately via email)
+        - Ensure you're using the latest version
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm you have completed the following
+      options:
+        - label: I have searched existing issues and this is not a duplicate
+          required: true
+        - label: I have checked the documentation
+          required: true
+        - label: This is not a security vulnerability (which should be reported privately)
+          required: true
+
+  - type: dropdown
+    id: bug-type
+    attributes:
+      label: Bug Type
+      description: What type of bug is this?
+      options:
+        - API Endpoint Issue
+        - Database Related
+        - Authentication/Authorization
+        - Islamic Content (Quran, Prayer times, etc.)
+        - Monitoring/Logging
+        - Performance Issue
+        - Configuration Issue
+        - Docker/Deployment
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Describe what happened and what you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+      placeholder: A clear and concise description of what you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+      placeholder: A clear and concise description of what actually happened
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Critical (System unusable, data loss)
+        - High (Major functionality broken)
+        - Medium (Feature partially broken)
+        - Low (Minor issue, workaround available)
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Information
+      description: Please provide details about your environment
+      placeholder: |
+        - OS: [e.g. macOS 13.0, Ubuntu 20.04]
+        - Go version: [e.g. 1.21.0]
+        - Docker version: [e.g. 20.10.17]
+        - API version/commit: [e.g. v1.0.0 or commit hash]
+        - Database: [e.g. PostgreSQL 14.5]
+        - Redis: [e.g. Redis 6.2.7]
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: Please include any relevant log output
+      placeholder: |
+        Paste relevant logs here. Please remove any sensitive information.
+        
+        ```
+        [Your logs here]
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: api-request
+    attributes:
+      label: API Request/Response (if applicable)
+      description: Include the API request and response if this is an API-related bug
+      placeholder: |
+        **Request:**
+        ```bash
+        curl -X GET "http://localhost:8080/api/v1/health" \
+          -H "Content-Type: application/json"
+        ```
+        
+        **Response:**
+        ```json
+        {
+          "error": "Something went wrong"
+        }
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: islamic-content
+    attributes:
+      label: Islamic Content Details (if applicable)
+      description: If this bug involves Islamic content (Quran verses, prayer times, etc.), please provide specific details
+      placeholder: |
+        - Surah/Ayah reference: 
+        - Prayer time calculation issue:
+        - Arabic text display problem:
+        - Translation accuracy concern:
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here
+      placeholder: |
+        - Screenshots (if applicable)
+        - Workarounds you've tried
+        - Related issues
+        - Any other relevant information
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      description: Would you like to contribute to fixing this bug?
+      options:
+        - label: I would like to work on fixing this bug
+          required: false

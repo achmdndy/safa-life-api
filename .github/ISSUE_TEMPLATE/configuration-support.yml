@@ -1,0 +1,210 @@
+name: ⚙️ Configuration & Support
+description: Get help with configuration, setup, or general support questions
+title: "[SUPPORT] "
+labels: ["question", "support", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Need help with configuration or setup? Please fill out this form to get assistance.
+        
+        **Before submitting:**
+        - Check the documentation and README
+        - Search existing issues for similar questions
+        - Try the troubleshooting guide
+        - For security issues, please report privately via email
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm you have completed the following
+      options:
+        - label: I have read the documentation and README
+          required: true
+        - label: I have searched existing issues for similar questions
+          required: true
+        - label: I have tried basic troubleshooting steps
+          required: true
+
+  - type: dropdown
+    id: support-category
+    attributes:
+      label: Support Category
+      description: What type of support do you need?
+      options:
+        - Installation & Setup
+        - Configuration Help
+        - API Usage Questions
+        - Database Setup
+        - Docker/Deployment Issues
+        - Authentication Setup
+        - Islamic Content Configuration
+        - Monitoring & Logging
+        - Performance Tuning
+        - Integration Help
+        - General Usage Questions
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question/Issue Description
+      description: Clearly describe what you need help with
+      placeholder: |
+        Please provide a clear and detailed description of:
+        - What you're trying to achieve
+        - What you've tried so far
+        - Where you're getting stuck
+        - Any error messages you're seeing
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-setup
+    attributes:
+      label: Current Setup
+      description: Describe your current environment and configuration
+      placeholder: |
+        **Environment:**
+        - OS: [e.g. macOS 13.0, Ubuntu 20.04, Windows 11]
+        - Go version: [e.g. 1.21.0]
+        - Docker version: [e.g. 20.10.17]
+        - Database: [e.g. PostgreSQL 14.5]
+        
+        **Configuration:**
+        - Deployment method: [e.g. Docker Compose, Kubernetes, Local]
+        - Environment: [e.g. Development, Staging, Production]
+        - Custom configurations: [Any modifications you've made]
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-taken
+    attributes:
+      label: Steps Already Taken
+      description: What have you already tried to solve this?
+      placeholder: |
+        List the steps you've already taken:
+        1. 
+        2. 
+        3. 
+        
+        Include any commands you've run, configurations you've tried, etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-messages
+    attributes:
+      label: Error Messages/Logs
+      description: Include any relevant error messages or log output
+      placeholder: |
+        Please paste any error messages or relevant log output here.
+        Remove any sensitive information like passwords, API keys, etc.
+        
+        ```
+        [Your error messages/logs here]
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected-outcome
+    attributes:
+      label: Expected Outcome
+      description: What are you trying to achieve?
+      placeholder: |
+        Describe what you expect to happen or what you're trying to accomplish.
+        
+        For example:
+        - "I want to successfully start the API server"
+        - "I need to configure prayer times for my location"
+        - "I want to set up monitoring with Grafana"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      description: How urgent is this for you?
+      options:
+        - Critical (Production issue, blocking work)
+        - High (Important for current project)
+        - Medium (Would like to resolve soon)
+        - Low (When convenient)
+    validations:
+      required: true
+
+  - type: textarea
+    id: configuration-files
+    attributes:
+      label: Relevant Configuration Files
+      description: Share relevant configuration files (remove sensitive data)
+      placeholder: |
+        Please share relevant configuration files, but make sure to remove any sensitive information like:
+        - Passwords
+        - API keys
+        - Database connection strings with credentials
+        - JWT secrets
+        
+        **docker-compose.yml:**
+        ```yaml
+        [Your configuration here]
+        ```
+        
+        **config.yaml:**
+        ```yaml
+        [Your configuration here]
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: islamic-content-context
+    attributes:
+      label: Islamic Content Context (if applicable)
+      description: If your question involves Islamic content, provide relevant context
+      placeholder: |
+        - Location/timezone for prayer times:
+        - Madhab preference:
+        - Language requirements:
+        - Specific Quranic features needed:
+        - Cultural considerations:
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information that might be helpful
+      placeholder: |
+        - Screenshots (if applicable)
+        - Network configuration details
+        - Firewall/security settings
+        - Related documentation you've consulted
+        - Similar setups that work
+        - Any other relevant information
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: follow-up
+    attributes:
+      label: Follow-up Actions
+      description: How would you like to proceed?
+      options:
+        - label: I'm available for real-time troubleshooting if needed
+          required: false
+        - label: I can provide additional logs/information if requested
+          required: false
+        - label: I'm willing to test proposed solutions
+          required: false
+        - label: I can help improve documentation based on the solution
+          required: false

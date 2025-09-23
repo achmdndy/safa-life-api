@@ -1,0 +1,105 @@
+version: 2
+updates:
+  # Go modules dependency updates
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "achmdndy"
+    assignees:
+      - "achmdndy"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "go"
+      - "automated"
+    milestone: null
+    target-branch: "develop"
+    vendor: false
+    versioning-strategy: "increase"
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    ignore:
+      # Ignore major version updates for critical dependencies
+      - dependency-name: "github.com/gin-gonic/gin"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "gorm.io/gorm"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "github.com/redis/go-redis/v9"
+        update-types: ["version-update:semver-major"]
+
+  # Docker dependency updates
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "achmdndy"
+    assignees:
+      - "achmdndy"
+    commit-message:
+      prefix: "docker"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "docker"
+      - "automated"
+    target-branch: "develop"
+
+  # GitHub Actions dependency updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "achmdndy"
+    assignees:
+      - "achmdndy"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automated"
+    target-branch: "develop"
+
+  # Docker Compose dependency updates
+  - package-ecosystem: "docker"
+    directory: "/monitoring"
+    schedule:
+      interval: "monthly"
+      day: "first-monday"
+      time: "09:00"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 2
+    reviewers:
+      - "achmdndy"
+    assignees:
+      - "achmdndy"
+    commit-message:
+      prefix: "monitoring"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "monitoring"
+      - "docker"
+      - "automated"
+    target-branch: "develop"
