@@ -86,7 +86,7 @@ updates:
     directory: "/monitoring"
     schedule:
       interval: "monthly"
-      day: "first-monday"
+      day: "monday"
       time: "09:00"
       timezone: "Asia/Jakarta"
     open-pull-requests-limit: 2
