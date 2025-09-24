@@ -30,6 +30,9 @@ All notable changes to this project will be documented in this file.
 - **quran:** Implement quran module with CRUD operations
 ([`b5d7708…`](https://github.com/achmdndy/safa-life-api/commit/b5d77082273b97c0bd7fc8fdb101dd4c1674c556)) _(by Achmad Andy Dekanovy)_ 
 
+- Add core domain models and application services for Quran features
+([`dbf2881…`](https://github.com/achmdndy/safa-life-api/commit/dbf28814bafe0ff0073e787df3c95605a00c3c96)) _(by Achmad Andy Dekanovy)_ 
+
 
 
 ### 📖 Documentation
@@ -39,6 +42,9 @@ All notable changes to this project will be documented in this file.
 
 - Update changelog format and git-cliff configuration
 ([`a0c4d63…`](https://github.com/achmdndy/safa-life-api/commit/a0c4d63b5726621a90fba4b6cc1fd757cdac14b6)) _(by Achmad Andy Dekanovy)_ 
+
+- Update changelog with recent changes
+([`48557c6…`](https://github.com/achmdndy/safa-life-api/commit/48557c6c487c7963f4b21da17d1d2b1fdf8843b0)) _(by Achmad Andy Dekanovy)_ 
 
 
 
@@ -62,6 +68,10 @@ All notable changes to this project will be documented in this file.
 - Simplify dependabot configuration ([`c59a68b…`](https://github.com/achmdndy/safa-life-api/commit/c59a68b4ac6bb8ec294b4486cf88106a6abf813a))
 
 - Implement quran module with CRUD operations ([`b5d7708…`](https://github.com/achmdndy/safa-life-api/commit/b5d77082273b97c0bd7fc8fdb101dd4c1674c556))
+
+- Update changelog with recent changes ([`48557c6…`](https://github.com/achmdndy/safa-life-api/commit/48557c6c487c7963f4b21da17d1d2b1fdf8843b0))
+
+- Add core domain models and application services for Quran features ([`dbf2881…`](https://github.com/achmdndy/safa-life-api/commit/dbf28814bafe0ff0073e787df3c95605a00c3c96))
 
 
 
