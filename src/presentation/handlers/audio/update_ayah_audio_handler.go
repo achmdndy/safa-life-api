@@ -2,6 +2,7 @@ package audio
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/audio/command"
@@ -22,6 +23,7 @@ import (
 // @Param ayah_audio body dto.UpdateAyahAudioRequest true "Ayah Audio Data"
 // @Success 200 {object} core.SuccessResponse{data=dto.AyahAudioResponse} "Ayah audio updated successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid parameters or request body"
+// @Failure 404 {object} core.ErrorResponse "Ayah audio not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /audio/ayahs/{reciter_id}/{surah_id}/{ayah_id} [put]
 func (h *Handler) UpdateAyahAudio(c *gin.Context) {
@@ -39,7 +41,16 @@ func (h *Handler) UpdateAyahAudio(c *gin.Context) {
 	cmd := command.FromUpdateAyahAudioRequest(req)
 	result, err := h.commandHandler.UpdateAyahAudio(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Ayah audio not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to update ayah audio", &core.ErrorDetail{Reason: err.Error()}, start)
+		return
+	}
+
+	if result == nil {
+		core.Error(c, http.StatusNotFound, "Ayah audio not found", &core.ErrorDetail{}, start)
 		return
 	}
 

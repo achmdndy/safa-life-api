@@ -2,6 +2,7 @@ package resource
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/resource/command"
@@ -18,6 +19,7 @@ import (
 // @Param id path string true "Resource ID"
 // @Success 200 {object} core.SuccessResponse "Resource deleted successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid resource ID"
+// @Failure 404 {object} core.ErrorResponse "Resource not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /resources/{id} [delete]
 func (h *Handler) DeleteResource(c *gin.Context) {
@@ -26,6 +28,10 @@ func (h *Handler) DeleteResource(c *gin.Context) {
 
 	cmd := command.DeleteResourceCommand{ID: id}
 	if err := h.commandHandler.DeleteResource(c.Request.Context(), cmd); err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Resource not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to delete resource", &core.ErrorDetail{Reason: err.Error()}, start)
 		return
 	}

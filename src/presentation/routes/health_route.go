@@ -11,7 +11,7 @@ func SetupHealthRoutes(router *gin.RouterGroup, handler *healthHandler.Handler) 
 	{
 		health.GET("", handler.GetHealth)
 		health.GET("/simple", handler.GetHealthSimple)
-		health.GET("/db", handler.GetHealth) // Same as main health for now
-		health.GET("/redis", handler.GetHealth) // Same as main health for now
+		health.GET("/db", handler.GetHealthDB)
+		health.GET("/redis", handler.GetHealthRedis)
 	}
 }

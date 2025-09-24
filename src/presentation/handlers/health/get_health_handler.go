@@ -7,19 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/achmdndy/safa-life-api/src/application/health/dto"
-	"github.com/achmdndy/safa-life-api/src/application/health/interfaces"
+	"github.com/achmdndy/safa-life-api/src/application/health/query"
 	"github.com/achmdndy/safa-life-api/src/presentation/core"
 )
-
-type Handler struct {
-	healthQueryHandler interfaces.QueryHandler
-}
-
-func NewHandler(healthQueryHandler interfaces.QueryHandler) *Handler {
-	return &Handler{
-		healthQueryHandler: healthQueryHandler,
-	}
-}
 
 // GetHealth handles GET /health
 // @Summary Get health status
@@ -33,10 +23,10 @@ func NewHandler(healthQueryHandler interfaces.QueryHandler) *Handler {
 func (h *Handler) GetHealth(c *gin.Context) {
 	start := time.Now()
 
-	// Create a simple query object
-	query := struct{}{}
+	// Create GetHealthQuery
+	healthQuery := query.GetHealthQuery{}
 
-	result, err := h.healthQueryHandler.Handle(query)
+	result, err := h.healthQueryHandler.Handle(healthQuery)
 	if err != nil {
 		core.Error(c, http.StatusInternalServerError, "Failed to get health status", &core.ErrorDetail{Reason: err.Error()}, start)
 		return
@@ -49,24 +39,15 @@ func (h *Handler) GetHealth(c *gin.Context) {
 		return
 	}
 
-	// Determine status code based on health status
+	// Determine status code and message based on health status
 	statusCode := http.StatusOK
-	if healthResponse.Status != "healthy" {
+	message := "Health status retrieved successfully"
+	
+	// Check if any service is down or status is not "ok"
+	if healthResponse.Status != "ok" {
 		statusCode = http.StatusServiceUnavailable
+		message = "Service is unhealthy"
 	}
 
-	core.Success(c, statusCode, "Health status retrieved successfully", healthResponse, start)
-}
-
-// GetHealthSimple handles GET /health/simple
-// @Summary Get simple health status
-// @Description Get a simple health check response
-// @Tags Health
-// @Accept json
-// @Produce json
-// @Success 200 {object} core.SuccessResponse "Application is healthy"
-// @Router /health/simple [get]
-func (h *Handler) GetHealthSimple(c *gin.Context) {
-	start := time.Now()
-	core.Success(c, http.StatusOK, "Application is healthy", core.EmptyData{}, start)
+	core.Success(c, statusCode, message, healthResponse, start)
 }

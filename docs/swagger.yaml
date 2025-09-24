@@ -997,6 +997,10 @@ paths:
           description: Invalid parameters
           schema:
             $ref: '#/definitions/core.ErrorResponse'
+        "404":
+          description: Ayah audio not found
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
         "500":
           description: Internal server error
           schema:
@@ -1038,6 +1042,10 @@ paths:
               type: object
         "400":
           description: Invalid parameters
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "404":
+          description: Ayah audio not found
           schema:
             $ref: '#/definitions/core.ErrorResponse'
         "500":
@@ -1237,6 +1245,10 @@ paths:
           description: Invalid surah ID or ayah ID
           schema:
             $ref: '#/definitions/core.ErrorResponse'
+        "404":
+          description: Ayah not found
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
         "500":
           description: Failed to get ayah
           schema:
@@ -1311,6 +1323,54 @@ paths:
           schema:
             $ref: '#/definitions/core.ErrorResponse'
       summary: Get health status
+      tags:
+      - Health
+  /health/db:
+    get:
+      consumes:
+      - application/json
+      description: Get health status specifically for database connection
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Database health status retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.HealthResponse'
+              type: object
+        "500":
+          description: Failed to get database health status
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get database health status
+      tags:
+      - Health
+  /health/redis:
+    get:
+      consumes:
+      - application/json
+      description: Get health status specifically for Redis connection
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Redis health status retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.HealthResponse'
+              type: object
+        "500":
+          description: Failed to get Redis health status
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get Redis health status
       tags:
       - Health
   /health/simple:

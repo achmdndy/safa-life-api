@@ -2,6 +2,7 @@ package resource
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/resource/command"
@@ -20,6 +21,7 @@ import (
 // @Param resource body dto.UpdateResourceRequest true "Resource Data"
 // @Success 200 {object} core.SuccessResponse{data=dto.ResourceResponse} "Resource updated successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid parameters or request body"
+// @Failure 404 {object} core.ErrorResponse "Resource not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /resources/{id} [put]
 func (h *Handler) UpdateResource(c *gin.Context) {
@@ -37,7 +39,16 @@ func (h *Handler) UpdateResource(c *gin.Context) {
 	cmd := command.FromUpdateResourceRequest(req)
 	result, err := h.commandHandler.UpdateResource(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Resource not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to update resource", &core.ErrorDetail{Reason: err.Error()}, start)
+		return
+	}
+
+	if result == nil {
+		core.Error(c, http.StatusNotFound, "Resource not found", &core.ErrorDetail{}, start)
 		return
 	}
 

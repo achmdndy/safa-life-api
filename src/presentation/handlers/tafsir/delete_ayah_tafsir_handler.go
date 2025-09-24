@@ -2,6 +2,7 @@ package tafsir
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/tafsir/command"
@@ -21,6 +22,7 @@ import (
 // @Param ayah_id path int true "Ayah ID"
 // @Success 200 {object} core.SuccessResponse
 // @Failure 400 {object} core.ErrorResponse
+// @Failure 404 {object} core.ErrorResponse "Tafsir not found"
 // @Failure 500 {object} core.ErrorResponse
 // @Router /tafsirs/ayahs/{tafsir_id}/{surah_id}/{ayah_id} [delete]
 func (h *Handler) DeleteAyahTafsir(c *gin.Context) {
@@ -33,6 +35,10 @@ func (h *Handler) DeleteAyahTafsir(c *gin.Context) {
 
 	cmd := command.DeleteAyahTafsirCommand(req)
 	if err := h.commandHandler.DeleteAyahTafsir(c.Request.Context(), cmd); err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Tafsir not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to delete ayah tafsir", &core.ErrorDetail{Reason: err.Error()}, start)
 		return
 	}

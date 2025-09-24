@@ -2,6 +2,7 @@ package tafsir
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/tafsir/command"
@@ -22,6 +23,7 @@ import (
 // @Param ayah_tafsir body dto.UpdateAyahTafsirRequest true "Ayah Tafsir Data"
 // @Success 200 {object} core.SuccessResponse{data=dto.AyahTafsirResponse}
 // @Failure 400 {object} core.ErrorResponse
+// @Failure 404 {object} core.ErrorResponse "Tafsir not found"
 // @Failure 500 {object} core.ErrorResponse
 // @Router /tafsirs/ayahs/{tafsir_id}/{surah_id}/{ayah_id} [put]
 func (h *Handler) UpdateAyahTafsir(c *gin.Context) {
@@ -39,7 +41,16 @@ func (h *Handler) UpdateAyahTafsir(c *gin.Context) {
 	cmd := command.FromUpdateAyahTafsirRequest(req)
 	result, err := h.commandHandler.UpdateAyahTafsir(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Tafsir not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to update ayah tafsir", &core.ErrorDetail{Reason: err.Error()}, start)
+		return
+	}
+
+	if result == nil {
+		core.Error(c, http.StatusNotFound, "Tafsir not found", &core.ErrorDetail{}, start)
 		return
 	}
 

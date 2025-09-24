@@ -2,6 +2,7 @@ package story
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/story/command"
@@ -18,6 +19,7 @@ import (
 // @Param id path string true "Story ID"
 // @Success 200 {object} core.SuccessResponse "Story deleted successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid ID"
+// @Failure 404 {object} core.ErrorResponse "Story not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /stories/{id} [delete]
 func (h *Handler) DeleteStory(c *gin.Context) {
@@ -26,6 +28,10 @@ func (h *Handler) DeleteStory(c *gin.Context) {
 
 	cmd := command.DeleteStoryCommand{ID: id}
 	if err := h.commandHandler.DeleteStory(c.Request.Context(), cmd); err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Story not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to delete story", &core.ErrorDetail{Reason: err.Error()}, start)
 		return
 	}

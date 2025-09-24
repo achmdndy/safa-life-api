@@ -2,6 +2,7 @@ package tajweed
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/tajweed/command"
@@ -23,6 +24,7 @@ import (
 // @Param ayah_tajweed body dto.UpdateAyahTajweedRequest true "Ayah Tajweed Data"
 // @Success 200 {object} core.SuccessResponse{data=dto.AyahTajweedResponse} "Ayah tajweed updated successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid parameters or request body"
+// @Failure 404 {object} core.ErrorResponse "Ayah tajweed not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /tajweed/ayah/{tajweed_id}/{surah_id}/{ayah_id} [put]
 func (h *Handler) UpdateAyahTajweed(c *gin.Context) {
@@ -45,7 +47,16 @@ func (h *Handler) UpdateAyahTajweed(c *gin.Context) {
 	cmd := command.FromUpdateAyahTajweedRequest(uriReq)
 	domainResult, err := h.commandHandler.UpdateAyahTajweed(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Ayah tajweed not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to update ayah tajweed", &core.ErrorDetail{Reason: err.Error()}, start)
+		return
+	}
+
+	if domainResult == nil {
+		core.Error(c, http.StatusNotFound, "Ayah tajweed not found", &core.ErrorDetail{}, start)
 		return
 	}
 

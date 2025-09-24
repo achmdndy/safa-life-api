@@ -2,6 +2,7 @@ package tajweed
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/tajweed/dto"
@@ -20,6 +21,7 @@ import (
 // @Param id path string true "Rule ID"
 // @Success 200 {object} core.SuccessResponse{data=dto.TajweedRuleResponse} "Tajweed rule retrieved successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid rule ID"
+// @Failure 404 {object} core.ErrorResponse "Tajweed rule not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /tajweed/rules/id/{id} [get]
 func (h *Handler) GetTajweedRuleByID(c *gin.Context) {
@@ -33,7 +35,16 @@ func (h *Handler) GetTajweedRuleByID(c *gin.Context) {
 	queryReq := query.ToGetTajweedRuleByIDQuery(req.ID)
 	result, err := h.queryHandler.GetTajweedRuleByID(c.Request.Context(), queryReq)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Tajweed rule not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to get tajweed rule", &core.ErrorDetail{Reason: err.Error()}, start)
+		return
+	}
+
+	if result == nil {
+		core.Error(c, http.StatusNotFound, "Tajweed rule not found", &core.ErrorDetail{}, start)
 		return
 	}
 

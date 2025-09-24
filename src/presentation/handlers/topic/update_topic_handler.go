@@ -2,6 +2,7 @@ package topic
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/topic/command"
@@ -20,6 +21,7 @@ import (
 // @Param topic body dto.UpdateTopicRequest true "Topic Data"
 // @Success 200 {object} core.SuccessResponse{data=dto.TopicResponse} "Topic updated successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid parameters or request body"
+// @Failure 404 {object} core.ErrorResponse "Topic not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /topics/{id} [put]
 func (h *Handler) UpdateTopic(c *gin.Context) {
@@ -37,7 +39,16 @@ func (h *Handler) UpdateTopic(c *gin.Context) {
 	cmd := command.FromUpdateTopicRequest(req)
 	result, err := h.commandHandler.UpdateTopic(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Topic not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to update topic", &core.ErrorDetail{Reason: err.Error()}, start)
+		return
+	}
+
+	if result == nil {
+		core.Error(c, http.StatusNotFound, "Topic not found", &core.ErrorDetail{}, start)
 		return
 	}
 

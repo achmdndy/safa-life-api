@@ -2,6 +2,7 @@ package tajweed
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/tajweed/command"
@@ -22,6 +23,7 @@ import (
 // @Param ayah_id path int true "Ayah ID"
 // @Success 200 {object} core.SuccessResponse "Ayah tajweed deleted successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid parameters"
+// @Failure 404 {object} core.ErrorResponse "Ayah tajweed not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /tajweed/ayah/{tajweed_id}/{surah_id}/{ayah_id} [delete]
 func (h *Handler) DeleteAyahTajweed(c *gin.Context) {
@@ -35,6 +37,10 @@ func (h *Handler) DeleteAyahTajweed(c *gin.Context) {
 	cmd := command.DeleteAyahTajweedCommand{TajweedID: req.TajweedID, SurahID: req.SurahID, AyahID: req.AyahID}
 	err := h.commandHandler.DeleteAyahTajweed(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Ayah tajweed not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to delete ayah tajweed", &core.ErrorDetail{Reason: err.Error()}, start)
 		return
 	}

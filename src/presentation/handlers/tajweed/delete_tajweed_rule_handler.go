@@ -2,6 +2,7 @@ package tajweed
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/tajweed/command"
@@ -19,6 +20,7 @@ import (
 // @Param id path string true "Rule ID"
 // @Success 200 {object} core.SuccessResponse "Tajweed rule deleted successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid rule ID"
+// @Failure 404 {object} core.ErrorResponse "Tajweed rule not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /tajweed/rules/{id} [delete]
 func (h *Handler) DeleteTajweedRule(c *gin.Context) {
@@ -28,6 +30,10 @@ func (h *Handler) DeleteTajweedRule(c *gin.Context) {
 	cmd := command.DeleteTajweedRuleCommand{ID: id}
 	err := h.commandHandler.DeleteTajweedRule(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Tajweed rule not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to delete tajweed rule", &core.ErrorDetail{Reason: err.Error()}, start)
 		return
 	}

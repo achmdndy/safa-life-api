@@ -2,6 +2,7 @@ package translation
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/translation/command"
@@ -22,6 +23,7 @@ import (
 // @Param ayah_id path int true "Ayah ID"
 // @Success 200 {object} core.SuccessResponse "Ayah translation deleted successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid parameters"
+// @Failure 404 {object} core.ErrorResponse "Ayah translation not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /translations/ayahs/{translation_id}/{surah_id}/{ayah_id} [delete]
 func (h *Handler) DeleteAyahTranslation(c *gin.Context) {
@@ -34,6 +36,10 @@ func (h *Handler) DeleteAyahTranslation(c *gin.Context) {
 
 	cmd := command.DeleteAyahTranslationCommand(req)
 	if err := h.commandHandler.DeleteAyahTranslation(c.Request.Context(), cmd); err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Ayah translation not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to delete ayah translation", &core.ErrorDetail{Reason: err.Error()}, start)
 		return
 	}

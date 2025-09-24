@@ -2,6 +2,7 @@ package tafsir
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/tafsir/command"
@@ -20,6 +21,7 @@ import (
 // @Param edition body dto.UpdateTafsirRequest true "Tafsir Edition Data"
 // @Success 200 {object} core.SuccessResponse{data=dto.TafsirResponse}
 // @Failure 400 {object} core.ErrorResponse
+// @Failure 404 {object} core.ErrorResponse "Tafsir edition not found"
 // @Failure 500 {object} core.ErrorResponse
 // @Router /tafsirs/editions/{id} [put]
 func (h *Handler) UpdateTafsir(c *gin.Context) {
@@ -37,7 +39,16 @@ func (h *Handler) UpdateTafsir(c *gin.Context) {
 	cmd := command.FromUpdateTafsirRequest(req)
 	result, err := h.commandHandler.UpdateTafsir(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Tafsir edition not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to update tafsir edition", &core.ErrorDetail{Reason: err.Error()}, start)
+		return
+	}
+
+	if result == nil {
+		core.Error(c, http.StatusNotFound, "Tafsir edition not found", &core.ErrorDetail{}, start)
 		return
 	}
 

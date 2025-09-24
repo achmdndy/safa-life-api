@@ -2,6 +2,7 @@ package tajweed
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/tajweed/command"
@@ -21,6 +22,7 @@ import (
 // @Param tajweed_rule body dto.UpdateTajweedRuleRequest true "Tajweed Rule Data"
 // @Success 200 {object} core.SuccessResponse{data=dto.TajweedRuleResponse} "Tajweed rule updated successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid parameters or request body"
+// @Failure 404 {object} core.ErrorResponse "Tajweed rule not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /tajweed/rules/{id} [put]
 func (h *Handler) UpdateTajweedRule(c *gin.Context) {
@@ -45,7 +47,16 @@ func (h *Handler) UpdateTajweedRule(c *gin.Context) {
 	cmd := command.FromUpdateTajweedRuleRequest(uriReq)
 	domainResult, err := h.commandHandler.UpdateTajweedRule(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Tajweed rule not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to update tajweed rule", &core.ErrorDetail{Reason: err.Error()}, start)
+		return
+	}
+
+	if domainResult == nil {
+		core.Error(c, http.StatusNotFound, "Tajweed rule not found", &core.ErrorDetail{}, start)
 		return
 	}
 

@@ -143,6 +143,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/core.ErrorResponse"
                         }
                     },
+                    "404": {
+                        "description": "Ayah audio not found",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
@@ -272,6 +278,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Invalid parameters",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Ayah audio not found",
                         "schema": {
                             "$ref": "#/definitions/core.ErrorResponse"
                         }
@@ -463,6 +475,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/core.ErrorResponse"
                         }
                     },
+                    "404": {
+                        "description": "Ayah not found",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Failed to get ayah",
                         "schema": {
@@ -625,6 +643,88 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Failed to get health status",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/health/db": {
+            "get": {
+                "description": "Get health status specifically for database connection",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Get database health status",
+                "responses": {
+                    "200": {
+                        "description": "Database health status retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.HealthResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get database health status",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/health/redis": {
+            "get": {
+                "description": "Get health status specifically for Redis connection",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Get Redis health status",
+                "responses": {
+                    "200": {
+                        "description": "Redis health status retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.HealthResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get Redis health status",
                         "schema": {
                             "$ref": "#/definitions/core.ErrorResponse"
                         }

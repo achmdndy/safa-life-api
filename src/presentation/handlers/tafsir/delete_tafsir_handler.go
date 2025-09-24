@@ -2,6 +2,7 @@ package tafsir
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/tafsir/command"
@@ -18,6 +19,7 @@ import (
 // @Param id path string true "Tafsir ID"
 // @Success 200 {object} core.SuccessResponse
 // @Failure 400 {object} core.ErrorResponse
+// @Failure 404 {object} core.ErrorResponse "Tafsir edition not found"
 // @Failure 500 {object} core.ErrorResponse
 // @Router /tafsirs/editions/{id} [delete]
 func (h *Handler) DeleteTafsir(c *gin.Context) {
@@ -26,6 +28,10 @@ func (h *Handler) DeleteTafsir(c *gin.Context) {
 
 	cmd := command.DeleteTafsirCommand{ID: id}
 	if err := h.commandHandler.DeleteTafsir(c.Request.Context(), cmd); err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Tafsir edition not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to delete tafsir edition", &core.ErrorDetail{Reason: err.Error()}, start)
 		return
 	}

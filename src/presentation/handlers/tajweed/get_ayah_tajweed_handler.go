@@ -2,6 +2,7 @@ package tajweed
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/tajweed/dto"
@@ -22,6 +23,7 @@ import (
 // @Param ayah_id path int true "Ayah ID"
 // @Success 200 {object} core.SuccessResponse{data=dto.AyahTajweedResponse} "Ayah tajweed retrieved successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid parameters"
+// @Failure 404 {object} core.ErrorResponse "Ayah tajweed not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /tajweed/ayah/{tajweed_id}/{surah_id}/{ayah_id} [get]
 func (h *Handler) GetAyahTajweed(c *gin.Context) {
@@ -35,7 +37,16 @@ func (h *Handler) GetAyahTajweed(c *gin.Context) {
 	queryReq := query.ToGetAyahTajweedQuery(req.TajweedID, req.SurahID, req.AyahID)
 	result, err := h.queryHandler.GetAyahTajweed(c.Request.Context(), queryReq)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Ayah tajweed not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to get ayah tajweed", &core.ErrorDetail{Reason: err.Error()}, start)
+		return
+	}
+
+	if result == nil {
+		core.Error(c, http.StatusNotFound, "Ayah tajweed not found", &core.ErrorDetail{}, start)
 		return
 	}
 

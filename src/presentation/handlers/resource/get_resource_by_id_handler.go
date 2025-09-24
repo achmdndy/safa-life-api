@@ -2,6 +2,7 @@ package resource
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/resource/dto"
@@ -19,6 +20,7 @@ import (
 // @Param id path string true "Resource ID"
 // @Success 200 {object} core.SuccessResponse{data=dto.ResourceResponse} "Resource retrieved successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid resource ID"
+// @Failure 404 {object} core.ErrorResponse "Resource not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /resources/{id} [get]
 func (h *Handler) GetResourceByID(c *gin.Context) {
@@ -32,7 +34,16 @@ func (h *Handler) GetResourceByID(c *gin.Context) {
 	queryReq := query.ToGetResourceByIDQuery(req.ID)
 	result, err := h.queryHandler.GetResourceByID(c.Request.Context(), queryReq)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Resource not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to get resource", &core.ErrorDetail{Reason: err.Error()}, start)
+		return
+	}
+
+	if result == nil {
+		core.Error(c, http.StatusNotFound, "Resource not found", &core.ErrorDetail{}, start)
 		return
 	}
 

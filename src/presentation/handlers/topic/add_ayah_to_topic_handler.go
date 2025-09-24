@@ -2,6 +2,7 @@ package topic
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/topic/command"
@@ -20,6 +21,7 @@ import (
 // @Param ayah_info body dto.AddAyahToTopicRequest true "Ayah Info"
 // @Success 201 {object} core.SuccessResponse{data=dto.TopicAyahResponse} "Ayah added to topic successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid request body or parameters"
+// @Failure 404 {object} core.ErrorResponse "Topic or ayah not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /topics/{id}/ayahs [post]
 func (h *Handler) AddAyahToTopic(c *gin.Context) {
@@ -37,6 +39,10 @@ func (h *Handler) AddAyahToTopic(c *gin.Context) {
 	cmd := command.FromAddAyahToTopicRequest(req)
 	result, err := h.commandHandler.AddAyahToTopic(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Topic or ayah not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to add ayah to topic", &core.ErrorDetail{Reason: err.Error()}, start)
 		return
 	}

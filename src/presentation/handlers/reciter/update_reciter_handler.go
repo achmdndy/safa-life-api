@@ -2,6 +2,7 @@ package reciter
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/achmdndy/safa-life-api/src/application/reciter/command"
@@ -21,6 +22,7 @@ import (
 // @Param reciter body dto.UpdateReciterRequest true "Reciter Data"
 // @Success 200 {object} core.SuccessResponse{data=dto.ReciterResponse} "Reciter updated successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid parameters or request body"
+// @Failure 404 {object} core.ErrorResponse "Reciter not found"
 // @Failure 500 {object} core.ErrorResponse "Internal server error"
 // @Router /reciters/{id} [put]
 func (h *Handler) UpdateReciter(c *gin.Context) {
@@ -39,7 +41,16 @@ func (h *Handler) UpdateReciter(c *gin.Context) {
 	cmd := command.FromUpdateReciterRequest(req)
 	result, err := h.commandHandler.UpdateReciter(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Reciter not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to update reciter", &core.ErrorDetail{Reason: err.Error()}, start)
+		return
+	}
+
+	if result == nil {
+		core.Error(c, http.StatusNotFound, "Reciter not found", &core.ErrorDetail{}, start)
 		return
 	}
 

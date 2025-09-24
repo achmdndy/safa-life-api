@@ -3,11 +3,12 @@ package quran
 import (
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/achmdndy/safa-life-api/src/application/quran/command"
 	"github.com/achmdndy/safa-life-api/src/presentation/core"
+	"github.com/gin-gonic/gin"
 )
 
 // DeleteAyah handles DELETE /ayahs/:surahId/:ayahId
@@ -20,11 +21,12 @@ import (
 // @Param ayahId path int true "Ayah ID"
 // @Success 200 {object} core.SuccessResponse "Ayah deleted successfully"
 // @Failure 400 {object} core.ErrorResponse "Invalid surah ID or ayah ID"
+// @Failure 404 {object} core.ErrorResponse "Ayah not found"
 // @Failure 500 {object} core.ErrorResponse "Failed to delete ayah"
 // @Router /ayahs/{surahId}/{ayahId} [delete]
 func (h *Handler) DeleteAyah(c *gin.Context) {
 	start := time.Now()
-	
+
 	surahID, err := strconv.Atoi(c.Param("surahId"))
 	if err != nil {
 		core.Error(c, http.StatusBadRequest, "Invalid surah ID", &core.ErrorDetail{Reason: err.Error()}, start)
@@ -40,6 +42,10 @@ func (h *Handler) DeleteAyah(c *gin.Context) {
 	cmd := command.DeleteAyahCommand{SurahID: surahID, AyahID: ayahID}
 	err = h.commandHandler.DeleteAyah(c.Request.Context(), cmd)
 	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			core.Error(c, http.StatusNotFound, "Ayah not found", &core.ErrorDetail{Reason: err.Error()}, start)
+			return
+		}
 		core.Error(c, http.StatusInternalServerError, "Failed to delete ayah", &core.ErrorDetail{Reason: err.Error()}, start)
 		return
 	}
