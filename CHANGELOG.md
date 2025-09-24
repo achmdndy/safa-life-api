@@ -33,6 +33,9 @@ All notable changes to this project will be documented in this file.
 - Add core domain models and application services for Quran features
 ([`dbf2881…`](https://github.com/achmdndy/safa-life-api/commit/dbf28814bafe0ff0073e787df3c95605a00c3c96)) _(by Achmad Andy Dekanovy)_ 
 
+- **health:** Add health check endpoints and handlers
+([`18e7000…`](https://github.com/achmdndy/safa-life-api/commit/18e7000f99f590d23c326f54fdc72cdb4fd551e0)) _(by Achmad Andy Dekanovy)_ 
+
 
 
 ### 📖 Documentation
@@ -45,6 +48,9 @@ All notable changes to this project will be documented in this file.
 
 - Update changelog with recent changes
 ([`48557c6…`](https://github.com/achmdndy/safa-life-api/commit/48557c6c487c7963f4b21da17d1d2b1fdf8843b0)) _(by Achmad Andy Dekanovy)_ 
+
+- Update changelog with recent changes
+([`c5f28aa…`](https://github.com/achmdndy/safa-life-api/commit/c5f28aa6e4e8deef5105eb7a987a010472e2ca77)) _(by Achmad Andy Dekanovy)_ 
 
 
 
@@ -72,6 +78,10 @@ All notable changes to this project will be documented in this file.
 - Update changelog with recent changes ([`48557c6…`](https://github.com/achmdndy/safa-life-api/commit/48557c6c487c7963f4b21da17d1d2b1fdf8843b0))
 
 - Add core domain models and application services for Quran features ([`dbf2881…`](https://github.com/achmdndy/safa-life-api/commit/dbf28814bafe0ff0073e787df3c95605a00c3c96))
+
+- Update changelog with recent changes ([`c5f28aa…`](https://github.com/achmdndy/safa-life-api/commit/c5f28aa6e4e8deef5105eb7a987a010472e2ca77))
+
+- Add health check endpoints and handlers ([`18e7000…`](https://github.com/achmdndy/safa-life-api/commit/18e7000f99f590d23c326f54fdc72cdb4fd551e0))
 
 
 
