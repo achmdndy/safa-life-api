@@ -58,6 +58,10 @@ configs/config.staging.yaml
 logs/
 log/
 
+# Folder
+backups/
+dumps/
+
 # Database files
 *.db
 *.sqlite

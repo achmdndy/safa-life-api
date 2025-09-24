@@ -3,6 +3,7 @@ package container
 import (
 	"github.com/achmdndy/safa-life-api/src/application/container"
 	healthHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/health"
+	quranHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/quran"
 	"github.com/achmdndy/safa-life-api/src/presentation/routes"
 )
 
@@ -40,6 +41,7 @@ type PresentationContainer struct {
 
 	// HTTP Handlers (presentation layer specific)
 	HealthHandler *healthHandler.Handler
+	QuranHandler  *quranHandler.Handler
 
 	// Routes (presentation layer specific)
 	RouteConfig routes.RouteConfig
@@ -90,11 +92,16 @@ func (c *PresentationContainer) Close() error {
 func (c *PresentationContainer) initializeHTTPHandlers() {
 	queryHandler := c.appContainer.GetHealthQueryHandler()
 	c.HealthHandler = healthHandler.NewHandler(queryHandler)
+
+	quranQueryHandler := c.appContainer.GetQuranQueryHandler()
+	quranCommandHandler := c.appContainer.GetQuranCommandHandler()
+	c.QuranHandler = quranHandler.NewHandler(quranQueryHandler, quranCommandHandler)
 }
 
 // initializeRoutes sets up route configuration
 func (c *PresentationContainer) initializeRoutes() {
 	c.RouteConfig = routes.RouteConfig{
 		HealthHandler: c.HealthHandler,
+		QuranHandler:  c.QuranHandler,
 	}
 }

@@ -1,4 +1,4 @@
-package queries
+package query
 
 import (
 	"testing"
@@ -39,14 +39,14 @@ func TestGetHealthQueryHandler_Handle_Success(t *testing.T) {
 
 	// Assert
 	assert.NoError(t, err)
-	
+
 	// Type assert to DTO
 	dtoResult, ok := result.(dto.HealthResponse)
 	assert.True(t, ok)
 	assert.Equal(t, "ok", dtoResult.Status)
 	assert.Equal(t, "ok", dtoResult.Services["database"])
 	assert.Equal(t, "ok", dtoResult.Services["redis"])
-	
+
 	mockService.AssertExpectations(t)
 }
 
@@ -70,14 +70,14 @@ func TestGetHealthQueryHandler_Handle_DegradedStatus(t *testing.T) {
 
 	// Assert
 	assert.NoError(t, err)
-	
+
 	// Type assert to DTO
 	dtoResult, ok := result.(dto.HealthResponse)
 	assert.True(t, ok)
 	assert.Equal(t, "degraded", dtoResult.Status)
 	assert.Equal(t, "ok", dtoResult.Services["database"])
 	assert.Equal(t, "error", dtoResult.Services["redis"])
-	
+
 	mockService.AssertExpectations(t)
 }
 

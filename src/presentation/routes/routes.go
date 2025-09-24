@@ -6,12 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 
 	healthHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/health"
+	quranHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/quran"
 	"github.com/achmdndy/safa-life-api/src/presentation/middlewares"
 	"github.com/achmdndy/safa-life-api/src/presentation/core"
 )
 
 type RouteConfig struct {
 	HealthHandler *healthHandler.Handler
+	QuranHandler  *quranHandler.Handler
 }
 
 func SetupRoutes(config RouteConfig) *gin.Engine {
@@ -30,6 +32,7 @@ func SetupRoutes(config RouteConfig) *gin.Engine {
 
 	// Setup route groups
 	SetupHealthRoutes(v1, config.HealthHandler)
+	QuranRoutes(v1, config.QuranHandler)
 
 	// Root endpoint
 	router.GET("/", func(c *gin.Context) {
@@ -55,6 +58,7 @@ func SetupRoutesWithRouter(router *gin.Engine, config RouteConfig) {
 
 	// Setup route groups
 	SetupHealthRoutes(v1, config.HealthHandler)
+	QuranRoutes(v1, config.QuranHandler)
 
 	// Root endpoint
 	router.GET("/", func(c *gin.Context) {

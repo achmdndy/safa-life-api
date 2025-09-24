@@ -21,6 +21,15 @@ func NewHandler(healthQueryHandler interfaces.QueryHandler) *Handler {
 	}
 }
 
+// GetHealth handles GET /health
+// @Summary Get health status
+// @Description Get detailed health status of the application including database and Redis connections
+// @Tags Health
+// @Accept json
+// @Produce json
+// @Success 200 {object} core.SuccessResponse{data=dto.HealthResponse} "Health status retrieved successfully"
+// @Failure 500 {object} core.ErrorResponse "Failed to get health status"
+// @Router /health [get]
 func (h *Handler) GetHealth(c *gin.Context) {
 	start := time.Now()
 
@@ -29,40 +38,35 @@ func (h *Handler) GetHealth(c *gin.Context) {
 
 	result, err := h.healthQueryHandler.Handle(query)
 	if err != nil {
-		core.Error(c, http.StatusInternalServerError, "Failed to get health status", &core.ErrorDetail{
-			Reason: err.Error(),
-		}, start)
+		core.Error(c, http.StatusInternalServerError, "Failed to get health status", &core.ErrorDetail{Reason: err.Error()}, start)
 		return
 	}
 
-	// Type assertion to get health status
-	healthStatus, ok := result.(dto.HealthResponse)
+	// Convert result to HealthResponse
+	healthResponse, ok := result.(dto.HealthResponse)
 	if !ok {
-		core.Error(c, http.StatusInternalServerError, "Invalid health status format", &core.ErrorDetail{
-			Reason: "Failed to parse health status",
-		}, start)
+		core.Error(c, http.StatusInternalServerError, "Failed to convert health response", &core.ErrorDetail{Reason: "Type assertion failed"}, start)
 		return
 	}
 
-	// Determine HTTP status based on health status
+	// Determine status code based on health status
 	statusCode := http.StatusOK
-	switch healthStatus.Status {
-	case "degraded":
-		statusCode = http.StatusServiceUnavailable
-	case "unhealthy":
+	if healthResponse.Status != "healthy" {
 		statusCode = http.StatusServiceUnavailable
 	}
 
-	core.Success(c, statusCode, "Health check completed", healthStatus, start)
+	core.Success(c, statusCode, "Health status retrieved successfully", healthResponse, start)
 }
 
+// GetHealthSimple handles GET /health/simple
+// @Summary Get simple health status
+// @Description Get a simple health check response
+// @Tags Health
+// @Accept json
+// @Produce json
+// @Success 200 {object} core.SuccessResponse "Application is healthy"
+// @Router /health/simple [get]
 func (h *Handler) GetHealthSimple(c *gin.Context) {
 	start := time.Now()
-
-	simpleResponse := gin.H{
-		"status": "ok",
-		"time":   time.Now().UTC(),
-	}
-
-	core.Success(c, http.StatusOK, "Simple health check", simpleResponse, start)
+	core.Success(c, http.StatusOK, "Application is healthy", core.EmptyData{}, start)
 }

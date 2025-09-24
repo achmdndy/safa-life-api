@@ -1,0 +1,1486 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Al-Quran API with comprehensive Islamic content",
+        "title": "Safa Life API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/ayahs": {
+            "post": {
+                "description": "Create a new ayah (verse) in the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ayah"
+                ],
+                "summary": "Create a new ayah",
+                "parameters": [
+                    {
+                        "description": "Ayah data",
+                        "name": "ayah",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateAyahRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Ayah created successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.AyahResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create ayah",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ayahs/{surahId}/{ayahId}": {
+            "get": {
+                "description": "Get a specific ayah by surah ID and ayah ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ayah"
+                ],
+                "summary": "Get ayah by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Surah ID",
+                        "name": "surahId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Ayah ID",
+                        "name": "ayahId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayah retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.AyahResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid surah ID or ayah ID",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get ayah",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing ayah (verse) in the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ayah"
+                ],
+                "summary": "Update an ayah",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Surah ID",
+                        "name": "surahId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Ayah ID",
+                        "name": "ayahId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated ayah data",
+                        "name": "ayah",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateAyahRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayah updated successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.AyahResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid surah ID, ayah ID, or request body",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to update ayah",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an existing ayah (verse) from the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ayah"
+                ],
+                "summary": "Delete an ayah",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Surah ID",
+                        "name": "surahId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Ayah ID",
+                        "name": "ayahId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayah deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/core.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid surah ID or ayah ID",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to delete ayah",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Get detailed health status of the application including database and Redis connections",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Get health status",
+                "responses": {
+                    "200": {
+                        "description": "Health status retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.HealthResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get health status",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/health/simple": {
+            "get": {
+                "description": "Get a simple health check response",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Get simple health status",
+                "responses": {
+                    "200": {
+                        "description": "Application is healthy",
+                        "schema": {
+                            "$ref": "#/definitions/core.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/juz": {
+            "get": {
+                "description": "Get a list of all juz (parts) in the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Juz"
+                ],
+                "summary": "Get all juz",
+                "responses": {
+                    "200": {
+                        "description": "Juz retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/dto.JuzResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get juz",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new juz (part) in the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Juz"
+                ],
+                "summary": "Create a new juz",
+                "parameters": [
+                    {
+                        "description": "Juz data",
+                        "name": "juz",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateJuzRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Juz created successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.JuzResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create juz",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/juz/{id}": {
+            "get": {
+                "description": "Get a specific juz (part) by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Juz"
+                ],
+                "summary": "Get juz by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Juz ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Juz retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.JuzResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid juz ID",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get juz",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing juz (part) in the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Juz"
+                ],
+                "summary": "Update an existing juz",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Juz ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Juz data",
+                        "name": "juz",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateJuzRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Juz updated successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.JuzResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid juz ID or request body",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to update juz",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a specific juz (part) from the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Juz"
+                ],
+                "summary": "Delete a juz",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Juz ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Juz deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/core.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid juz ID",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to delete juz",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/juz/{id}/ayahs": {
+            "get": {
+                "description": "Get all ayahs (verses) from a specific juz (part)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ayah"
+                ],
+                "summary": "Get ayahs by juz",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Juz ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayahs retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/core.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid juz ID",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get ayahs",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/juz/{id}/content": {
+            "get": {
+                "description": "Get a specific juz (part) along with all its content (ayahs)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Juz"
+                ],
+                "summary": "Get juz with its content",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Juz ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Juz with content retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/core.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid juz ID",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get juz with content",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/pages/{page}/ayahs": {
+            "get": {
+                "description": "Get all ayahs (verses) from a specific page in the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ayah"
+                ],
+                "summary": "Get ayahs by page",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayahs retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/core.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid page number",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get ayahs",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/search": {
+            "get": {
+                "description": "Search for ayahs (verses) in the Quran by text content",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Search in Quran",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query",
+                        "name": "q",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search completed successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.SearchResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Search query is required",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to perform search",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/surahs": {
+            "get": {
+                "description": "Get a list of all surahs (chapters) in the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Surah"
+                ],
+                "summary": "Get all surahs",
+                "responses": {
+                    "200": {
+                        "description": "Surahs retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/dto.SurahResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get surahs",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new surah (chapter) in the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Surah"
+                ],
+                "summary": "Create a new surah",
+                "parameters": [
+                    {
+                        "description": "Surah data",
+                        "name": "surah",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateSurahRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Surah created successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.SurahResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create surah",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/surahs/{id}": {
+            "get": {
+                "description": "Get a specific surah (chapter) by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Surah"
+                ],
+                "summary": "Get surah by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Surah ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Surah retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.SurahResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid surah ID",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get surah",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing surah (chapter) in the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Surah"
+                ],
+                "summary": "Update an existing surah",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Surah ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Surah data",
+                        "name": "surah",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateSurahRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Surah updated successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/core.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.SurahResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid surah ID or request body",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to update surah",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a specific surah (chapter) from the Quran",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Surah"
+                ],
+                "summary": "Delete a surah",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Surah ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Surah deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/core.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid surah ID",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to delete surah",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/surahs/{id}/ayahs": {
+            "get": {
+                "description": "Get a specific surah (chapter) along with all its ayahs (verses)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Surah"
+                ],
+                "summary": "Get surah with its ayahs",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Surah ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Surah with ayahs retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/core.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid surah ID",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to get surah with ayahs",
+                        "schema": {
+                            "$ref": "#/definitions/core.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "core.ErrorResponse": {
+            "description": "Error API response structure",
+            "type": "object",
+            "properties": {
+                "errors": {},
+                "message": {
+                    "type": "string",
+                    "example": "Operation failed"
+                },
+                "response_time": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 400
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
+                }
+            }
+        },
+        "core.SuccessResponse": {
+            "description": "Successful API response structure",
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "Operation completed successfully"
+                },
+                "response_time": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
+                }
+            }
+        },
+        "dto.AyahResponse": {
+            "type": "object",
+            "properties": {
+                "ayah_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "hizb_number": {
+                    "type": "integer"
+                },
+                "juz_number": {
+                    "type": "integer"
+                },
+                "manzil_number": {
+                    "type": "integer"
+                },
+                "page_number": {
+                    "type": "integer"
+                },
+                "surah_id": {
+                    "type": "integer"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateAyahRequest": {
+            "type": "object",
+            "required": [
+                "ayah_id",
+                "hizb_number",
+                "juz_number",
+                "manzil_number",
+                "page_number",
+                "surah_id",
+                "text"
+            ],
+            "properties": {
+                "ayah_id": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "hizb_number": {
+                    "type": "integer",
+                    "maximum": 60,
+                    "minimum": 1
+                },
+                "juz_number": {
+                    "type": "integer",
+                    "maximum": 30,
+                    "minimum": 1
+                },
+                "manzil_number": {
+                    "type": "integer",
+                    "maximum": 7,
+                    "minimum": 1
+                },
+                "page_number": {
+                    "type": "integer",
+                    "maximum": 604,
+                    "minimum": 1
+                },
+                "surah_id": {
+                    "type": "integer",
+                    "maximum": 114,
+                    "minimum": 1
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateJuzRequest": {
+            "type": "object",
+            "required": [
+                "end_ayah",
+                "end_surah",
+                "start_ayah",
+                "start_surah"
+            ],
+            "properties": {
+                "end_ayah": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "end_surah": {
+                    "type": "integer",
+                    "maximum": 114,
+                    "minimum": 1
+                },
+                "start_ayah": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "start_surah": {
+                    "type": "integer",
+                    "maximum": 114,
+                    "minimum": 1
+                }
+            }
+        },
+        "dto.CreateSurahRequest": {
+            "type": "object",
+            "required": [
+                "ayah_count",
+                "name_ar",
+                "name_en",
+                "revelation_order",
+                "revelation_place"
+            ],
+            "properties": {
+                "ayah_count": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "name_ar": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "name_en": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "revelation_order": {
+                    "type": "integer",
+                    "maximum": 114,
+                    "minimum": 1
+                },
+                "revelation_place": {
+                    "type": "string",
+                    "enum": [
+                        "Mecca",
+                        "Medina"
+                    ]
+                }
+            }
+        },
+        "dto.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "services": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.JuzResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "end_ayah": {
+                    "type": "integer"
+                },
+                "end_surah": {
+                    "type": "integer"
+                },
+                "juz_id": {
+                    "type": "integer"
+                },
+                "start_ayah": {
+                    "type": "integer"
+                },
+                "start_surah": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SearchResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "query": {
+                    "type": "string"
+                },
+                "results": {},
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SurahResponse": {
+            "type": "object",
+            "properties": {
+                "ayah_count": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "name_ar": {
+                    "type": "string"
+                },
+                "name_en": {
+                    "type": "string"
+                },
+                "revelation_order": {
+                    "type": "integer"
+                },
+                "revelation_place": {
+                    "type": "string"
+                },
+                "surah_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdateAyahRequest": {
+            "type": "object",
+            "required": [
+                "ayahID",
+                "surahID"
+            ],
+            "properties": {
+                "ayahID": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "hizb_number": {
+                    "type": "integer",
+                    "maximum": 60,
+                    "minimum": 1
+                },
+                "juz_number": {
+                    "type": "integer",
+                    "maximum": 30,
+                    "minimum": 1
+                },
+                "manzil_number": {
+                    "type": "integer",
+                    "maximum": 7,
+                    "minimum": 1
+                },
+                "page_number": {
+                    "type": "integer",
+                    "maximum": 604,
+                    "minimum": 1
+                },
+                "surahID": {
+                    "type": "integer",
+                    "maximum": 114,
+                    "minimum": 1
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdateJuzRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "end_ayah": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "end_surah": {
+                    "type": "integer",
+                    "maximum": 114,
+                    "minimum": 1
+                },
+                "id": {
+                    "type": "integer",
+                    "maximum": 30,
+                    "minimum": 1
+                },
+                "start_ayah": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "start_surah": {
+                    "type": "integer",
+                    "maximum": 114,
+                    "minimum": 1
+                }
+            }
+        },
+        "dto.UpdateSurahRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "ayah_count": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "id": {
+                    "type": "integer",
+                    "maximum": 114,
+                    "minimum": 1
+                },
+                "name_ar": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "name_en": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "revelation_order": {
+                    "type": "integer",
+                    "maximum": 114,
+                    "minimum": 1
+                },
+                "revelation_place": {
+                    "type": "string",
+                    "enum": [
+                        "Mecca",
+                        "Medina"
+                    ]
+                }
+            }
+        }
+    }
+}

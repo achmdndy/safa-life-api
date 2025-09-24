@@ -1,0 +1,972 @@
+basePath: /api/v1
+definitions:
+  core.ErrorResponse:
+    description: Error API response structure
+    properties:
+      errors: {}
+      message:
+        example: Operation failed
+        type: string
+      response_time:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 400
+        type: integer
+      success:
+        example: false
+        type: boolean
+      timestamp:
+        example: "2023-01-01T00:00:00Z"
+        type: string
+    type: object
+  core.SuccessResponse:
+    description: Successful API response structure
+    properties:
+      data: {}
+      message:
+        example: Operation completed successfully
+        type: string
+      response_time:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2023-01-01T00:00:00Z"
+        type: string
+    type: object
+  dto.AyahResponse:
+    properties:
+      ayah_id:
+        type: integer
+      created_at:
+        type: string
+      hizb_number:
+        type: integer
+      juz_number:
+        type: integer
+      manzil_number:
+        type: integer
+      page_number:
+        type: integer
+      surah_id:
+        type: integer
+      text:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.CreateAyahRequest:
+    properties:
+      ayah_id:
+        minimum: 1
+        type: integer
+      hizb_number:
+        maximum: 60
+        minimum: 1
+        type: integer
+      juz_number:
+        maximum: 30
+        minimum: 1
+        type: integer
+      manzil_number:
+        maximum: 7
+        minimum: 1
+        type: integer
+      page_number:
+        maximum: 604
+        minimum: 1
+        type: integer
+      surah_id:
+        maximum: 114
+        minimum: 1
+        type: integer
+      text:
+        type: string
+    required:
+    - ayah_id
+    - hizb_number
+    - juz_number
+    - manzil_number
+    - page_number
+    - surah_id
+    - text
+    type: object
+  dto.CreateJuzRequest:
+    properties:
+      end_ayah:
+        minimum: 1
+        type: integer
+      end_surah:
+        maximum: 114
+        minimum: 1
+        type: integer
+      start_ayah:
+        minimum: 1
+        type: integer
+      start_surah:
+        maximum: 114
+        minimum: 1
+        type: integer
+    required:
+    - end_ayah
+    - end_surah
+    - start_ayah
+    - start_surah
+    type: object
+  dto.CreateSurahRequest:
+    properties:
+      ayah_count:
+        minimum: 1
+        type: integer
+      name_ar:
+        maxLength: 255
+        type: string
+      name_en:
+        maxLength: 255
+        type: string
+      revelation_order:
+        maximum: 114
+        minimum: 1
+        type: integer
+      revelation_place:
+        enum:
+        - Mecca
+        - Medina
+        type: string
+    required:
+    - ayah_count
+    - name_ar
+    - name_en
+    - revelation_order
+    - revelation_place
+    type: object
+  dto.HealthResponse:
+    properties:
+      services:
+        additionalProperties:
+          type: string
+        type: object
+      status:
+        type: string
+    type: object
+  dto.JuzResponse:
+    properties:
+      created_at:
+        type: string
+      end_ayah:
+        type: integer
+      end_surah:
+        type: integer
+      juz_id:
+        type: integer
+      start_ayah:
+        type: integer
+      start_surah:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  dto.SearchResponse:
+    properties:
+      count:
+        type: integer
+      query:
+        type: string
+      results: {}
+      type:
+        type: string
+    type: object
+  dto.SurahResponse:
+    properties:
+      ayah_count:
+        type: integer
+      created_at:
+        type: string
+      name_ar:
+        type: string
+      name_en:
+        type: string
+      revelation_order:
+        type: integer
+      revelation_place:
+        type: string
+      surah_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  dto.UpdateAyahRequest:
+    properties:
+      ayahID:
+        minimum: 1
+        type: integer
+      hizb_number:
+        maximum: 60
+        minimum: 1
+        type: integer
+      juz_number:
+        maximum: 30
+        minimum: 1
+        type: integer
+      manzil_number:
+        maximum: 7
+        minimum: 1
+        type: integer
+      page_number:
+        maximum: 604
+        minimum: 1
+        type: integer
+      surahID:
+        maximum: 114
+        minimum: 1
+        type: integer
+      text:
+        type: string
+    required:
+    - ayahID
+    - surahID
+    type: object
+  dto.UpdateJuzRequest:
+    properties:
+      end_ayah:
+        minimum: 1
+        type: integer
+      end_surah:
+        maximum: 114
+        minimum: 1
+        type: integer
+      id:
+        maximum: 30
+        minimum: 1
+        type: integer
+      start_ayah:
+        minimum: 1
+        type: integer
+      start_surah:
+        maximum: 114
+        minimum: 1
+        type: integer
+    required:
+    - id
+    type: object
+  dto.UpdateSurahRequest:
+    properties:
+      ayah_count:
+        minimum: 1
+        type: integer
+      id:
+        maximum: 114
+        minimum: 1
+        type: integer
+      name_ar:
+        maxLength: 255
+        type: string
+      name_en:
+        maxLength: 255
+        type: string
+      revelation_order:
+        maximum: 114
+        minimum: 1
+        type: integer
+      revelation_place:
+        enum:
+        - Mecca
+        - Medina
+        type: string
+    required:
+    - id
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Al-Quran API with comprehensive Islamic content
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Safa Life API
+  version: "1.0"
+paths:
+  /ayahs:
+    post:
+      consumes:
+      - application/json
+      description: Create a new ayah (verse) in the Quran
+      parameters:
+      - description: Ayah data
+        in: body
+        name: ayah
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateAyahRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Ayah created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.AyahResponse'
+              type: object
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to create ayah
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Create a new ayah
+      tags:
+      - Ayah
+  /ayahs/{surahId}/{ayahId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an existing ayah (verse) from the Quran
+      parameters:
+      - description: Surah ID
+        in: path
+        name: surahId
+        required: true
+        type: integer
+      - description: Ayah ID
+        in: path
+        name: ayahId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayah deleted successfully
+          schema:
+            $ref: '#/definitions/core.SuccessResponse'
+        "400":
+          description: Invalid surah ID or ayah ID
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to delete ayah
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Delete an ayah
+      tags:
+      - Ayah
+    get:
+      consumes:
+      - application/json
+      description: Get a specific ayah by surah ID and ayah ID
+      parameters:
+      - description: Surah ID
+        in: path
+        name: surahId
+        required: true
+        type: integer
+      - description: Ayah ID
+        in: path
+        name: ayahId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayah retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.AyahResponse'
+              type: object
+        "400":
+          description: Invalid surah ID or ayah ID
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to get ayah
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get ayah by ID
+      tags:
+      - Ayah
+    put:
+      consumes:
+      - application/json
+      description: Update an existing ayah (verse) in the Quran
+      parameters:
+      - description: Surah ID
+        in: path
+        name: surahId
+        required: true
+        type: integer
+      - description: Ayah ID
+        in: path
+        name: ayahId
+        required: true
+        type: integer
+      - description: Updated ayah data
+        in: body
+        name: ayah
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateAyahRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayah updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.AyahResponse'
+              type: object
+        "400":
+          description: Invalid surah ID, ayah ID, or request body
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to update ayah
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Update an ayah
+      tags:
+      - Ayah
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed health status of the application including database
+        and Redis connections
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Health status retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.HealthResponse'
+              type: object
+        "500":
+          description: Failed to get health status
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get health status
+      tags:
+      - Health
+  /health/simple:
+    get:
+      consumes:
+      - application/json
+      description: Get a simple health check response
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Application is healthy
+          schema:
+            $ref: '#/definitions/core.SuccessResponse'
+      summary: Get simple health status
+      tags:
+      - Health
+  /juz:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all juz (parts) in the Quran
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Juz retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.JuzResponse'
+                  type: array
+              type: object
+        "500":
+          description: Failed to get juz
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get all juz
+      tags:
+      - Juz
+    post:
+      consumes:
+      - application/json
+      description: Create a new juz (part) in the Quran
+      parameters:
+      - description: Juz data
+        in: body
+        name: juz
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateJuzRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Juz created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.JuzResponse'
+              type: object
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to create juz
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Create a new juz
+      tags:
+      - Juz
+  /juz/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific juz (part) from the Quran
+      parameters:
+      - description: Juz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Juz deleted successfully
+          schema:
+            $ref: '#/definitions/core.SuccessResponse'
+        "400":
+          description: Invalid juz ID
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to delete juz
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Delete a juz
+      tags:
+      - Juz
+    get:
+      consumes:
+      - application/json
+      description: Get a specific juz (part) by its ID
+      parameters:
+      - description: Juz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Juz retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.JuzResponse'
+              type: object
+        "400":
+          description: Invalid juz ID
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to get juz
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get juz by ID
+      tags:
+      - Juz
+    put:
+      consumes:
+      - application/json
+      description: Update an existing juz (part) in the Quran
+      parameters:
+      - description: Juz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Juz data
+        in: body
+        name: juz
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateJuzRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Juz updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.JuzResponse'
+              type: object
+        "400":
+          description: Invalid juz ID or request body
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to update juz
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Update an existing juz
+      tags:
+      - Juz
+  /juz/{id}/ayahs:
+    get:
+      consumes:
+      - application/json
+      description: Get all ayahs (verses) from a specific juz (part)
+      parameters:
+      - description: Juz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayahs retrieved successfully
+          schema:
+            $ref: '#/definitions/core.SuccessResponse'
+        "400":
+          description: Invalid juz ID
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to get ayahs
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get ayahs by juz
+      tags:
+      - Ayah
+  /juz/{id}/content:
+    get:
+      consumes:
+      - application/json
+      description: Get a specific juz (part) along with all its content (ayahs)
+      parameters:
+      - description: Juz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Juz with content retrieved successfully
+          schema:
+            $ref: '#/definitions/core.SuccessResponse'
+        "400":
+          description: Invalid juz ID
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to get juz with content
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get juz with its content
+      tags:
+      - Juz
+  /pages/{page}/ayahs:
+    get:
+      consumes:
+      - application/json
+      description: Get all ayahs (verses) from a specific page in the Quran
+      parameters:
+      - description: Page number
+        in: path
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayahs retrieved successfully
+          schema:
+            $ref: '#/definitions/core.SuccessResponse'
+        "400":
+          description: Invalid page number
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to get ayahs
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get ayahs by page
+      tags:
+      - Ayah
+  /search:
+    get:
+      consumes:
+      - application/json
+      description: Search for ayahs (verses) in the Quran by text content
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Search completed successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SearchResponse'
+              type: object
+        "400":
+          description: Search query is required
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to perform search
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Search in Quran
+      tags:
+      - Search
+  /surahs:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all surahs (chapters) in the Quran
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Surahs retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.SurahResponse'
+                  type: array
+              type: object
+        "500":
+          description: Failed to get surahs
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get all surahs
+      tags:
+      - Surah
+    post:
+      consumes:
+      - application/json
+      description: Create a new surah (chapter) in the Quran
+      parameters:
+      - description: Surah data
+        in: body
+        name: surah
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateSurahRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Surah created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SurahResponse'
+              type: object
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to create surah
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Create a new surah
+      tags:
+      - Surah
+  /surahs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific surah (chapter) from the Quran
+      parameters:
+      - description: Surah ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Surah deleted successfully
+          schema:
+            $ref: '#/definitions/core.SuccessResponse'
+        "400":
+          description: Invalid surah ID
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to delete surah
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Delete a surah
+      tags:
+      - Surah
+    get:
+      consumes:
+      - application/json
+      description: Get a specific surah (chapter) by its ID
+      parameters:
+      - description: Surah ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Surah retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SurahResponse'
+              type: object
+        "400":
+          description: Invalid surah ID
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to get surah
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get surah by ID
+      tags:
+      - Surah
+    put:
+      consumes:
+      - application/json
+      description: Update an existing surah (chapter) in the Quran
+      parameters:
+      - description: Surah ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Surah data
+        in: body
+        name: surah
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateSurahRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Surah updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/core.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SurahResponse'
+              type: object
+        "400":
+          description: Invalid surah ID or request body
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to update surah
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Update an existing surah
+      tags:
+      - Surah
+  /surahs/{id}/ayahs:
+    get:
+      consumes:
+      - application/json
+      description: Get a specific surah (chapter) along with all its ayahs (verses)
+      parameters:
+      - description: Surah ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Surah with ayahs retrieved successfully
+          schema:
+            $ref: '#/definitions/core.SuccessResponse'
+        "400":
+          description: Invalid surah ID
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Failed to get surah with ayahs
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Get surah with its ayahs
+      tags:
+      - Surah
+swagger: "2.0"

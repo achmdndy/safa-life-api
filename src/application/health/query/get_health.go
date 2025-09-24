@@ -1,4 +1,4 @@
-package queries
+package query
 
 import (
 	"context"
@@ -22,13 +22,13 @@ func NewGetHealthQueryHandler(healthService health.HealthServiceInterface) *GetH
 
 func (h *GetHealthQueryHandler) HandleHealth(ctx context.Context, query GetHealthQuery) (dto.HealthResponse, error) {
 	domainStatus := h.healthService.GetHealth()
-	
+
 	// Convert domain entity to application DTO
 	response := dto.HealthResponse{
 		Status:   domainStatus.Status,
 		Services: domainStatus.Services,
 	}
-	
+
 	return response, nil
 }
 

@@ -4,9 +4,11 @@ import (
 	"log"
 
 	"github.com/achmdndy/safa-life-api/src/domain/health"
+	"github.com/achmdndy/safa-life-api/src/domain/quran"
 	"github.com/achmdndy/safa-life-api/src/domain/shared"
 	"github.com/achmdndy/safa-life-api/src/infrastructure/configs"
 	healthInfra "github.com/achmdndy/safa-life-api/src/infrastructure/health"
+	quranInfra "github.com/achmdndy/safa-life-api/src/infrastructure/quran"
 )
 
 // InfraContainerFactory implements the ContainerFactory interface
@@ -66,6 +68,7 @@ type InfraContainer struct {
 
 	// Repositories
 	healthRepository health.CheckerRepository
+	quranRepository  quran.QuranRepository
 
 	// Configuration
 	dbConfig    DatabaseConfig
@@ -88,10 +91,21 @@ func (c *InfraContainer) GetHealthRepository() health.CheckerRepository {
 	return c.healthRepository
 }
 
+// GetQuranRepository returns the quran repository
+func (c *InfraContainer) GetQuranRepository() quran.QuranRepository {
+	return c.quranRepository
+}
+
 // GetHealthService returns the health service
 func (c *InfraContainer) GetHealthService() *health.Service {
 	// Create service with repository from infrastructure
 	return health.NewService(c.healthRepository)
+}
+
+// GetQuranService returns the quran service
+func (c *InfraContainer) GetQuranService() quran.QuranService {
+	// Create service with repository from infrastructure
+	return quran.NewQuranService(c.quranRepository)
 }
 
 // Close gracefully shuts down all connections
@@ -142,4 +156,5 @@ func (c *InfraContainer) initializeInfrastructure() {
 // initializeRepositories creates repository instances
 func (c *InfraContainer) initializeRepositories() {
 	c.healthRepository = healthInfra.NewCheckerRepository(c.database, c.redis)
+	c.quranRepository = quranInfra.NewQuranRepository(c.database.GetDB())
 }
