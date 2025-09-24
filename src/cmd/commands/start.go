@@ -1,19 +1,16 @@
 package commands
 
 import (
-	"fmt"
 	"log"
 
+	appContainer "github.com/achmdndy/safa-life-api/src/application/container"
 	"github.com/achmdndy/safa-life-api/src/cmd/core"
-	"github.com/achmdndy/safa-life-api/src/infrastructure/monitoring"
-	"github.com/achmdndy/safa-life-api/src/presentation/container"
-	"github.com/achmdndy/safa-life-api/src/presentation/routes"
-	"github.com/gin-gonic/gin"
+	"github.com/achmdndy/safa-life-api/src/domain/shared"
+	infraContainer "github.com/achmdndy/safa-life-api/src/infrastructure/container"
+	"github.com/achmdndy/safa-life-api/src/presentation/bootstrap"
+	"github.com/achmdndy/safa-life-api/src/presentation/di"
 	"github.com/spf13/cobra"
-	
-	// Swagger imports
-	"github.com/swaggo/files"
-	"github.com/swaggo/gin-swagger"
+
 	_ "github.com/achmdndy/safa-life-api/docs" // This will be generated
 )
 
@@ -40,64 +37,76 @@ var StartCmd = &cobra.Command{
 	},
 }
 
+// AppContainerFactoryWrapper wraps infrastructure factory to implement application ContainerFactory
+type AppContainerFactoryWrapper struct {
+	infraFactory shared.ContainerFactory
+}
+
+// CreateContainer implements the application ContainerFactory interface
+func (w *AppContainerFactoryWrapper) CreateContainer(dbConfig shared.DatabaseConfig, redisConfig shared.RedisConfig) shared.Container {
+	return w.infraFactory.CreateContainer(dbConfig, redisConfig)
+}
+
+// Ensure AppContainerFactoryWrapper implements appContainer.ContainerFactory
+var _ appContainer.ContainerFactory = (*AppContainerFactoryWrapper)(nil)
+
+
+
 func Start() {
-	fmt.Println("📦 Initializing dependencies...")
-
-	// Initialize Jaeger tracing
-	fmt.Println("🔍 Initializing Jaeger tracing...")
-	jaegerCleanup := monitoring.InitJaeger(monitoring.JaegerConfig{
-		ServiceName: core.Config.Monitoring.Jaeger.ServiceName,
-		Endpoint:    core.Config.Monitoring.Jaeger.Endpoint,
-	})
-	defer jaegerCleanup()
-
-	cont := container.NewPresentationContainer(
-		container.DatabaseConfig{
+	// Convert core.Config to bootstrap.Config
+	config := bootstrap.Config{
+		DB: struct {
+			Host     string
+			Port     int
+			User     string
+			Password string
+			Name     string
+			SSLMode  string
+			TimeZone string
+		}{
 			Host:     core.Config.DB.Host,
 			Port:     core.Config.DB.Port,
 			User:     core.Config.DB.User,
 			Password: core.Config.DB.Password,
-			DBName:   core.Config.DB.Name,
+			Name:     core.Config.DB.Name,
 			SSLMode:  core.Config.DB.SSLMode,
 			TimeZone: core.Config.DB.TimeZone,
 		},
-		container.RedisConfig{
+		Redis: struct {
+			Host     string
+			Port     int
+			Password string
+			DB       int
+		}{
 			Host:     core.Config.Redis.Host,
 			Port:     core.Config.Redis.Port,
 			Password: core.Config.Redis.Password,
 			DB:       core.Config.Redis.DB,
 		},
-	)
-	defer func() {
-		if err := cont.Close(); err != nil {
-			log.Printf("Error closing container: %v", err)
-		}
-	}()
+		Server: struct {
+			Host string
+			Port int
+		}{
+			Host: core.Config.Server.Host,
+			Port: core.Config.Port,
+		},
+	}
 
-	// Create router first
-	fmt.Println("🛣️  Creating router...")
-	router := gin.New()
-
-	// Setup monitoring middleware FIRST
-	fmt.Println("📊 Setting up monitoring...")
-	monitoringMiddleware := monitoring.NewMonitoringMiddleware()
-	monitoringMiddleware.Setup(router, "safa-life-api")
-
-	// Setup Swagger
-	fmt.Println("📚 Setting up Swagger documentation...")
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
-	// Setup routes AFTER monitoring middleware
-	fmt.Println("🛣️  Setting up routes...")
-	routes.SetupRoutesWithRouter(router, cont.RouteConfig)
-
-	// Start server
-	serverAddr := fmt.Sprintf("%s:%d", core.Config.Server.Host, core.Config.Port)
-	fmt.Printf("🌙 Safa Life API is running on %s\n", serverAddr)
-	fmt.Printf("📊 Prometheus metrics available at http://%s/metrics\n", serverAddr)
-	fmt.Printf("📚 Swagger documentation available at http://%s/swagger/index.html\n", serverAddr)
-
-	if err := router.Run(serverAddr); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+	// Proper Dependency Injection Chain: Infrastructure -> Application -> Presentation
+	
+	// Step 1: Create Infrastructure Factory (lowest layer)
+	infraFactory := infraContainer.NewInfraContainerFactory()
+	
+	// Step 2: Wrap Infrastructure Factory to implement Application ContainerFactory interface
+	appFactory := &AppContainerFactoryWrapper{
+		infraFactory: infraFactory,
+	}
+	
+	// Step 3: Create Presentation DI with Application Factory (Clean Architecture compliant)
+	presentationDI := di.NewPresentationDI(appFactory)
+	
+	// Step 4: Bootstrap with proper dependency injection chain
+	if err := presentationDI.Bootstrap(config); err != nil {
+		log.Fatalf("Failed to start application: %v", err)
 	}
 }
