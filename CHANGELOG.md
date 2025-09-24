@@ -1,6 +1,6 @@
 # 📜 Changelog
 All notable changes to this project will be documented in this file.
-## [0.0.1] - 2025-09-23
+## [0.0.1] - 2025-09-24
 [Compare changes](https://github.com/achmdndy/safa-life-api/compare/...v0.0.1)
 ---
 
@@ -11,12 +11,24 @@ All notable changes to this project will be documented in this file.
 - **github:** Add github workflow and configuration files
 ([`970a8eb…`](https://github.com/achmdndy/safa-life-api/commit/970a8eb0b20a215d38461d473e2f64e0433eb1a7)) _(by Achmad Andy Dekanovy)_ 
 
+- **github:** Add workflow and configuration files
+([`a23d712…`](https://github.com/achmdndy/safa-life-api/commit/a23d712f4d08b2b1a5c771be9819103ad429e934)) _(by Achmad Andy Dekanovy)_ 
+
+- **dependabot:** Update monitoring schedule from first-monday to monday
+([`972cabd…`](https://github.com/achmdndy/safa-life-api/commit/972cabd44ba7daaddee68e0bba2cf44325b1269a)) _(by Achmad Andy Dekanovy)_ 
+
+- **dependabot:** Simplify dependabot configuration
+([`c59a68b…`](https://github.com/achmdndy/safa-life-api/commit/c59a68b4ac6bb8ec294b4486cf88106a6abf813a)) _(by Achmad Andy Dekanovy)_ 
+
 
 
 ### ✨ Features
 
 - Initialize safa life api with health check and monitoring
 ([`7d38c92…`](https://github.com/achmdndy/safa-life-api/commit/7d38c920b1e4250c29438e1cb37032e6d8796045)) _(by Achmad Andy Dekanovy)_ 
+
+- **quran:** Implement quran module with CRUD operations
+([`b5d7708…`](https://github.com/achmdndy/safa-life-api/commit/b5d77082273b97c0bd7fc8fdb101dd4c1674c556)) _(by Achmad Andy Dekanovy)_ 
 
 
 
@@ -42,6 +54,14 @@ All notable changes to this project will be documented in this file.
 - Update changelog format and git-cliff configuration ([`a0c4d63…`](https://github.com/achmdndy/safa-life-api/commit/a0c4d63b5726621a90fba4b6cc1fd757cdac14b6))
 
 - Add github workflow and configuration files ([`970a8eb…`](https://github.com/achmdndy/safa-life-api/commit/970a8eb0b20a215d38461d473e2f64e0433eb1a7))
+
+- Add workflow and configuration files ([`a23d712…`](https://github.com/achmdndy/safa-life-api/commit/a23d712f4d08b2b1a5c771be9819103ad429e934))
+
+- Update monitoring schedule from first-monday to monday ([`972cabd…`](https://github.com/achmdndy/safa-life-api/commit/972cabd44ba7daaddee68e0bba2cf44325b1269a))
+
+- Simplify dependabot configuration ([`c59a68b…`](https://github.com/achmdndy/safa-life-api/commit/c59a68b4ac6bb8ec294b4486cf88106a6abf813a))
+
+- Implement quran module with CRUD operations ([`b5d7708…`](https://github.com/achmdndy/safa-life-api/commit/b5d77082273b97c0bd7fc8fdb101dd4c1674c556))
 
 
 
