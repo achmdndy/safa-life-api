@@ -76,6 +76,7 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.retention.time=200h'
       - '--web.enable-lifecycle'
+      - '--web.enable-remote-write-receiver'
     networks:
       - safa-network
     healthcheck:
@@ -145,10 +146,10 @@ services:
       - SAFA_APP_VERSION=1.0.0
       
       # Monitoring Configuration
-      - JAEGER_ENDPOINT=jaeger:4318
-      - OTEL_SERVICE_NAME=safa-life-api
-      - OTEL_SERVICE_VERSION=1.0.0
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=safa-life-api,service.version=1.0.0,deployment.environment=development
+      - SAFA_MONITORING_JAEGER_ENDPOINT=jaeger:4318
+      - SAFA_MONITORING_JAEGER_SERVICE_NAME=safa-life-api
+      - SAFA_MONITORING_JAEGER_SERVICE_VERSION=1.0.0
+      - SAFA_MONITORING_JAEGER_ENVIRONMENT=development
     volumes:
       - ./configs:/app/configs:ro
     networks:

@@ -45,7 +45,7 @@ func NewMonitoringMiddleware() *MonitoringMiddleware {
 func (m *MonitoringMiddleware) Setup(router *gin.Engine, serviceName string) {
 	// Add metrics endpoint
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
-	
+
 	// Add monitoring middleware
 	router.Use(m.MetricsMiddleware())
 }
@@ -54,12 +54,12 @@ func (m *MonitoringMiddleware) Setup(router *gin.Engine, serviceName string) {
 func (m *MonitoringMiddleware) MetricsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
-		
+
 		c.Next()
-		
+
 		duration := time.Since(start).Seconds()
 		status := string(rune(c.Writer.Status()))
-		
+
 		m.requestDuration.WithLabelValues(c.Request.Method, c.FullPath(), status).Observe(duration)
 		m.requestCounter.WithLabelValues(c.Request.Method, c.FullPath(), status).Inc()
 	}

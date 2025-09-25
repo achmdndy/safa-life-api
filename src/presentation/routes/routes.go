@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
 	"github.com/achmdndy/safa-life-api/src/presentation/core"
 	audioHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/audio"
@@ -30,16 +31,26 @@ type RouteConfig struct {
 	StoryHandler       *storyHandler.Handler
 	TafsirHandler      *tafsirHandler.Handler
 	TopicHandler       *topicHandler.Handler
+	MonitoringMiddleware *middlewares.MonitoringMiddleware
 }
 
 func SetupRoutes(config RouteConfig) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 
+	// Add OpenTelemetry middleware first for comprehensive tracing
+	router.Use(otelgin.Middleware("safa-life-api"))
+
+	// Setup monitoring middleware (includes metrics endpoint and middleware)
+	if config.MonitoringMiddleware != nil {
+		config.MonitoringMiddleware.Setup(router, "safa-life-api")
+	}
+
 	router.Use(middlewares.LoggingMiddleware())
 	router.Use(middlewares.RecoveryMiddleware())
 	router.Use(middlewares.CORSMiddleware())
 
+	// Set up the actual routes
 	v1 := router.Group("/api/v1")
 
 	SetupHealthRoutes(v1, config.HealthHandler)

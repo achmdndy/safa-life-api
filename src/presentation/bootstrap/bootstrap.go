@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/achmdndy/safa-life-api/src/presentation/container"
-	"github.com/achmdndy/safa-life-api/src/presentation/middlewares"
+	"github.com/achmdndy/safa-life-api/src/presentation/monitoring"
 	"github.com/achmdndy/safa-life-api/src/presentation/routes"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -32,12 +32,31 @@ type Config struct {
 		Host string
 		Port int
 	}
+	Tracing struct {
+		ServiceName string
+		Endpoint    string
+	}
 }
 
 // Bootstrap initializes and starts the application with proper dependency injection
-// This function now expects a properly injected containerFactory
-func Bootstrap(config Config, containerFactory *container.PresentationContainerFactory) error {
+// This function now expects a properly injected containerFactory, tracingProvider, and monitoringMiddleware
+func Bootstrap(config Config, containerFactory *container.PresentationContainerFactory, tracingProvider monitoring.TracingProvider) error {
 	fmt.Println("🚀 Starting application...")
+
+	// Initialize tracing if provider is provided
+	var tracingCleanup func()
+	if tracingProvider != nil && config.Tracing.ServiceName != "" {
+		fmt.Println("🔍 Initializing distributed tracing...")
+		cleanup, err := tracingProvider.Initialize(monitoring.TracingConfig{
+			ServiceName: config.Tracing.ServiceName,
+			Endpoint:    config.Tracing.Endpoint,
+		})
+		if err != nil {
+			log.Printf("Warning: Failed to initialize tracing: %v", err)
+		} else {
+			tracingCleanup = cleanup
+		}
+	}
 
 	// Create presentation container with injected factory
 	presentationContainer := container.NewPresentationContainer(
@@ -62,16 +81,15 @@ func Bootstrap(config Config, containerFactory *container.PresentationContainerF
 		if err := presentationContainer.Close(); err != nil {
 			log.Printf("Error closing container: %v", err)
 		}
+		// Cleanup tracing
+		if tracingCleanup != nil {
+			tracingCleanup()
+		}
 	}()
 
-	// Setup routes with complete router (includes middleware)
-	fmt.Println("🛣️  Setting up routes with middleware...")
+	// Setup routes with integrated monitoring and tracing
+	fmt.Println("🛣️  Setting up routes with integrated monitoring and tracing...")
 	router := routes.SetupRoutes(presentationContainer.RouteConfig)
-
-	// Setup monitoring middleware
-	fmt.Println("📊 Setting up monitoring...")
-	monitoringMiddleware := middlewares.NewMonitoringMiddleware()
-	monitoringMiddleware.Setup(router, "safa-life-api")
 
 	// Setup Swagger
 	fmt.Println("📚 Setting up Swagger documentation...")

@@ -12,6 +12,7 @@ import (
 	tajweedHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/tajweed"
 	topicHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/topic"
 	translationHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/translation"
+	"github.com/achmdndy/safa-life-api/src/presentation/middlewares"
 	"github.com/achmdndy/safa-life-api/src/presentation/routes"
 )
 
@@ -59,6 +60,9 @@ type PresentationContainer struct {
 	TafsirHandler      *tafsirHandler.Handler
 	TopicHandler       *topicHandler.Handler
 
+	// Middlewares (presentation layer specific)
+	MonitoringMiddleware *middlewares.MonitoringMiddleware
+
 	// Routes (presentation layer specific)
 	RouteConfig routes.RouteConfig
 }
@@ -92,6 +96,7 @@ func NewPresentationContainer(presentationFactory *PresentationContainerFactory,
 		appContainer: appContainer,
 	}
 	
+	presentationContainer.initializeMiddlewares()
 	presentationContainer.initializeHTTPHandlers()
 	presentationContainer.initializeRoutes()
 	
@@ -163,5 +168,11 @@ func (c *PresentationContainer) initializeRoutes() {
 		StoryHandler:       c.StoryHandler,
 		TafsirHandler:      c.TafsirHandler,
 		TopicHandler:       c.TopicHandler,
+		MonitoringMiddleware: c.MonitoringMiddleware,
 	}
+}
+
+// initializeMiddlewares initializes presentation layer middlewares
+func (c *PresentationContainer) initializeMiddlewares() {
+	c.MonitoringMiddleware = middlewares.NewMonitoringMiddleware()
 }

@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/achmdndy/safa-life-api/src/infrastructure/monitoring"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -46,6 +47,14 @@ func NewDatabase(config DatabaseConfig) (*Database, error) {
 	db, err := gorm.Open(postgres.Open(dsn), gormConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
+	}
+
+	// Add GORM tracing plugin for OpenTelemetry (fixed version)
+	tracingPlugin := monitoring.NewGormTracingPlugin()
+	if errTracing := db.Use(tracingPlugin); errTracing != nil {
+		log.Printf("⚠️  Failed to register GORM tracing plugin: %v", errTracing)
+	} else {
+		log.Println("✅ GORM tracing plugin registered successfully")
 	}
 
 	// Configure connection pool

@@ -4,6 +4,7 @@ import (
 	appContainer "github.com/achmdndy/safa-life-api/src/application/container"
 	"github.com/achmdndy/safa-life-api/src/presentation/bootstrap"
 	presentationContainer "github.com/achmdndy/safa-life-api/src/presentation/container"
+	"github.com/achmdndy/safa-life-api/src/presentation/monitoring"
 )
 
 // PresentationDI manages dependency injection for presentation layer
@@ -25,10 +26,10 @@ func (pdi *PresentationDI) CreatePresentationFactory() *presentationContainer.Pr
 }
 
 // Bootstrap starts the application with proper dependency injection
-func (pdi *PresentationDI) Bootstrap(config bootstrap.Config) error {
+func (pdi *PresentationDI) Bootstrap(config bootstrap.Config, tracingProvider monitoring.TracingProvider) error {
 	// Create the presentation factory with properly injected application factory
 	presentationFactory := pdi.CreatePresentationFactory()
-	
-	// Use the existing bootstrap function with the properly injected factory
-	return bootstrap.Bootstrap(config, presentationFactory)
+
+	// Use the existing bootstrap function with the properly injected factory and tracing provider
+	return bootstrap.Bootstrap(config, presentationFactory, tracingProvider)
 }
