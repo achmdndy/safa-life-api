@@ -1,6 +1,6 @@
 # 📜 Changelog
 All notable changes to this project will be documented in this file.
-## [0.0.1] - 2025-09-24
+## [0.0.1] - 2025-09-25
 [Compare changes](https://github.com/achmdndy/safa-life-api/compare/...v0.0.1)
 ---
 
@@ -36,6 +36,9 @@ All notable changes to this project will be documented in this file.
 - **health:** Add health check endpoints and handlers
 ([`18e7000…`](https://github.com/achmdndy/safa-life-api/commit/18e7000f99f590d23c326f54fdc72cdb4fd551e0)) _(by Achmad Andy Dekanovy)_ 
 
+- **monitoring:** Add distributed tracing and performance monitoring
+([`d7ffd73…`](https://github.com/achmdndy/safa-life-api/commit/d7ffd7313cd3c16f236047f0dac278fbc662c315)) _(by Achmad Andy Dekanovy)_ 
+
 
 
 ### 📖 Documentation
@@ -51,6 +54,9 @@ All notable changes to this project will be documented in this file.
 
 - Update changelog with recent changes
 ([`c5f28aa…`](https://github.com/achmdndy/safa-life-api/commit/c5f28aa6e4e8deef5105eb7a987a010472e2ca77)) _(by Achmad Andy Dekanovy)_ 
+
+- Update changelog with recent changes
+([`21f7e19…`](https://github.com/achmdndy/safa-life-api/commit/21f7e199d7d38dce55c61eb2ed658a1668488c9d)) _(by Achmad Andy Dekanovy)_ 
 
 
 
@@ -82,6 +88,10 @@ All notable changes to this project will be documented in this file.
 - Update changelog with recent changes ([`c5f28aa…`](https://github.com/achmdndy/safa-life-api/commit/c5f28aa6e4e8deef5105eb7a987a010472e2ca77))
 
 - Add health check endpoints and handlers ([`18e7000…`](https://github.com/achmdndy/safa-life-api/commit/18e7000f99f590d23c326f54fdc72cdb4fd551e0))
+
+- Update changelog with recent changes ([`21f7e19…`](https://github.com/achmdndy/safa-life-api/commit/21f7e199d7d38dce55c61eb2ed658a1668488c9d))
+
+- Add distributed tracing and performance monitoring ([`d7ffd73…`](https://github.com/achmdndy/safa-life-api/commit/d7ffd7313cd3c16f236047f0dac278fbc662c315))
 
 
 
