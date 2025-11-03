@@ -22,38 +22,14 @@ package commands
 // @name Authorization
 // @description Enter the token with the `Bearer: ` prefix, e.g. "Bearer abcde12345"
 
-// @tag.name Health
-// @tag.description Health check endpoints for monitoring system status and dependencies
+// @tag.name Surahs
+// @tag.description Surah management operations including creation, retrieval, updates, and deletion of Quran chapters
 
-// @tag.name Authentication
-// @tag.description User authentication and authorization endpoints including login, register, and password management
+// @tag.name Ayahs
+// @tag.description Ayah (verse) management operations including CRUD operations and retrieval by Surah or Juz
 
-// @tag.name Users
-// @tag.description User management and profile operations including CRUD, activation, verification, and user lookup
-
-// @tag.name Roles
-// @tag.description Role management operations including creation, updates, activation, and role-based queries
-
-// @tag.name Devices
-// @tag.description User device management for tracking user sessions and device tokens
-
-// @tag.name Statistics
-// @tag.description Statistical endpoints for users, roles, and devices including counts and analytics
-
-// @tag.name Organization Units
-// @tag.description Organization unit management including companies, areas, and locations with full CRUD operations
-
-// @tag.name Medias
-// @tag.description Media file management including file uploads, variants, and file operations
-
-// @tag.name Activities
-// @tag.description User activity management including app activities, user activities, maps, track points, segments, comments, and kudos.
-
-// @tag.name Competitions
-// @tag.description Competition management and participation tracking
-
-// @tag.name Milestones
-// @tag.description Milestone management including creation, updates, deletion, and milestone tracking for users
+// @tag.name Juz
+// @tag.description Juz (Para) management operations including creation, retrieval, updates, and deletion of Quran sections
 
 // @externalDocs.description Safalife API Documentation
 // @externalDocs.url https://docs.safalife.com/api

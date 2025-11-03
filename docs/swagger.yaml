@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   core.ErrorDetail:
     properties:
@@ -599,8 +600,26 @@ definitions:
         example: "2024-01-01T00:00:00Z"
         type: string
     type: object
+externalDocs:
+  description: Safalife API Documentation
+  url: https://docs.safalife.com/api
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    email: api-support@safalife.com
+    name: Safalife API Support Team
+    url: http://www.safalife.com/support
+  description: Safalife API is a comprehensive backend service for Safalife's competition
+    management system. This API provides endpoints for health monitoring, user management,
+    competition tracking, and administrative functions. Built with Go using Clean
+    Architecture principles, it offers high performance and reliability for managing
+    large-scale competitions.
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Safalife API
+  version: 1.0.0
 paths:
   /api/v1/quran/ayahs:
     post:
@@ -631,7 +650,7 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Create a new ayah
       tags:
-      - Ayah
+      - Ayahs
   /api/v1/quran/ayahs/{id}:
     delete:
       consumes:
@@ -664,7 +683,7 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Delete an ayah
       tags:
-      - Ayah
+      - Ayahs
     get:
       consumes:
       - application/json
@@ -703,7 +722,7 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Get ayah by ID
       tags:
-      - Ayah
+      - Ayahs
     put:
       consumes:
       - application/json
@@ -741,7 +760,7 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Update an ayah
       tags:
-      - Ayah
+      - Ayahs
   /api/v1/quran/juz:
     get:
       consumes:
@@ -960,7 +979,7 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Get ayahs by juz
       tags:
-      - Ayah
+      - Ayahs
   /api/v1/quran/juz/number/{number}:
     get:
       consumes:
@@ -1041,7 +1060,7 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Get all surahs
       tags:
-      - Surah
+      - Surahs
     post:
       consumes:
       - application/json
@@ -1070,7 +1089,7 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Create a new surah
       tags:
-      - Surah
+      - Surahs
   /api/v1/quran/surahs/{id}:
     delete:
       consumes:
@@ -1103,7 +1122,7 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Delete a surah
       tags:
-      - Surah
+      - Surahs
     get:
       consumes:
       - application/json
@@ -1142,7 +1161,7 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Get surah by ID
       tags:
-      - Surah
+      - Surahs
     put:
       consumes:
       - application/json
@@ -1180,7 +1199,7 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Update a surah
       tags:
-      - Surah
+      - Surahs
   /api/v1/quran/surahs/{surahId}/ayahs:
     get:
       consumes:
@@ -1226,7 +1245,7 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Get ayahs by surah
       tags:
-      - Ayah
+      - Ayahs
   /api/v1/quran/surahs/number/{number}:
     get:
       consumes:
@@ -1266,5 +1285,26 @@ paths:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Get surah by number
       tags:
-      - Surah
+      - Surahs
+schemes:
+- http
+- https
+securityDefinitions:
+  ApiKeyAuth:
+    description: 'Enter the token with the `Bearer: ` prefix, e.g. "Bearer abcde12345"'
+    in: header
+    name: Authorization
+    type: apiKey
+  BasicAuth:
+    type: basic
 swagger: "2.0"
+tags:
+- description: Surah management operations including creation, retrieval, updates,
+    and deletion of Quran chapters
+  name: Surahs
+- description: Ayah (verse) management operations including CRUD operations and retrieval
+    by Surah or Juz
+  name: Ayahs
+- description: Juz (Para) management operations including creation, retrieval, updates,
+    and deletion of Quran sections
+  name: Juz

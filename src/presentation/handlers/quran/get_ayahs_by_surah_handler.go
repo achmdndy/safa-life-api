@@ -26,7 +26,7 @@ func NewGetAyahsBySurahHandler(queryHandler *query.QueryHandler) *GetAyahsBySura
 // Handle processes the get ayahs by surah request
 // @Summary Get ayahs by surah
 // @Description Get all ayahs from a specific surah with pagination
-// @Tags Ayah
+// @Tags Ayahs
 // @Accept json
 // @Produce json
 // @Param surahId path string true "Surah ID"

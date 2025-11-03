@@ -26,7 +26,7 @@ func NewGetAyahsByJuzHandler(queryHandler *query.QueryHandler) *GetAyahsByJuzHan
 // Handle processes the get ayahs by juz request
 // @Summary Get ayahs by juz
 // @Description Get all ayahs from a specific juz with pagination
-// @Tags Ayah
+// @Tags Ayahs
 // @Accept json
 // @Produce json
 // @Param juzNumber path int true "Juz Number"

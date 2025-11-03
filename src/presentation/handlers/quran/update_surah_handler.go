@@ -26,7 +26,7 @@ func NewUpdateSurahHandler(commandHandler *command.CommandHandler) *UpdateSurahH
 // Handle processes the update surah request
 // @Summary Update a surah
 // @Description Update an existing surah in the Quran
-// @Tags Surah
+// @Tags Surahs
 // @Accept json
 // @Produce json
 // @Param id path string true "Surah ID"

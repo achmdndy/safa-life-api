@@ -26,7 +26,7 @@ func NewUpdateAyahHandler(commandHandler *command.CommandHandler) *UpdateAyahHan
 // Handle processes the update ayah request
 // @Summary Update an ayah
 // @Description Update an existing ayah in the Quran
-// @Tags Ayah
+// @Tags Ayahs
 // @Accept json
 // @Produce json
 // @Param id path string true "Ayah ID"

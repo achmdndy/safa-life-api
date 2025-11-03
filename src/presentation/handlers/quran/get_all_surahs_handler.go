@@ -26,7 +26,7 @@ func NewGetAllSurahsHandler(queryHandler *query.QueryHandler) *GetAllSurahsHandl
 // Handle processes the get all surahs request
 // @Summary Get all surahs
 // @Description Get all surahs from the Quran with pagination
-// @Tags Surah
+// @Tags Surahs
 // @Accept json
 // @Produce json
 // @Param limit query int false "Limit" default(10)

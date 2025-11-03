@@ -26,7 +26,7 @@ func NewDeleteSurahHandler(commandHandler *command.CommandHandler) *DeleteSurahH
 // Handle processes the delete surah request
 // @Summary Delete a surah
 // @Description Delete an existing surah from the Quran
-// @Tags Surah
+// @Tags Surahs
 // @Accept json
 // @Produce json
 // @Param id path string true "Surah ID"

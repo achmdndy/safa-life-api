@@ -26,7 +26,7 @@ func NewDeleteAyahHandler(commandHandler *command.CommandHandler) *DeleteAyahHan
 // Handle processes the delete ayah request
 // @Summary Delete an ayah
 // @Description Delete an existing ayah from the Quran
-// @Tags Ayah
+// @Tags Ayahs
 // @Accept json
 // @Produce json
 // @Param id path string true "Ayah ID"

@@ -26,7 +26,7 @@ func NewGetAyahByIdHandler(queryHandler *query.QueryHandler) *GetAyahByIdHandler
 // Handle processes the get ayah by ID request
 // @Summary Get ayah by ID
 // @Description Get an ayah by its ID from the Quran
-// @Tags Ayah
+// @Tags Ayahs
 // @Accept json
 // @Produce json
 // @Param id path string true "Ayah ID"

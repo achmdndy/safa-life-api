@@ -26,7 +26,7 @@ func NewCreateSurahHandler(commandHandler *command.CommandHandler) *CreateSurahH
 // Handle processes the create surah request
 // @Summary Create a new surah
 // @Description Create a new surah in the Quran
-// @Tags Surah
+// @Tags Surahs
 // @Accept json
 // @Produce json
 // @Param request body dto.CreateSurahRequest true "Create surah request"

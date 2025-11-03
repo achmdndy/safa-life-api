@@ -26,7 +26,7 @@ func NewCreateAyahHandler(commandHandler *command.CommandHandler) *CreateAyahHan
 // Handle processes the create ayah request
 // @Summary Create a new ayah
 // @Description Create a new ayah in the Quran
-// @Tags Ayah
+// @Tags Ayahs
 // @Accept json
 // @Produce json
 // @Param request body dto.CreateAyahRequest true "Create ayah request"

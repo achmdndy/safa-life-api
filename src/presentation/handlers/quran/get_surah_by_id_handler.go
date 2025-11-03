@@ -26,7 +26,7 @@ func NewGetSurahByIdHandler(queryHandler *query.QueryHandler) *GetSurahByIdHandl
 // Handle processes the get surah by ID request
 // @Summary Get surah by ID
 // @Description Get a surah by its ID from the Quran
-// @Tags Surah
+// @Tags Surahs
 // @Accept json
 // @Produce json
 // @Param id path string true "Surah ID"

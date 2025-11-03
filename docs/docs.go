@@ -9,7 +9,16 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Safalife API Support Team",
+            "url": "http://www.safalife.com/support",
+            "email": "api-support@safalife.com"
+        },
+        "license": {
+            "name": "MIT License",
+            "url": "https://opensource.org/licenses/MIT"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -25,7 +34,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Ayah"
+                    "Ayahs"
                 ],
                 "summary": "Create a new ayah",
                 "parameters": [
@@ -71,7 +80,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Ayah"
+                    "Ayahs"
                 ],
                 "summary": "Get ayah by ID",
                 "parameters": [
@@ -129,7 +138,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Ayah"
+                    "Ayahs"
                 ],
                 "summary": "Update an ayah",
                 "parameters": [
@@ -186,7 +195,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Ayah"
+                    "Ayahs"
                 ],
                 "summary": "Delete an ayah",
                 "parameters": [
@@ -566,7 +575,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Ayah"
+                    "Ayahs"
                 ],
                 "summary": "Get ayahs by juz",
                 "parameters": [
@@ -624,7 +633,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Surah"
+                    "Surahs"
                 ],
                 "summary": "Get all surahs",
                 "parameters": [
@@ -683,7 +692,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Surah"
+                    "Surahs"
                 ],
                 "summary": "Create a new surah",
                 "parameters": [
@@ -729,7 +738,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Surah"
+                    "Surahs"
                 ],
                 "summary": "Get surah by number",
                 "parameters": [
@@ -789,7 +798,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Surah"
+                    "Surahs"
                 ],
                 "summary": "Get surah by ID",
                 "parameters": [
@@ -847,7 +856,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Surah"
+                    "Surahs"
                 ],
                 "summary": "Update a surah",
                 "parameters": [
@@ -904,7 +913,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Surah"
+                    "Surahs"
                 ],
                 "summary": "Delete a surah",
                 "parameters": [
@@ -954,7 +963,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Ayah"
+                    "Ayahs"
                 ],
                 "summary": "Get ayahs by surah",
                 "parameters": [
@@ -1850,17 +1859,46 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "description": "Enter the token with the ` + "`" + `Bearer: ` + "`" + ` prefix, e.g. \"Bearer abcde12345\"",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        },
+        "BasicAuth": {
+            "type": "basic"
+        }
+    },
+    "tags": [
+        {
+            "description": "Surah management operations including creation, retrieval, updates, and deletion of Quran chapters",
+            "name": "Surahs"
+        },
+        {
+            "description": "Ayah (verse) management operations including CRUD operations and retrieval by Surah or Juz",
+            "name": "Ayahs"
+        },
+        {
+            "description": "Juz (Para) management operations including creation, retrieval, updates, and deletion of Quran sections",
+            "name": "Juz"
+        }
+    ],
+    "externalDocs": {
+        "description": "Safalife API Documentation",
+        "url": "https://docs.safalife.com/api"
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Version:          "1.0.0",
+	Host:             "localhost:8080",
+	BasePath:         "/api/v1",
+	Schemes:          []string{"http", "https"},
+	Title:            "Safalife API",
+	Description:      "Safalife API is a comprehensive backend service for Safalife's competition management system. This API provides endpoints for health monitoring, user management, competition tracking, and administrative functions. Built with Go using Clean Architecture principles, it offers high performance and reliability for managing large-scale competitions.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
