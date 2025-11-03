@@ -2,53 +2,64 @@ package quran
 
 import (
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
-	"github.com/achmdndy/safa-life-api/src/application/quran/command"
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
 	"github.com/gin-gonic/gin"
+
+	"github.com/safalife/core-api/src/application/quran/command"
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/presentation/core"
 )
 
-// DeleteAyah handles DELETE /ayahs/:surahId/:ayahId
+// DeleteAyahHandler handles the delete ayah request
+type DeleteAyahHandler struct {
+	commandHandler *command.CommandHandler
+}
+
+// NewDeleteAyahHandler creates a new delete ayah handler
+func NewDeleteAyahHandler(commandHandler *command.CommandHandler) *DeleteAyahHandler {
+	return &DeleteAyahHandler{
+		commandHandler: commandHandler,
+	}
+}
+
+// Handle processes the delete ayah request
 // @Summary Delete an ayah
-// @Description Delete an existing ayah (verse) from the Quran
+// @Description Delete an existing ayah from the Quran
 // @Tags Ayah
 // @Accept json
 // @Produce json
-// @Param surahId path int true "Surah ID"
-// @Param ayahId path int true "Ayah ID"
-// @Success 200 {object} core.SuccessResponse "Ayah deleted successfully"
-// @Failure 400 {object} core.ErrorResponse "Invalid surah ID or ayah ID"
-// @Failure 404 {object} core.ErrorResponse "Ayah not found"
-// @Failure 500 {object} core.ErrorResponse "Failed to delete ayah"
-// @Router /ayahs/{surahId}/{ayahId} [delete]
-func (h *Handler) DeleteAyah(c *gin.Context) {
+// @Param id path string true "Ayah ID"
+// @Success 200 {object} DeleteAyahSuccessResponse "Ayah deleted successfully"
+// @Failure 400 {object} QuranErrorResponse "Bad request"
+// @Failure 404 {object} QuranErrorResponse "Ayah not found"
+// @Failure 500 {object} QuranErrorResponse "Internal server error"
+// @Router /api/v1/quran/ayahs/{id} [delete]
+func (h *DeleteAyahHandler) Handle(c *gin.Context) {
 	start := time.Now()
+	ctx := c.Request.Context()
 
-	surahID, err := strconv.Atoi(c.Param("surahId"))
-	if err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid surah ID", &core.ErrorDetail{Reason: err.Error()}, start)
-		return
-	}
-
-	ayahID, err := strconv.Atoi(c.Param("ayahId"))
-	if err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid ayah ID", &core.ErrorDetail{Reason: err.Error()}, start)
-		return
-	}
-
-	cmd := command.DeleteAyahCommand{SurahID: surahID, AyahID: ayahID}
-	err = h.commandHandler.DeleteAyah(c.Request.Context(), cmd)
-	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
-			core.Error(c, http.StatusNotFound, "Ayah not found", &core.ErrorDetail{Reason: err.Error()}, start)
-			return
+	var req dto.DeleteAyahRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
 		}
-		core.Error(c, http.StatusInternalServerError, "Failed to delete ayah", &core.ErrorDetail{Reason: err.Error()}, start)
+		core.Error(c, http.StatusBadRequest, "Invalid ayah ID", errorDetail, start)
 		return
 	}
 
-	core.Success(c, http.StatusOK, "Ayah deleted successfully", core.EmptyData{}, start)
+	cmd := command.DeleteAyahCommand{
+		ID: req.ID,
+	}
+
+	err := h.commandHandler.DeleteAyah(ctx, cmd)
+	if err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusInternalServerError, "Failed to delete ayah", errorDetail, start)
+		return
+	}
+
+	core.Success(c, http.StatusOK, "Ayah deleted successfully", map[string]interface{}{}, start)
 }

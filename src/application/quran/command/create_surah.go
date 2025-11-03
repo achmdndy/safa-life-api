@@ -2,50 +2,43 @@ package command
 
 import (
 	"context"
-	"fmt"
-	"github.com/achmdndy/safa-life-api/src/domain/quran"
+
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/domain/quran"
 )
 
-// CreateSurahCommand represents the command to create a new surah
 type CreateSurahCommand struct {
 	NameArabic      string
 	NameEnglish     string
 	RevelationPlace string
 	RevelationOrder int
 	AyahCount       int
+	CreatedBy       string
 }
 
-// CreateSurah creates a new surah
-func (h *CommandHandler) CreateSurah(ctx context.Context, cmd CreateSurahCommand) (*quran.Surah, error) {
-	// Validate revelation place
-	if cmd.RevelationPlace != "Mecca" && cmd.RevelationPlace != "Medina" {
-		return nil, fmt.Errorf("invalid revelation place: %s", cmd.RevelationPlace)
-	}
+func (h *CommandHandler) CreateSurah(ctx context.Context, command CreateSurahCommand) (*dto.SurahResponse, error) {
+	id := h.uuidGenerator.New()
 
-	// Validate revelation order (1-114)
-	if cmd.RevelationOrder < 1 || cmd.RevelationOrder > 114 {
-		return nil, fmt.Errorf("invalid revelation order: %d", cmd.RevelationOrder)
-	}
+	surah := quran.NewSurah(
+		id,
+		command.NameArabic,
+		command.NameEnglish,
+		command.RevelationPlace,
+		command.RevelationOrder,
+		command.AyahCount,
+		command.CreatedBy,
+	)
 
-	// Validate ayah count
-	if cmd.AyahCount < 1 {
-		return nil, fmt.Errorf("invalid ayah count: %d", cmd.AyahCount)
-	}
-
-	surah := &quran.Surah{
-		NameArabic:      cmd.NameArabic,
-		NameEnglish:     cmd.NameEnglish,
-		RevelationPlace: cmd.RevelationPlace,
-		RevelationOrder: cmd.RevelationOrder,
-		AyahCount:       cmd.AyahCount,
-	}
-
-	var result *quran.Surah
-	err := h.txManager.WithTransaction(ctx, func(ctx context.Context) error {
+	var createdSurah *quran.Surah
+	err := h.transactionMgr.WithTransaction(ctx, func(ctx context.Context) error {
 		var err error
-		result, err = h.quranService.CreateSurah(ctx, surah)
+		createdSurah, err = h.surahService.CreateSurah(ctx, surah)
 		return err
 	})
 
-	return result, err
+	if err != nil {
+		return nil, err
+	}
+
+	return dto.ToSurahResponse(createdSurah), nil
 }

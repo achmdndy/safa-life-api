@@ -2,54 +2,81 @@ package quran
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/achmdndy/safa-life-api/src/application/quran/query"
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
+
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/application/quran/query"
+	"github.com/safalife/core-api/src/presentation/core"
 )
 
-// GetAyahsBySurah handles GET /surahs/:id/ayahs
+// GetAyahsBySurahHandler handles the get ayahs by surah request
+type GetAyahsBySurahHandler struct {
+	queryHandler *query.QueryHandler
+}
+
+// NewGetAyahsBySurahHandler creates a new get ayahs by surah handler
+func NewGetAyahsBySurahHandler(queryHandler *query.QueryHandler) *GetAyahsBySurahHandler {
+	return &GetAyahsBySurahHandler{
+		queryHandler: queryHandler,
+	}
+}
+
+// Handle processes the get ayahs by surah request
 // @Summary Get ayahs by surah
-// @Description Get all ayahs (verses) from a specific surah (chapter) with pagination
+// @Description Get all ayahs from a specific surah with pagination
 // @Tags Ayah
 // @Accept json
 // @Produce json
-// @Param id path int true "Surah ID"
-// @Param page query int false "Page number (default: 1)"
-// @Param limit query int false "Number of items per page (default: 10)"
-// @Success 200 {object} core.SuccessResponse "Ayahs retrieved successfully"
-// @Failure 400 {object} core.ErrorResponse "Invalid surah ID or pagination parameters"
-// @Failure 500 {object} core.ErrorResponse "Failed to get ayahs"
-// @Router /surahs/{id}/ayahs [get]
-func (h *Handler) GetAyahsBySurah(c *gin.Context) {
+// @Param surahId path string true "Surah ID"
+// @Param limit query int false "Limit" default(10)
+// @Param offset query int false "Offset" default(0)
+// @Param include query string false "Include related data" Enums(surah) example(surah)
+// @Success 200 {object} GetAyahsBySurahSuccessResponse "Ayahs retrieved successfully"
+// @Failure 400 {object} QuranErrorResponse "Bad request"
+// @Failure 500 {object} QuranErrorResponse "Internal server error"
+// @Router /api/v1/quran/surahs/{surahId}/ayahs [get]
+func (h *GetAyahsBySurahHandler) Handle(c *gin.Context) {
 	start := time.Now()
-	
-	surahID, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid surah ID", &core.ErrorDetail{Reason: err.Error()}, start)
+	ctx := c.Request.Context()
+
+	var req dto.GetAyahsBySurahIdRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusBadRequest, "Invalid surah ID", errorDetail, start)
 		return
 	}
 
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
-
-	queryReq := query.GetAyahsBySurahQuery{
-		SurahID: surahID,
-		Page:    page,
-		Limit:   limit,
-	}
-
-	result, err := h.queryHandler.GetAyahsBySurah(c.Request.Context(), queryReq)
-	if err != nil {
-		core.Error(c, http.StatusInternalServerError, "Failed to get ayahs", &core.ErrorDetail{Reason: err.Error()}, start)
+	if err := c.ShouldBindQuery(&req); err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusBadRequest, "Invalid query parameters", errorDetail, start)
 		return
 	}
 
-	if result != nil {
-		core.Success(c, http.StatusOK, "Ayahs retrieved successfully", result, start)
-	} else {
-		core.Success(c, http.StatusOK, "Ayahs retrieved successfully", core.EmptyData{}, start)
+	// Set default values if not provided
+	if req.Limit == 0 {
+		req.Limit = 10
 	}
+
+	qry := query.GetAyahsBySurahQuery{
+		SurahID: req.SurahID,
+		Limit:   req.Limit,
+		Offset:  req.Offset,
+	}
+
+	result, err := h.queryHandler.GetAyahsBySurah(ctx, qry)
+	if err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusInternalServerError, "Failed to get ayahs", errorDetail, start)
+		return
+	}
+
+	core.Success(c, http.StatusOK, "Ayahs retrieved successfully", result, start)
 }

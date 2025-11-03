@@ -2,287 +2,201 @@ package quran
 
 import (
 	"context"
-	"fmt"
+
+	"github.com/safalife/core-api/src/domain/core"
 )
 
-// quranService implements the QuranService interface
-type quranService struct {
-	repo QuranRepository
+// SurahService implements SurahServiceInterface.
+type SurahService struct {
+	surahRepo SurahRepositoryInterface
 }
 
-// NewQuranService creates a new instance of QuranService
-func NewQuranService(repo QuranRepository) QuranService {
-	return &quranService{
-		repo: repo,
+// NewSurahService creates a new SurahService instance.
+func NewSurahService(surahRepo SurahRepositoryInterface) SurahServiceInterface {
+	return &SurahService{
+		surahRepo: surahRepo,
 	}
 }
 
-// Surah operations
-func (s *quranService) GetAllSurahs(ctx context.Context) ([]Surah, error) {
-	return s.repo.GetAllSurahs(ctx)
+func (s *SurahService) GetSurahById(ctx context.Context, id core.UUID) (*Surah, error) {
+	return s.surahRepo.GetById(ctx, id)
 }
 
-func (s *quranService) GetSurahByID(ctx context.Context, id int) (*Surah, error) {
-	if id <= 0 || id > 114 {
-		return nil, fmt.Errorf("invalid surah ID: %d, must be between 1 and 114", id)
-	}
-	return s.repo.GetSurahByID(ctx, id)
+func (s *SurahService) GetSurahByNumber(ctx context.Context, number int) (*Surah, error) {
+	return s.surahRepo.GetByNumber(ctx, number)
 }
 
-func (s *quranService) GetSurahWithAyahs(ctx context.Context, id int) (*SurahWithAyahs, error) {
-	surah, err := s.GetSurahByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	
-	ayahs, err := s.repo.GetAyahsBySurah(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	
-	return &SurahWithAyahs{
-		Surah: *surah,
-		Ayahs: ayahs,
-	}, nil
+func (s *SurahService) GetAllSurahs(ctx context.Context, limit, offset int) ([]*Surah, error) {
+	return s.surahRepo.GetAll(ctx, limit, offset)
 }
 
-// Ayah operations
-func (s *quranService) GetAyahsBySurah(ctx context.Context, surahID int) ([]Ayah, error) {
-	if surahID <= 0 || surahID > 114 {
-		return nil, fmt.Errorf("invalid surah ID: %d, must be between 1 and 114", surahID)
-	}
-	return s.repo.GetAyahsBySurah(ctx, surahID)
+func (s *SurahService) GetSurahsByRevelationPlace(ctx context.Context, place string, limit, offset int) ([]*Surah, error) {
+	return s.surahRepo.GetByRevelationPlace(ctx, place, limit, offset)
 }
 
-func (s *quranService) GetAyahByID(ctx context.Context, surahID, ayahID int) (*Ayah, error) {
-	if surahID <= 0 || surahID > 114 {
-		return nil, fmt.Errorf("invalid surah ID: %d, must be between 1 and 114", surahID)
-	}
-	if ayahID <= 0 {
-		return nil, fmt.Errorf("invalid ayah ID: %d, must be greater than 0", ayahID)
-	}
-	return s.repo.GetAyahByID(ctx, surahID, ayahID)
+func (s *SurahService) CreateSurah(ctx context.Context, surah *Surah) (*Surah, error) {
+	return s.surahRepo.Create(ctx, surah)
 }
 
-func (s *quranService) GetAyahsByPage(ctx context.Context, pageNumber int) ([]Ayah, error) {
-	if pageNumber <= 0 || pageNumber > 604 {
-		return nil, fmt.Errorf("invalid page number: %d, must be between 1 and 604", pageNumber)
-	}
-	return s.repo.GetAyahsByPage(ctx, pageNumber)
+func (s *SurahService) UpdateSurah(ctx context.Context, surah *Surah) (*Surah, error) {
+	return s.surahRepo.Update(ctx, surah)
 }
 
-func (s *quranService) GetAyahsByJuz(ctx context.Context, juzNumber int) ([]Ayah, error) {
-	if juzNumber <= 0 || juzNumber > 30 {
-		return nil, fmt.Errorf("invalid juz number: %d, must be between 1 and 30", juzNumber)
-	}
-	return s.repo.GetAyahsByJuz(ctx, juzNumber)
+func (s *SurahService) DeleteSurah(ctx context.Context, id core.UUID) error {
+	return s.surahRepo.Delete(ctx, id)
 }
 
-// Juz operations
-func (s *quranService) GetAllJuz(ctx context.Context) ([]Juz, error) {
-	return s.repo.GetAllJuz(ctx)
+func (s *SurahService) CountSurahs(ctx context.Context) (int64, error) {
+	return s.surahRepo.Count(ctx)
 }
 
-func (s *quranService) GetJuzByID(ctx context.Context, id int) (*Juz, error) {
-	if id <= 0 || id > 30 {
-		return nil, fmt.Errorf("invalid juz ID: %d, must be between 1 and 30", id)
-	}
-	return s.repo.GetJuzByID(ctx, id)
+func (s *SurahService) CountSurahsByRevelationPlace(ctx context.Context, place string) (int64, error) {
+	return s.surahRepo.CountByRevelationPlace(ctx, place)
 }
 
-func (s *quranService) GetJuzWithContent(ctx context.Context, id int) (*JuzWithContent, error) {
-	juz, err := s.GetJuzByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	
-	// Get start and end surah names
-	startSurah, err := s.repo.GetSurahByID(ctx, juz.StartSurah)
-	if err != nil {
-		return nil, err
-	}
-	
-	endSurah, err := s.repo.GetSurahByID(ctx, juz.EndSurah)
-	if err != nil {
-		return nil, err
-	}
-	
-	// Get ayahs in this juz to count total
-	ayahs, err := s.repo.GetAyahsByRange(ctx, juz.StartSurah, juz.StartAyah, juz.EndSurah, juz.EndAyah)
-	if err != nil {
-		return nil, err
-	}
-	
-	return &JuzWithContent{
-		Juz:            *juz,
-		StartSurahName: startSurah.NameEnglish,
-		EndSurahName:   endSurah.NameEnglish,
-		TotalAyahs:     len(ayahs),
-	}, nil
+// Eager loading methods
+func (s *SurahService) GetSurahByIdWithAyahs(ctx context.Context, id core.UUID) (*SurahWithAyahs, error) {
+	return s.surahRepo.GetByIdWithAyahs(ctx, id)
 }
 
-// Search operations
-func (s *quranService) SearchAyahs(ctx context.Context, query string) ([]Ayah, error) {
-	if query == "" {
-		return nil, fmt.Errorf("search query cannot be empty")
-	}
-	return s.repo.SearchAyahs(ctx, query)
+func (s *SurahService) GetSurahByNumberWithAyahs(ctx context.Context, number int) (*SurahWithAyahs, error) {
+	return s.surahRepo.GetByNumberWithAyahs(ctx, number)
 }
 
-func (s *quranService) SearchSurahs(ctx context.Context, query string) ([]Surah, error) {
-	if query == "" {
-		return nil, fmt.Errorf("search query cannot be empty")
-	}
-	return s.repo.SearchSurahs(ctx, query)
+func (s *SurahService) GetAllSurahsWithAyahs(ctx context.Context, limit, offset int) ([]*SurahWithAyahs, error) {
+	return s.surahRepo.GetAllWithAyahs(ctx, limit, offset)
 }
 
-// Write operations for Surah
-func (s *quranService) CreateSurah(ctx context.Context, surah *Surah) (*Surah, error) {
-	if surah.ID < 1 || surah.ID > 114 {
-		return nil, fmt.Errorf("invalid surah ID: %d", surah.ID)
-	}
-
-	if surah.NameEnglish == "" {
-		return nil, fmt.Errorf("surah english name cannot be empty")
-	}
-
-	if surah.NameArabic == "" {
-		return nil, fmt.Errorf("surah arabic name cannot be empty")
-	}
-
-	if surah.AyahCount < 1 {
-		return nil, fmt.Errorf("ayah count must be greater than 0")
-	}
-
-	return s.repo.CreateSurah(ctx, surah)
+// AyahService implements AyahServiceInterface.
+type AyahService struct {
+	ayahRepo AyahRepositoryInterface
 }
 
-func (s *quranService) UpdateSurah(ctx context.Context, surah *Surah) (*Surah, error) {
-	if surah.ID < 1 || surah.ID > 114 {
-		return nil, fmt.Errorf("invalid surah ID: %d", surah.ID)
+// NewAyahService creates a new AyahService instance.
+func NewAyahService(ayahRepo AyahRepositoryInterface) AyahServiceInterface {
+	return &AyahService{
+		ayahRepo: ayahRepo,
 	}
-
-	if surah.NameEnglish == "" {
-		return nil, fmt.Errorf("surah english name cannot be empty")
-	}
-
-	if surah.NameArabic == "" {
-		return nil, fmt.Errorf("surah arabic name cannot be empty")
-	}
-
-	if surah.AyahCount < 1 {
-		return nil, fmt.Errorf("ayah count must be greater than 0")
-	}
-
-	return s.repo.UpdateSurah(ctx, surah)
 }
 
-func (s *quranService) DeleteSurah(ctx context.Context, id int) error {
-	if id < 1 || id > 114 {
-		return fmt.Errorf("invalid surah ID: %d", id)
-	}
-
-	return s.repo.DeleteSurah(ctx, id)
+func (s *AyahService) GetAyahById(ctx context.Context, id core.UUID) (*Ayah, error) {
+	return s.ayahRepo.GetById(ctx, id)
 }
 
-// Write operations for Ayah
-func (s *quranService) CreateAyah(ctx context.Context, ayah *Ayah) (*Ayah, error) {
-	if ayah.SurahID < 1 || ayah.SurahID > 114 {
-		return nil, fmt.Errorf("invalid surah ID: %d", ayah.SurahID)
-	}
-
-	if ayah.AyahID < 1 {
-		return nil, fmt.Errorf("invalid ayah ID: %d", ayah.AyahID)
-	}
-
-	if ayah.Text == "" {
-		return nil, fmt.Errorf("ayah text cannot be empty")
-	}
-
-	if ayah.PageNumber < 1 || ayah.PageNumber > 604 {
-		return nil, fmt.Errorf("invalid page number: %d", ayah.PageNumber)
-	}
-
-	if ayah.JuzNumber < 1 || ayah.JuzNumber > 30 {
-		return nil, fmt.Errorf("invalid juz number: %d", ayah.JuzNumber)
-	}
-
-	return s.repo.CreateAyah(ctx, ayah)
+func (s *AyahService) GetAyahsBySurahId(ctx context.Context, surahId core.UUID, limit, offset int) ([]*Ayah, error) {
+	return s.ayahRepo.GetBySurahId(ctx, surahId, limit, offset)
 }
 
-func (s *quranService) UpdateAyah(ctx context.Context, ayah *Ayah) (*Ayah, error) {
-	if ayah.SurahID < 1 || ayah.SurahID > 114 {
-		return nil, fmt.Errorf("invalid surah ID: %d", ayah.SurahID)
-	}
-
-	if ayah.AyahID < 1 {
-		return nil, fmt.Errorf("invalid ayah ID: %d", ayah.AyahID)
-	}
-
-	if ayah.Text == "" {
-		return nil, fmt.Errorf("ayah text cannot be empty")
-	}
-
-	if ayah.PageNumber < 1 || ayah.PageNumber > 604 {
-		return nil, fmt.Errorf("invalid page number: %d", ayah.PageNumber)
-	}
-
-	if ayah.JuzNumber < 1 || ayah.JuzNumber > 30 {
-		return nil, fmt.Errorf("invalid juz number: %d", ayah.JuzNumber)
-	}
-
-	return s.repo.UpdateAyah(ctx, ayah)
+func (s *AyahService) GetAyahsByJuzNumber(ctx context.Context, juzNumber int, limit, offset int) ([]*Ayah, error) {
+	return s.ayahRepo.GetByJuzNumber(ctx, juzNumber, limit, offset)
 }
 
-func (s *quranService) DeleteAyah(ctx context.Context, surahID, ayahID int) error {
-	if surahID < 1 || surahID > 114 {
-		return fmt.Errorf("invalid surah ID: %d", surahID)
-	}
-
-	if ayahID < 1 {
-		return fmt.Errorf("invalid ayah ID: %d", ayahID)
-	}
-
-	return s.repo.DeleteAyah(ctx, surahID, ayahID)
+func (s *AyahService) GetAyahsByPageNumber(ctx context.Context, pageNumber int, limit, offset int) ([]*Ayah, error) {
+	return s.ayahRepo.GetByPageNumber(ctx, pageNumber, limit, offset)
 }
 
-// Write operations for Juz
-func (s *quranService) CreateJuz(ctx context.Context, juz *Juz) (*Juz, error) {
-	if juz.ID < 1 || juz.ID > 30 {
-		return nil, fmt.Errorf("invalid juz ID: %d", juz.ID)
-	}
-
-	if juz.StartSurah < 1 || juz.StartSurah > 114 {
-		return nil, fmt.Errorf("invalid start surah: %d", juz.StartSurah)
-	}
-
-	if juz.EndSurah < 1 || juz.EndSurah > 114 {
-		return nil, fmt.Errorf("invalid end surah: %d", juz.EndSurah)
-	}
-
-	return s.repo.CreateJuz(ctx, juz)
+func (s *AyahService) GetAyahsByHizbNumber(ctx context.Context, hizbNumber int, limit, offset int) ([]*Ayah, error) {
+	return s.ayahRepo.GetByHizbNumber(ctx, hizbNumber, limit, offset)
 }
 
-func (s *quranService) UpdateJuz(ctx context.Context, juz *Juz) (*Juz, error) {
-	if juz.ID < 1 || juz.ID > 30 {
-		return nil, fmt.Errorf("invalid juz ID: %d", juz.ID)
-	}
-
-	if juz.StartSurah < 1 || juz.StartSurah > 114 {
-		return nil, fmt.Errorf("invalid start surah: %d", juz.StartSurah)
-	}
-
-	if juz.EndSurah < 1 || juz.EndSurah > 114 {
-		return nil, fmt.Errorf("invalid end surah: %d", juz.EndSurah)
-	}
-
-	return s.repo.UpdateJuz(ctx, juz)
+func (s *AyahService) GetAyahsByManzilNumber(ctx context.Context, manzilNumber int, limit, offset int) ([]*Ayah, error) {
+	return s.ayahRepo.GetByManzilNumber(ctx, manzilNumber, limit, offset)
 }
 
-func (s *quranService) DeleteJuz(ctx context.Context, id int) error {
-	if id < 1 || id > 30 {
-		return fmt.Errorf("invalid juz ID: %d", id)
-	}
+func (s *AyahService) GetAllAyahs(ctx context.Context, limit, offset int) ([]*Ayah, error) {
+	return s.ayahRepo.GetAll(ctx, limit, offset)
+}
 
-	return s.repo.DeleteJuz(ctx, id)
+func (s *AyahService) CreateAyah(ctx context.Context, ayah *Ayah) (*Ayah, error) {
+	return s.ayahRepo.Create(ctx, ayah)
+}
+
+func (s *AyahService) UpdateAyah(ctx context.Context, ayah *Ayah) (*Ayah, error) {
+	return s.ayahRepo.Update(ctx, ayah)
+}
+
+func (s *AyahService) DeleteAyah(ctx context.Context, id core.UUID) error {
+	return s.ayahRepo.Delete(ctx, id)
+}
+
+func (s *AyahService) CountAyahs(ctx context.Context) (int64, error) {
+	return s.ayahRepo.Count(ctx)
+}
+
+func (s *AyahService) CountAyahsBySurahId(ctx context.Context, surahId core.UUID) (int64, error) {
+	return s.ayahRepo.CountBySurahId(ctx, surahId)
+}
+
+func (s *AyahService) CountAyahsByJuzNumber(ctx context.Context, juzNumber int) (int64, error) {
+	return s.ayahRepo.CountByJuzNumber(ctx, juzNumber)
+}
+
+func (s *AyahService) CountAyahsByPageNumber(ctx context.Context, pageNumber int) (int64, error) {
+	return s.ayahRepo.CountByPageNumber(ctx, pageNumber)
+}
+
+// Eager loading methods
+func (s *AyahService) GetAyahByIdWithSurah(ctx context.Context, id core.UUID) (*AyahWithSurah, error) {
+	return s.ayahRepo.GetByIdWithSurah(ctx, id)
+}
+
+func (s *AyahService) GetAyahsBySurahIdWithSurah(ctx context.Context, surahId core.UUID, limit, offset int) ([]*AyahWithSurah, error) {
+	return s.ayahRepo.GetBySurahIdWithSurah(ctx, surahId, limit, offset)
+}
+
+func (s *AyahService) GetAllAyahsWithSurah(ctx context.Context, limit, offset int) ([]*AyahWithSurah, error) {
+	return s.ayahRepo.GetAllWithSurah(ctx, limit, offset)
+}
+
+// JuzService implements JuzServiceInterface.
+type JuzService struct {
+	juzRepo JuzRepositoryInterface
+}
+
+// NewJuzService creates a new JuzService instance.
+func NewJuzService(juzRepo JuzRepositoryInterface) JuzServiceInterface {
+	return &JuzService{
+		juzRepo: juzRepo,
+	}
+}
+
+func (s *JuzService) GetJuzById(ctx context.Context, id core.UUID) (*Juz, error) {
+	return s.juzRepo.GetById(ctx, id)
+}
+
+func (s *JuzService) GetJuzByNumber(ctx context.Context, number int) (*Juz, error) {
+	return s.juzRepo.GetByNumber(ctx, number)
+}
+
+func (s *JuzService) GetAllJuz(ctx context.Context, limit, offset int) ([]*Juz, error) {
+	return s.juzRepo.GetAll(ctx, limit, offset)
+}
+
+func (s *JuzService) CreateJuz(ctx context.Context, juz *Juz) (*Juz, error) {
+	return s.juzRepo.Create(ctx, juz)
+}
+
+func (s *JuzService) UpdateJuz(ctx context.Context, juz *Juz) (*Juz, error) {
+	return s.juzRepo.Update(ctx, juz)
+}
+
+func (s *JuzService) DeleteJuz(ctx context.Context, id core.UUID) error {
+	return s.juzRepo.Delete(ctx, id)
+}
+
+func (s *JuzService) CountJuz(ctx context.Context) (int64, error) {
+	return s.juzRepo.Count(ctx)
+}
+
+// Eager loading methods
+func (s *JuzService) GetJuzByIdWithRelations(ctx context.Context, id core.UUID) (*JuzWithRelations, error) {
+	return s.juzRepo.GetByIdWithRelations(ctx, id)
+}
+
+func (s *JuzService) GetJuzByNumberWithRelations(ctx context.Context, number int) (*JuzWithRelations, error) {
+	return s.juzRepo.GetByNumberWithRelations(ctx, number)
+}
+
+func (s *JuzService) GetAllJuzWithRelations(ctx context.Context, limit, offset int) ([]*JuzWithRelations, error) {
+	return s.juzRepo.GetAllWithRelations(ctx, limit, offset)
 }

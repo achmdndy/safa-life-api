@@ -1,21 +1,171 @@
+# Prometheus Configuration for Safa Life API
+# Global configuration
 global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
+  scrape_interval: 15s          # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s      # Evaluate rules every 15 seconds. The default is every 1 minute.
+  scrape_timeout: 10s           # Global scrape timeout
+  external_labels:
+    cluster: 'safalife-cluster'
+    environment: 'development'
+    region: 'local'
 
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+      scheme: http
+      timeout: 10s
+      api_version: v2
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
+  - "rules/safalife_alerts.yml"
+  - "rules/safalife_recording.yml"
+  - "rules/infrastructure_alerts.yml"
+  - "rules/application_alerts.yml"
 
+# A scrape configuration containing exactly one endpoint to scrape:
 scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  # Prometheus itself
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    honor_labels: false
+    honor_timestamps: true
 
-  # Scrape metrics directly from Safa Life API
-  - job_name: 'safa-life-api'
+  # Safa Life API Application
+  - job_name: 'safalife-api'
     static_configs:
       - targets: ['api:8080']  # Docker service name for internal network
     metrics_path: '/metrics'
     scrape_interval: 5s
     scrape_timeout: 5s
+    honor_labels: true
+    params:
+      format: ['prometheus']
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'go_.*'
+        target_label: __tmp_go_metric
+        replacement: 'true'
+
+  # PostgreSQL Database Monitoring
+  - job_name: 'postgres-exporter'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+
+  # Redis Monitoring
+  - job_name: 'redis-exporter'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+
+  # Node Exporter for system metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+
+  # cAdvisor for container metrics
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    honor_labels: true
+
+  # Jaeger metrics
+  - job_name: 'jaeger'
+    static_configs:
+      - targets: ['jaeger:14269']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+
+  # Pushgateway for k6 metrics
+  - job_name: 'pushgateway'
+    static_configs:
+      - targets: ['pushgateway:9091']
+    scrape_interval: 5s
+    scrape_timeout: 5s
+    metrics_path: /metrics
+    honor_labels: true
+
+  # Grafana metrics
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+
+  # Blackbox exporter for endpoint monitoring
+  - job_name: 'blackbox-http'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    static_configs:
+      - targets:
+        - http://api:8080/health
+        - http://api:8080/metrics
+        - http://grafana:3000/api/health
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  # Custom application metrics with service discovery
+  - job_name: 'safalife-services'
+    static_configs:
+      - targets: ['api:8080']
+        labels:
+          service: 'safalife-api'
+          tier: 'backend'
+          version: 'v1.0.0'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    metrics_path: '/metrics'
+    honor_labels: true
+    metric_relabel_configs:
+      # Drop high cardinality metrics
+      - source_labels: [__name__]
+        regex: 'http_request_duration_seconds_bucket'
+        action: drop
+      # Rename metrics
+      - source_labels: [__name__]
+        regex: 'safalife_(.+)'
+        target_label: __name__
+        replacement: 'app_${1}'
+
+# Remote write configuration (optional, for long-term storage)
+remote_write:
+  - url: "http://remote-storage:9201/write"
+    queue_config:
+      max_samples_per_send: 1000
+      max_shards: 200
+      capacity: 2500
+    write_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'prometheus_.*'
+        action: drop
+
+# Remote read configuration (optional)
+remote_read:
+  - url: "http://remote-storage:9201/read"
+    read_recent: true

@@ -4,286 +4,172 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+
+	"github.com/google/uuid"
 )
 
-// SurahFaker generates fake Surah data
+// SurahFaker generates fake surah data
 type SurahFaker struct{}
 
-// NewSurahFaker creates a new SurahFaker instance
+// NewSurahFaker creates a new surah faker
 func NewSurahFaker() *SurahFaker {
 	return &SurahFaker{}
 }
 
 // Generate creates a fake SurahModel
-func (sf *SurahFaker) Generate(id int) SurahModel {
-	surahNames := []struct {
-		Arabic  string
-		English string
-	}{
-		{"الفاتحة", "Al-Fatihah"},
-		{"البقرة", "Al-Baqarah"},
-		{"آل عمران", "Ali 'Imran"},
-		{"النساء", "An-Nisa"},
-		{"المائدة", "Al-Ma'idah"},
-		{"الأنعام", "Al-An'am"},
-		{"الأعراف", "Al-A'raf"},
-		{"الأنفال", "Al-Anfal"},
-		{"التوبة", "At-Tawbah"},
-		{"يونس", "Yunus"},
-		{"هود", "Hud"},
-		{"يوسف", "Yusuf"},
-		{"الرعد", "Ar-Ra'd"},
-		{"إبراهيم", "Ibrahim"},
-		{"الحجر", "Al-Hijr"},
-		{"النحل", "An-Nahl"},
-		{"الإسراء", "Al-Isra"},
-		{"الكهف", "Al-Kahf"},
-		{"مريم", "Maryam"},
-		{"طه", "Taha"},
-	}
+func (f *SurahFaker) Generate() *SurahModel {
+	surahNames := []string{"Al-Fatihah", "Al-Baqarah", "Ali Imran", "An-Nisa", "Al-Maidah", "Al-Anam", "Al-Araf"}
+	surahName := surahNames[rand.Intn(len(surahNames))]
 
-	revelationPlaces := []string{"Mecca", "Medina"}
-	
-	// Use predefined names if available, otherwise generate
-	var nameAr, nameEn string
-	if id <= len(surahNames) {
-		nameAr = surahNames[id-1].Arabic
-		nameEn = surahNames[id-1].English
-	} else {
-		nameAr = fmt.Sprintf("سورة %d", id)
-		nameEn = fmt.Sprintf("Surah %d", id)
-	}
-
-	return SurahModel{
-		ID:              id,
-		NameArabic:      nameAr,
-		NameEnglish:     nameEn,
-		RevelationPlace: revelationPlaces[rand.Intn(len(revelationPlaces))],
+	return &SurahModel{
+		ID:              uuid.New(),
+		NameArabic:      "سورة " + surahName,
+		NameEnglish:     "Surah " + surahName,
+		RevelationPlace: []string{"Mecca", "Medina"}[rand.Intn(2)],
 		RevelationOrder: rand.Intn(114) + 1,
-		AyahCount:       rand.Intn(286) + 1, // Al-Baqarah has 286 verses (max)
+		AyahCount:       rand.Intn(284) + 3, // Between 3-286 ayahs
+		CreatedBy:       fmt.Sprintf("user_%d", rand.Intn(1000)),
+		UpdatedBy:       fmt.Sprintf("user_%d", rand.Intn(1000)),
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
 	}
 }
 
-// GenerateBatch creates multiple fake SurahModel instances
-func (sf *SurahFaker) GenerateBatch(count int) []SurahModel {
-	surahs := make([]SurahModel, count)
-	for i := 0; i < count; i++ {
-		surahs[i] = sf.Generate(i + 1)
+// GenerateWithNumber creates a fake SurahModel with specific number
+func (f *SurahFaker) GenerateWithNumber(number int) *SurahModel {
+	surahNames := map[int]string{
+		1: "Al-Fatihah", 2: "Al-Baqarah", 3: "Ali 'Imran", 4: "An-Nisa", 5: "Al-Ma'idah",
+		6: "Al-An'am", 7: "Al-A'raf", 8: "Al-Anfal", 9: "At-Tawbah", 10: "Yunus",
 	}
-	return surahs
+
+	nameEnglish := surahNames[number]
+	if nameEnglish == "" {
+		nameEnglish = fmt.Sprintf("Surah %d", number)
+	}
+
+	return &SurahModel{
+		ID:              uuid.New(),
+		NameArabic:      "سورة " + nameEnglish,
+		NameEnglish:     nameEnglish,
+		RevelationPlace: []string{"Mecca", "Medina"}[rand.Intn(2)],
+		RevelationOrder: number,
+		AyahCount:       rand.Intn(284) + 3,
+		CreatedBy:       fmt.Sprintf("user_%d", rand.Intn(1000)),
+		UpdatedBy:       fmt.Sprintf("user_%d", rand.Intn(1000)),
+		CreatedAt:       time.Now(),
+		UpdatedAt:       time.Now(),
+	}
 }
 
-// AyahFaker generates fake Ayah data
+// GenerateWithPlace creates a fake SurahModel with specific revelation place
+func (f *SurahFaker) GenerateWithPlace(place string) *SurahModel {
+	surah := f.Generate()
+	surah.RevelationPlace = place
+	return surah
+}
+
+// AyahFaker generates fake ayah data
 type AyahFaker struct{}
 
-// NewAyahFaker creates a new AyahFaker instance
+// NewAyahFaker creates a new ayah faker
 func NewAyahFaker() *AyahFaker {
 	return &AyahFaker{}
 }
 
 // Generate creates a fake AyahModel
-func (af *AyahFaker) Generate(surahID, ayahID int) AyahModel {
-	return AyahModel{
+func (f *AyahFaker) Generate(surahID uuid.UUID) *AyahModel {
+	ayahTexts := []string{
+		"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+		"الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+		"الرَّحْمَٰنِ الرَّحِيمِ",
+		"مَالِكِ يَوْمِ الدِّينِ",
+	}
+
+	return &AyahModel{
+		ID:           uuid.New(),
 		SurahID:      surahID,
-		AyahID:       ayahID,
-		Text:         af.getRandomArabicText(),
+		Text:         ayahTexts[rand.Intn(len(ayahTexts))],
 		PageNumber:   rand.Intn(604) + 1, // Quran has 604 pages
-		JuzNumber:    rand.Intn(30) + 1,  // Quran has 30 Juz
-		HizbNumber:   rand.Intn(60) + 1,  // Quran has 60 Hizb
-		ManzilNumber: rand.Intn(7) + 1,   // Quran has 7 Manzil
+		JuzNumber:    rand.Intn(30) + 1,  // 30 Juz in Quran
+		HizbNumber:   rand.Intn(60) + 1,  // 60 Hizb in Quran
+		ManzilNumber: rand.Intn(7) + 1,   // 7 Manzil in Quran
+		CreatedBy:    fmt.Sprintf("user_%d", rand.Intn(1000)),
+		UpdatedBy:    fmt.Sprintf("user_%d", rand.Intn(1000)),
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}
 }
 
-// GenerateBatch creates multiple fake AyahModel instances for a specific Surah
-func (af *AyahFaker) GenerateBatch(surahID, count int) []AyahModel {
-	ayahs := make([]AyahModel, count)
+// GenerateWithJuz creates a fake AyahModel with specific juz number
+func (f *AyahFaker) GenerateWithJuz(surahID uuid.UUID, juzNumber int) *AyahModel {
+	ayah := f.Generate(surahID)
+	ayah.JuzNumber = juzNumber
+	return ayah
+}
+
+// GenerateWithPage creates a fake AyahModel with specific page number
+func (f *AyahFaker) GenerateWithPage(surahID uuid.UUID, pageNumber int) *AyahModel {
+	ayah := f.Generate(surahID)
+	ayah.PageNumber = pageNumber
+	return ayah
+}
+
+// GenerateMultiple creates multiple fake AyahModel for a surah
+func (f *AyahFaker) GenerateMultiple(surahID uuid.UUID, count int) []*AyahModel {
+	ayahs := make([]*AyahModel, count)
 	for i := 0; i < count; i++ {
-		ayahs[i] = af.Generate(surahID, i+1)
+		ayahs[i] = f.Generate(surahID)
 	}
 	return ayahs
 }
 
-// GenerateForAllSurahs creates fake Ayahs for multiple Surahs
-func (af *AyahFaker) GenerateForAllSurahs(surahs []SurahModel) []AyahModel {
-	var allAyahs []AyahModel
-	for _, surah := range surahs {
-		ayahs := af.GenerateBatch(surah.ID, surah.AyahCount)
-		allAyahs = append(allAyahs, ayahs...)
-	}
-	return allAyahs
-}
-
-// GenerateForAllSurahsWithValidJuz creates fake Ayahs for multiple Surahs with valid Juz references
-func (af *AyahFaker) GenerateForAllSurahsWithValidJuz(surahs []SurahModel, juzs []JuzModel) []AyahModel {
-	var allAyahs []AyahModel
-	
-	// Create a map of valid Juz IDs for quick lookup
-	validJuzIDs := make([]int, len(juzs))
-	for i, juz := range juzs {
-		validJuzIDs[i] = juz.ID
-	}
-	
-	for _, surah := range surahs {
-		ayahs := make([]AyahModel, surah.AyahCount)
-		for i := 0; i < surah.AyahCount; i++ {
-			// Generate ayah with valid Juz reference
-			juzID := validJuzIDs[rand.Intn(len(validJuzIDs))]
-			
-			ayahs[i] = AyahModel{
-				SurahID:      surah.ID,
-				AyahID:       i + 1,
-				Text:         af.getRandomArabicText(),
-				PageNumber:   rand.Intn(604) + 1,
-				JuzNumber:    juzID,
-				HizbNumber:   rand.Intn(60) + 1,
-				ManzilNumber: rand.Intn(7) + 1,
-				CreatedAt:    time.Now(),
-				UpdatedAt:    time.Now(),
-			}
-		}
-		allAyahs = append(allAyahs, ayahs...)
-	}
-	return allAyahs
-}
-
-// getRandomArabicText returns a random Arabic text for Ayah
-func (af *AyahFaker) getRandomArabicText() string {
-	arabicTexts := []string{
-		"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
-		"الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
-		"الرَّحْمَٰنِ الرَّحِيمِ",
-		"مَالِكِ يَوْمِ الدِّينِ",
-		"إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
-		"اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
-		"صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
-		"الم",
-		"ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ هُدًى لِّلْمُتَّقِينَ",
-		"الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ",
-	}
-	return arabicTexts[rand.Intn(len(arabicTexts))]
-}
-
-// JuzFaker generates fake Juz data
+// JuzFaker generates fake juz data
 type JuzFaker struct{}
 
-// NewJuzFaker creates a new JuzFaker instance
+// NewJuzFaker creates a new juz faker
 func NewJuzFaker() *JuzFaker {
 	return &JuzFaker{}
 }
 
 // Generate creates a fake JuzModel
-func (jf *JuzFaker) Generate(id int) JuzModel {
-	// Realistic Juz boundaries (simplified)
-	juzBoundaries := []struct {
-		StartSurah, StartAyah, EndSurah, EndAyah int
-	}{
-		{1, 1, 2, 141},    // Juz 1
-		{2, 142, 2, 252},  // Juz 2
-		{2, 253, 3, 92},   // Juz 3
-		{3, 93, 4, 23},    // Juz 4
-		{4, 24, 4, 147},   // Juz 5
-		{4, 148, 5, 81},   // Juz 6
-		{5, 82, 6, 110},   // Juz 7
-		{6, 111, 7, 87},   // Juz 8
-		{7, 88, 8, 40},    // Juz 9
-		{8, 41, 9, 92},    // Juz 10
-	}
-
-	var startSurah, startAyah, endSurah, endAyah int
-	if id <= len(juzBoundaries) {
-		boundary := juzBoundaries[id-1]
-		startSurah = boundary.StartSurah
-		startAyah = boundary.StartAyah
-		endSurah = boundary.EndSurah
-		endAyah = boundary.EndAyah
-	} else {
-		// Generate random boundaries for Juz beyond predefined ones
-		startSurah = rand.Intn(114) + 1
-		startAyah = rand.Intn(50) + 1
-		endSurah = startSurah + rand.Intn(5) + 1
-		if endSurah > 114 {
-			endSurah = 114
-		}
-		endAyah = rand.Intn(100) + 1
-	}
-
-	return JuzModel{
-		ID:         id,
-		StartSurah: startSurah,
-		StartAyah:  startAyah,
-		EndSurah:   endSurah,
-		EndAyah:    endAyah,
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
+func (f *JuzFaker) Generate(startSurahID, endSurahID, startAyahID, endAyahID uuid.UUID) *JuzModel {
+	return &JuzModel{
+		ID:           uuid.New(),
+		StartSurahID: startSurahID,
+		EndSurahID:   endSurahID,
+		StartAyahID:  startAyahID,
+		EndAyahID:    endAyahID,
+		CreatedBy:    fmt.Sprintf("user_%d", rand.Intn(1000)),
+		UpdatedBy:    fmt.Sprintf("user_%d", rand.Intn(1000)),
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
 	}
 }
 
-// GenerateBatch creates multiple fake JuzModel instances
-func (jf *JuzFaker) GenerateBatch(count int) []JuzModel {
-	juzs := make([]JuzModel, count)
-	for i := 0; i < count; i++ {
-		juzs[i] = jf.Generate(i + 1)
+// GenerateWithNumber creates a fake JuzModel with specific number (1-30)
+func (f *JuzFaker) GenerateWithNumber(number int, startSurahID, endSurahID, startAyahID, endAyahID uuid.UUID) *JuzModel {
+	return &JuzModel{
+		ID:           uuid.New(),
+		StartSurahID: startSurahID,
+		EndSurahID:   endSurahID,
+		StartAyahID:  startAyahID,
+		EndAyahID:    endAyahID,
+		CreatedBy:    fmt.Sprintf("user_%d", rand.Intn(1000)),
+		UpdatedBy:    fmt.Sprintf("user_%d", rand.Intn(1000)),
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
 	}
-	return juzs
 }
 
-// GenerateBatchWithValidSurahs creates multiple fake JuzModel instances with valid Surah references
-func (jf *JuzFaker) GenerateBatchWithValidSurahs(count int, surahs []SurahModel) []JuzModel {
-	if len(surahs) == 0 {
-		return jf.GenerateBatch(count)
-	}
-	
-	juzs := make([]JuzModel, count)
-	for i := 0; i < count; i++ {
-		// Use realistic Juz boundaries for first 10, then generate valid random ones
-		if i < 10 {
-			juzs[i] = jf.Generate(i + 1)
-		} else {
-			// Generate with valid Surah references
-			startSurahIdx := rand.Intn(len(surahs))
-			endSurahIdx := startSurahIdx + rand.Intn(min(5, len(surahs)-startSurahIdx))
-			if endSurahIdx >= len(surahs) {
-				endSurahIdx = len(surahs) - 1
-			}
-			
-			juzs[i] = JuzModel{
-				ID:         i + 1,
-				StartSurah: surahs[startSurahIdx].ID,
-				StartAyah:  rand.Intn(50) + 1,
-				EndSurah:   surahs[endSurahIdx].ID,
-				EndAyah:    rand.Intn(100) + 1,
-				CreatedAt:  time.Now(),
-				UpdatedAt:  time.Now(),
-			}
-		}
-	}
-	return juzs
-}
-
-// min helper function
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-// QuranFaker combines all faker functionality
+// QuranFaker combines all fakers for Quran entities
 type QuranFaker struct {
 	SurahFaker *SurahFaker
 	AyahFaker  *AyahFaker
 	JuzFaker   *JuzFaker
 }
 
-// NewQuranFaker creates a new QuranFaker instance
+// NewQuranFaker creates a new Quran faker
 func NewQuranFaker() *QuranFaker {
-	// Seed random number generator
-	rand.Seed(time.Now().UnixNano())
-	
 	return &QuranFaker{
 		SurahFaker: NewSurahFaker(),
 		AyahFaker:  NewAyahFaker(),
@@ -291,16 +177,58 @@ func NewQuranFaker() *QuranFaker {
 	}
 }
 
-// GenerateCompleteQuranData creates a complete set of fake Quran data
-func (qf *QuranFaker) GenerateCompleteQuranData(surahCount, juzCount int) ([]SurahModel, []AyahModel, []JuzModel) {
-	// Generate Surahs
-	surahs := qf.SurahFaker.GenerateBatch(surahCount)
-	
-	// Generate Ayahs for all Surahs
-	ayahs := qf.AyahFaker.GenerateForAllSurahs(surahs)
-	
-	// Generate Juz
-	juzs := qf.JuzFaker.GenerateBatch(juzCount)
-	
+// GenerateCompleteSurah creates a complete surah with ayahs
+func (f *QuranFaker) GenerateCompleteSurah(ayahCount int) (*SurahModel, []*AyahModel) {
+	surah := f.SurahFaker.Generate()
+	surah.AyahCount = ayahCount
+
+	ayahs := make([]*AyahModel, ayahCount)
+	for i := 0; i < ayahCount; i++ {
+		ayahs[i] = f.AyahFaker.Generate(surah.ID)
+	}
+
+	return surah, ayahs
+}
+
+// GenerateQuranStructure creates a basic Quran structure with surahs, ayahs, and juz
+func (f *QuranFaker) GenerateQuranStructure(surahCount, avgAyahPerSurah, juzCount int) ([]*SurahModel, []*AyahModel, []*JuzModel) {
+	var surahs []*SurahModel
+	var ayahs []*AyahModel
+	var juzs []*JuzModel
+
+	// Generate surahs and ayahs
+	for i := 0; i < surahCount; i++ {
+		surah := f.SurahFaker.GenerateWithNumber(i + 1)
+		surahs = append(surahs, surah)
+
+		ayahCount := avgAyahPerSurah + (rand.Intn(10) - 5) // Vary ayah count
+		if ayahCount < 3 {
+			ayahCount = 3
+		}
+		surah.AyahCount = ayahCount
+
+		for j := 0; j < ayahCount; j++ {
+			ayah := f.AyahFaker.Generate(surah.ID)
+			ayahs = append(ayahs, ayah)
+		}
+	}
+
+	// Generate juz
+	for i := 0; i < juzCount && len(ayahs) > 0; i++ {
+		startIdx := (i * len(ayahs)) / juzCount
+		endIdx := ((i + 1) * len(ayahs)) / juzCount
+		if endIdx > len(ayahs) {
+			endIdx = len(ayahs)
+		}
+
+		if startIdx < len(ayahs) && endIdx > startIdx {
+			startAyah := ayahs[startIdx]
+			endAyah := ayahs[endIdx-1]
+
+			juz := f.JuzFaker.GenerateWithNumber(i+1, startAyah.SurahID, endAyah.SurahID, startAyah.ID, endAyah.ID)
+			juzs = append(juzs, juz)
+		}
+	}
+
 	return surahs, ayahs, juzs
 }

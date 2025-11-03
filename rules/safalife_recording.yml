@@ -1,0 +1,118 @@
+groups:
+  - name: safalife_api_recording_rules
+    interval: 30s
+    rules:
+      # Request rate per minute
+      - record: safalife:http_requests_per_minute
+        expr: |
+          rate(http_requests_total{job="safalife-api"}[1m]) * 60
+
+      # Error rate percentage
+      - record: safalife:http_error_rate
+        expr: |
+          rate(http_requests_total{job="safalife-api",code=~"5.."}[5m]) /
+          rate(http_requests_total{job="safalife-api"}[5m])
+
+      # 95th percentile response time
+      - record: safalife:http_request_duration_95th_percentile
+        expr: |
+          histogram_quantile(0.95,
+            rate(http_request_duration_seconds_bucket{job="safalife-api"}[5m])
+          )
+
+      # 99th percentile response time
+      - record: safalife:http_request_duration_99th_percentile
+        expr: |
+          histogram_quantile(0.99,
+            rate(http_request_duration_seconds_bucket{job="safalife-api"}[5m])
+          )
+
+      # Average response time
+      - record: safalife:http_request_duration_average
+        expr: |
+          rate(http_request_duration_seconds_sum{job="safalife-api"}[5m]) /
+          rate(http_request_duration_seconds_count{job="safalife-api"}[5m])
+
+      # Memory usage percentage
+      - record: safalife:memory_usage_percentage
+        expr: |
+          go_memstats_alloc_bytes{job="safalife-api"} /
+          go_memstats_sys_bytes{job="safalife-api"}
+
+      # CPU usage rate
+      - record: safalife:cpu_usage_rate
+        expr: |
+          rate(process_cpu_seconds_total{job="safalife-api"}[5m])
+
+      # Database connection pool usage
+      - record: safalife:db_connection_pool_usage
+        expr: |
+          db_connections_in_use{job="safalife-api"} /
+          db_connections_max{job="safalife-api"}
+
+      # Request throughput by endpoint
+      - record: safalife:http_requests_by_endpoint_per_minute
+        expr: |
+          rate(http_requests_total{job="safalife-api"}[1m]) * 60
+
+      # Error count by endpoint
+      - record: safalife:http_errors_by_endpoint_per_minute
+        expr: |
+          rate(http_requests_total{job="safalife-api",code=~"5.."}[1m]) * 60
+
+  - name: safalife_api_aggregated_metrics
+    interval: 1m
+    rules:
+      # Total requests per hour
+      - record: safalife:total_requests_per_hour
+        expr: |
+          increase(http_requests_total{job="safalife-api"}[1h])
+
+      # Total errors per hour
+      - record: safalife:total_errors_per_hour
+        expr: |
+          increase(http_requests_total{job="safalife-api",code=~"5.."}[1h])
+
+      # Average concurrent users (approximation)
+      - record: safalife:avg_concurrent_users
+        expr: |
+          avg_over_time(
+            rate(http_requests_total{job="safalife-api"}[1m])[10m:1m]
+          ) * 60
+
+      # Peak request rate in last hour
+      - record: safalife:peak_request_rate_1h
+        expr: |
+          max_over_time(
+            rate(http_requests_total{job="safalife-api"}[1m])[1h:1m]
+          ) * 60
+
+      # Service availability (uptime percentage)
+      - record: safalife:service_availability_1h
+        expr: |
+          avg_over_time(up{job="safalife-api"}[1h])
+
+  - name: safalife_business_metrics
+    interval: 5m
+    rules:
+      # API calls per user session (if user_id label exists)
+      - record: safalife:api_calls_per_user_session
+        expr: |
+          rate(http_requests_total{job="safalife-api"}[5m]) /
+          count by (user_id) (http_requests_total{job="safalife-api"})
+
+      # Most accessed endpoints
+      - record: safalife:top_endpoints_by_requests
+        expr: |
+          topk(10,
+            rate(http_requests_total{job="safalife-api"}[5m])
+          )
+
+      # Slowest endpoints
+      - record: safalife:slowest_endpoints
+        expr: |
+          topk(10,
+            histogram_quantile(0.95,
+              rate(http_request_duration_seconds_bucket{job="safalife-api"}[5m])
+            )
+          )

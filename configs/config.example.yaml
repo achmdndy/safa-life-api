@@ -1,0 +1,37 @@
+app:
+  name: safa-life-api
+  host: "0.0.0.0"
+  port: 8080
+  env: "development" # change to "production" on server
+
+db:
+  host: "localhost"
+  user: "postgres"
+  password: "your-db-password"
+  name: "safalife_db"
+  port: 5432
+  ssl_mode: "disable"
+  timezone: "UTC"
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: "" # fill in if Redis requires authentication
+  db: 0
+
+monitoring:
+  jaeger:
+    endpoint: "localhost:4318"
+    service_name: "safa-life-api"
+    service_version: "1.0.0"
+    environment: "development"
+  
+  prometheus:
+    enabled: true
+    metrics_path: "/metrics"
+
+jwt:
+  secret: "your-secret-key-change-this"
+  access_token_ttl: 60      # in minutes (1 hour)
+  refresh_token_ttl: 10080  # in minutes (7 days)
+  issuer: "safa-life-api"

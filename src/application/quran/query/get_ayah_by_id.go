@@ -2,31 +2,24 @@ package query
 
 import (
 	"context"
-	"fmt"
-	"github.com/achmdndy/safa-life-api/src/application/quran/dto"
+
+	"github.com/safalife/core-api/src/application/quran/dto"
 )
 
-// GetAyahByIDQuery represents the query to get an ayah by ID
-type GetAyahByIDQuery struct {
-	SurahID int
-	AyahID  int
+type GetAyahByIdQuery struct {
+	ID string
 }
 
-// GetAyahByID retrieves an ayah by its surah and ayah ID
-func (h *QueryHandler) GetAyahByID(ctx context.Context, query GetAyahByIDQuery) (*dto.AyahResponse, error) {
-	if query.SurahID < 1 || query.SurahID > 114 {
-		return nil, fmt.Errorf("invalid surah ID: %d", query.SurahID)
-	}
-
-	if query.AyahID < 1 {
-		return nil, fmt.Errorf("invalid ayah ID: %d", query.AyahID)
-	}
-
-	ayah, err := h.quranService.GetAyahByID(ctx, query.SurahID, query.AyahID)
+func (h *QueryHandler) GetAyahById(ctx context.Context, query GetAyahByIdQuery) (*dto.AyahResponse, error) {
+	id, err := h.uuidGenerator.Parse(query.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	response := dto.ToAyahResponse(*ayah)
-	return &response, nil
+	ayah, err := h.ayahService.GetAyahById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return dto.ToAyahResponse(ayah), nil
 }

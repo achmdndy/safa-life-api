@@ -2,61 +2,78 @@ package quran
 
 import (
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
-	"github.com/achmdndy/safa-life-api/src/application/quran/command"
-	"github.com/achmdndy/safa-life-api/src/application/quran/dto"
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
 	"github.com/gin-gonic/gin"
+
+	"github.com/safalife/core-api/src/application/quran/command"
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/presentation/core"
 )
 
-// UpdateJuz handles PUT /juz/:id
-// @Summary Update an existing juz
-// @Description Update an existing juz (part) in the Quran
+// UpdateJuzHandler handles the update juz request
+type UpdateJuzHandler struct {
+	commandHandler *command.CommandHandler
+}
+
+// NewUpdateJuzHandler creates a new update juz handler
+func NewUpdateJuzHandler(commandHandler *command.CommandHandler) *UpdateJuzHandler {
+	return &UpdateJuzHandler{
+		commandHandler: commandHandler,
+	}
+}
+
+// Handle processes the update juz request
+// @Summary Update a juz
+// @Description Update an existing juz with the provided information
 // @Tags Juz
 // @Accept json
 // @Produce json
-// @Param id path int true "Juz ID"
-// @Param juz body dto.UpdateJuzRequest true "Juz data"
-// @Success 200 {object} core.SuccessResponse{data=dto.JuzResponse} "Juz updated successfully"
-// @Failure 400 {object} core.ErrorResponse "Invalid juz ID or request body"
-// @Failure 404 {object} core.ErrorResponse "Juz not found"
-// @Failure 500 {object} core.ErrorResponse "Failed to update juz"
-// @Router /juz/{id} [put]
-func (h *Handler) UpdateJuz(c *gin.Context) {
+// @Param id path string true "Juz ID"
+// @Param juz body dto.UpdateJuzRequest true "Juz information"
+// @Success 200 {object} JuzSuccessResponse "Juz updated successfully"
+// @Failure 400 {object} QuranErrorResponse "Bad request"
+// @Failure 404 {object} QuranErrorResponse "Juz not found"
+// @Failure 500 {object} QuranErrorResponse "Internal server error"
+// @Router /api/v1/quran/juz/{id} [put]
+func (h *UpdateJuzHandler) Handle(c *gin.Context) {
 	start := time.Now()
-
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid juz ID", &core.ErrorDetail{Reason: err.Error()}, start)
-		return
-	}
+	ctx := c.Request.Context()
 
 	var req dto.UpdateJuzRequest
-	if bindErr := c.ShouldBindJSON(&req); bindErr != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid request body", &core.ErrorDetail{Reason: bindErr.Error()}, start)
-		return
-	}
-
-	cmd := command.FromUpdateJuzRequest(req)
-	cmd.ID = id
-	domainResult, err := h.commandHandler.UpdateJuz(c.Request.Context(), cmd)
-	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
-			core.Error(c, http.StatusNotFound, "Juz not found", &core.ErrorDetail{Reason: err.Error()}, start)
-			return
+	if err := c.ShouldBindUri(&req); err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
 		}
-		core.Error(c, http.StatusInternalServerError, "Failed to update juz", &core.ErrorDetail{Reason: err.Error()}, start)
+		core.Error(c, http.StatusBadRequest, "Invalid juz ID", errorDetail, start)
 		return
 	}
 
-	if domainResult == nil {
-		core.Error(c, http.StatusNotFound, "Juz not found", &core.ErrorDetail{}, start)
+	if err := c.ShouldBindJSON(&req); err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusBadRequest, "Invalid request body", errorDetail, start)
 		return
 	}
 
-	result := dto.ToJuzResponse(*domainResult)
+	cmd := command.UpdateJuzCommand{
+		ID:           req.ID,
+		StartSurahID: req.StartSurahID,
+		EndSurahID:   req.EndSurahID,
+		StartAyahID:  req.StartAyahID,
+		EndAyahID:    req.EndAyahID,
+		UpdatedBy:    req.UpdatedBy,
+	}
+
+	result, err := h.commandHandler.UpdateJuz(ctx, cmd)
+	if err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusInternalServerError, "Failed to update juz", errorDetail, start)
+		return
+	}
+
 	core.Success(c, http.StatusOK, "Juz updated successfully", result, start)
 }

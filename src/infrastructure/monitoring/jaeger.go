@@ -2,34 +2,30 @@ package monitoring
 
 import (
 	"context"
-	"log"
+	"fmt"
+	"time"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
-	"go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
-// JaegerConfig holds Jaeger configuration
-type JaegerConfig struct {
-	ServiceName string
-	Endpoint    string
-}
-
-// InitJaeger initializes Jaeger tracing
-func InitJaeger(config JaegerConfig) func() {
+// InitJaeger initializes Jaeger tracing with OTLP exporter
+func InitJaeger(config JaegerConfig) (*sdktrace.TracerProvider, error) {
 	// Create OTLP HTTP exporter
+	// Note: OTLP library expects endpoint without protocol when using WithInsecure()
+	endpoint := config.Endpoint
+
 	exporter, err := otlptracehttp.New(
 		context.Background(),
-		otlptracehttp.WithEndpoint(config.Endpoint),
-		otlptracehttp.WithURLPath("/v1/traces"),
+		otlptracehttp.WithEndpoint(endpoint),
 		otlptracehttp.WithInsecure(), // Use HTTP instead of HTTPS for local development
 	)
 	if err != nil {
-		log.Printf("Failed to create OTLP exporter: %v", err)
-		return func() {}
+		return nil, fmt.Errorf("failed to create OTLP exporter: %w", err)
 	}
 
 	// Create resource with service information
@@ -37,22 +33,22 @@ func InitJaeger(config JaegerConfig) func() {
 		context.Background(),
 		resource.WithAttributes(
 			semconv.ServiceNameKey.String(config.ServiceName),
-			semconv.ServiceVersionKey.String("1.0.0"),
+			semconv.ServiceVersionKey.String(config.ServiceVersion),
+			semconv.DeploymentEnvironmentKey.String(config.Environment),
 		),
 	)
 	if err != nil {
-		log.Printf("Failed to create resource: %v", err)
-		return func() {}
+		return nil, fmt.Errorf("failed to create resource: %w", err)
 	}
 
-	// Create trace provider
-	tp := trace.NewTracerProvider(
-		trace.WithBatcher(exporter),
-		trace.WithResource(res),
-		trace.WithSampler(trace.AlwaysSample()),
+	// Create tracer provider
+	tp := sdktrace.NewTracerProvider(
+		sdktrace.WithBatcher(exporter),
+		sdktrace.WithResource(res),
+		sdktrace.WithSampler(sdktrace.AlwaysSample()),
 	)
 
-	// Set global trace provider
+	// Set global tracer provider
 	otel.SetTracerProvider(tp)
 
 	// Set global propagator
@@ -61,12 +57,12 @@ func InitJaeger(config JaegerConfig) func() {
 		propagation.Baggage{},
 	))
 
-	log.Printf("Jaeger tracing initialized with service name: %s", config.ServiceName)
+	return tp, nil
+}
 
-	// Return cleanup function
-	return func() {
-		if err := tp.Shutdown(context.Background()); err != nil {
-			log.Printf("Error shutting down tracer provider: %v", err)
-		}
-	}
+// ShutdownJaeger gracefully shuts down the tracer provider
+func ShutdownJaeger(tp *sdktrace.TracerProvider) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	return tp.Shutdown(ctx)
 }

@@ -2,26 +2,33 @@ package query
 
 import (
 	"context"
-	"fmt"
-	"github.com/achmdndy/safa-life-api/src/application/quran/dto"
+
+	"github.com/safalife/core-api/src/application/quran/dto"
 )
 
-// GetAyahsByJuzQuery represents the query to get ayahs by juz
 type GetAyahsByJuzQuery struct {
-	JuzID int
+	JuzNumber int
+	Limit     int
+	Offset    int
 }
 
-// GetAyahsByJuz retrieves ayahs by juz ID
-func (h *QueryHandler) GetAyahsByJuz(ctx context.Context, query GetAyahsByJuzQuery) (*dto.JuzWithContentResponse, error) {
-	if query.JuzID < 1 || query.JuzID > 30 {
-		return nil, fmt.Errorf("invalid juz ID: %d", query.JuzID)
-	}
-
-	juzWithContent, err := h.quranService.GetJuzWithContent(ctx, query.JuzID)
+func (h *QueryHandler) GetAyahsByJuz(ctx context.Context, query GetAyahsByJuzQuery) (*dto.AyahListResponse, error) {
+	ayahs, err := h.ayahService.GetAyahsByJuzNumber(ctx, query.JuzNumber, query.Limit, query.Offset)
 	if err != nil {
 		return nil, err
 	}
 
-	response := dto.ToJuzWithContentResponse(*juzWithContent)
-	return &response, nil
+	count, err := h.ayahService.CountAyahsByJuzNumber(ctx, query.JuzNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.AyahListResponse{
+		Data: dto.ToAyahResponseSlice(ayahs),
+		Pagination: &dto.PaginationResponse{
+			Limit:  query.Limit,
+			Offset: query.Offset,
+			Total:  count,
+		},
+	}, nil
 }

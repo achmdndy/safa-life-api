@@ -5,42 +5,66 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/achmdndy/safa-life-api/src/application/quran/command"
-	"github.com/achmdndy/safa-life-api/src/application/quran/dto"
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
+
+	"github.com/safalife/core-api/src/application/quran/command"
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/presentation/core"
 )
 
-// CreateAyah handles POST /ayahs
+// CreateAyahHandler handles the create ayah request
+type CreateAyahHandler struct {
+	commandHandler *command.CommandHandler
+}
+
+// NewCreateAyahHandler creates a new create ayah handler
+func NewCreateAyahHandler(commandHandler *command.CommandHandler) *CreateAyahHandler {
+	return &CreateAyahHandler{
+		commandHandler: commandHandler,
+	}
+}
+
+// Handle processes the create ayah request
 // @Summary Create a new ayah
-// @Description Create a new ayah (verse) in the Quran
+// @Description Create a new ayah in the Quran
 // @Tags Ayah
 // @Accept json
 // @Produce json
-// @Param ayah body dto.CreateAyahRequest true "Ayah data"
-// @Success 201 {object} core.SuccessResponse{data=dto.AyahResponse} "Ayah created successfully"
-// @Failure 400 {object} core.ErrorResponse "Invalid request body"
-// @Failure 500 {object} core.ErrorResponse "Failed to create ayah"
-// @Router /ayahs [post]
-func (h *Handler) CreateAyah(c *gin.Context) {
+// @Param request body dto.CreateAyahRequest true "Create ayah request"
+// @Success 201 {object} CreateAyahSuccessResponse "Ayah created successfully"
+// @Failure 400 {object} QuranErrorResponse "Bad request"
+// @Failure 500 {object} QuranErrorResponse "Internal server error"
+// @Router /api/v1/quran/ayahs [post]
+func (h *CreateAyahHandler) Handle(c *gin.Context) {
 	start := time.Now()
-	
+	ctx := c.Request.Context()
+
 	var req dto.CreateAyahRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid request body", &core.ErrorDetail{Reason: err.Error()}, start)
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusBadRequest, "Invalid request body", errorDetail, start)
 		return
 	}
 
-	cmd := command.FromCreateAyahRequest(req)
-	domainResult, err := h.commandHandler.CreateAyah(c.Request.Context(), cmd)
+	cmd := command.CreateAyahCommand{
+		SurahID:      req.SurahID,
+		Text:         req.Text,
+		PageNumber:   req.PageNumber,
+		JuzNumber:    req.JuzNumber,
+		HizbNumber:   req.HizbNumber,
+		ManzilNumber: req.ManzilNumber,
+		CreatedBy:    req.CreatedBy,
+	}
+
+	result, err := h.commandHandler.CreateAyah(ctx, cmd)
 	if err != nil {
-		core.Error(c, http.StatusInternalServerError, "Failed to create ayah", &core.ErrorDetail{Reason: err.Error()}, start)
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusInternalServerError, "Failed to create ayah", errorDetail, start)
 		return
 	}
 
-	if domainResult != nil {
-		result := dto.ToAyahResponse(*domainResult)
-		core.Success(c, http.StatusCreated, "Ayah created successfully", result, start)
-	} else {
-		core.Success(c, http.StatusCreated, "Ayah created successfully", core.EmptyData{}, start)
-	}
+	core.Success(c, http.StatusCreated, "Ayah created successfully", result, start)
 }

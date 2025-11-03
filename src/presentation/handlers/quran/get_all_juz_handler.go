@@ -5,32 +5,69 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/achmdndy/safa-life-api/src/application/quran/query"
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
+
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/application/quran/query"
+	"github.com/safalife/core-api/src/presentation/core"
 )
 
-// GetAllJuz handles GET /juz
+// GetAllJuzHandler handles the get all juz request
+type GetAllJuzHandler struct {
+	queryHandler *query.QueryHandler
+}
+
+// NewGetAllJuzHandler creates a new get all juz handler
+func NewGetAllJuzHandler(queryHandler *query.QueryHandler) *GetAllJuzHandler {
+	return &GetAllJuzHandler{
+		queryHandler: queryHandler,
+	}
+}
+
+// Handle processes the get all juz request
 // @Summary Get all juz
-// @Description Get a list of all juz (parts) in the Quran
+// @Description Get all juz with pagination
 // @Tags Juz
 // @Accept json
 // @Produce json
-// @Success 200 {object} core.SuccessResponse{data=[]dto.JuzResponse} "Juz retrieved successfully"
-// @Failure 500 {object} core.ErrorResponse "Failed to get juz"
-// @Router /juz [get]
-func (h *Handler) GetAllJuz(c *gin.Context) {
+// @Param limit query int false "Limit" default(10)
+// @Param offset query int false "Offset" default(0)
+// @Param include query string false "Include related data" Enums(relations) example(relations)
+// @Success 200 {object} JuzListSuccessResponse "Juz list retrieved successfully"
+// @Failure 400 {object} QuranErrorResponse "Bad request"
+// @Failure 500 {object} QuranErrorResponse "Internal server error"
+// @Router /api/v1/quran/juz [get]
+func (h *GetAllJuzHandler) Handle(c *gin.Context) {
 	start := time.Now()
-	
-	queryReq := query.GetAllJuzQuery{}
-	result, err := h.queryHandler.GetAllJuz(c.Request.Context(), queryReq)
-	if err != nil {
-		core.Error(c, http.StatusInternalServerError, "Failed to get juz", &core.ErrorDetail{Reason: err.Error()}, start)
+	ctx := c.Request.Context()
+
+	var req dto.GetAllJuzRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusBadRequest, "Invalid query parameters", errorDetail, start)
 		return
 	}
 
-	if result != nil {
-		core.Success(c, http.StatusOK, "Juz retrieved successfully", result, start)
-	} else {
-		core.Success(c, http.StatusOK, "Juz retrieved successfully", core.EmptyData{}, start)
+	// Set default values if not provided
+	if req.Limit == 0 {
+		req.Limit = 10
 	}
+
+	qry := query.GetAllJuzQuery{
+		Limit:   req.Limit,
+		Offset:  req.Offset,
+		Include: req.Include,
+	}
+
+	result, err := h.queryHandler.GetAllJuz(ctx, qry)
+	if err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusInternalServerError, "Failed to get juz list", errorDetail, start)
+		return
+	}
+
+	core.Success(c, http.StatusOK, "Juz list retrieved successfully", result, start)
 }

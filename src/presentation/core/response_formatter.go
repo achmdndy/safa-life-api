@@ -14,12 +14,37 @@ type ErrorDetail struct {
 	Reason string  `json:"reason"`
 }
 
+// Swagger response types for documentation
+// These types are used specifically for Swagger documentation since it doesn't support Go generics
+
+// SuccessResponse represents a successful API response
+type SuccessResponse struct {
+	Success      bool        `json:"success" example:"true"`
+	StatusCode   int         `json:"statusCode" example:"200"`
+	Message      string      `json:"message" example:"Operation completed successfully"`
+	Timestamp    time.Time   `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string      `json:"responseTime" example:"15.234ms"`
+	Data         interface{} `json:"data,omitempty"`
+	Errors       interface{} `json:"errors,omitempty"`
+}
+
+// ErrorResponse represents an error API response
+type ErrorResponse struct {
+	Success      bool         `json:"success" example:"false"`
+	StatusCode   int          `json:"statusCode" example:"500"`
+	Message      string       `json:"message" example:"An error occurred"`
+	Timestamp    time.Time    `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string       `json:"responseTime" example:"15.234ms"`
+	Data         interface{}  `json:"data,omitempty"`
+	Errors       *ErrorDetail `json:"errors,omitempty"`
+}
+
 type ResponseFormatter[D any, E any] struct {
 	Success      bool      `json:"success"`
-	StatusCode   int       `json:"status_code"`
+	StatusCode   int       `json:"statusCode"`
 	Message      string    `json:"message"`
 	Timestamp    time.Time `json:"timestamp"`
-	ResponseTime string    `json:"response_time"`
+	ResponseTime string    `json:"responseTime"`
 	Data         *D        `json:"data,omitempty"`
 	Errors       *E        `json:"errors,omitempty"`
 }

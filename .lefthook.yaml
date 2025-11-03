@@ -1,0 +1,59 @@
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      glob: "*.go"
+      run: gofmt -w {staged_files}
+      stage_fixed: true
+    
+    lint:
+      glob: "*.go"
+      run: echo {staged_files} | xargs -n 1 dirname | uniq | xargs -I {} golangci-lint run {}
+    
+    test:
+      run: go test ./...
+    
+    mod-tidy:
+      run: go mod tidy
+      stage_fixed: true
+
+pre-push:
+  commands:
+    test:
+      run: |
+        echo "🧪 Running tests with coverage..."
+        go test ./... -race -covermode=atomic -coverprofile=coverage.out
+        
+        # Generate laporan coverage ringkas di terminal
+        go tool cover -func=coverage.out | tee coverage.txt
+
+    build:
+      run: |
+        echo "🏗️ Building project..."
+        go build -o /tmp/safalife-api ./main.go
+
+commit-msg:
+  commands:
+    conventional-commit:
+      run: |
+        # Tentukan file commit message
+        COMMIT_MSG_FILE="${1:-.git/COMMIT_EDITMSG}"
+
+        # Pastikan file ada
+        if [ ! -f "$COMMIT_MSG_FILE" ]; then
+          echo "⚠️  Commit message file not found: $COMMIT_MSG_FILE"
+          exit 1
+        fi
+
+        # Validasi format Conventional Commit (scope opsional)
+        if ! grep -qE "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\([a-zA-Z0-9_-]+\))?: .+" "$COMMIT_MSG_FILE"; then
+          echo "❌ Commit message must follow Conventional Commit format:"
+          echo "   type(scope): description"
+          echo ""
+          echo "Examples:"
+          echo "   feat: add new feature"
+          echo "   fix(auth): correct JWT token bug"
+          echo ""
+          echo "Valid types: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
+          exit 1
+        fi

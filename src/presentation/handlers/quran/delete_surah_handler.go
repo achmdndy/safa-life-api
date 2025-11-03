@@ -2,46 +2,64 @@ package quran
 
 import (
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
-	"github.com/achmdndy/safa-life-api/src/application/quran/command"
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
 	"github.com/gin-gonic/gin"
+
+	"github.com/safalife/core-api/src/application/quran/command"
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/presentation/core"
 )
 
-// DeleteSurah handles DELETE /surahs/:id
+// DeleteSurahHandler handles the delete surah request
+type DeleteSurahHandler struct {
+	commandHandler *command.CommandHandler
+}
+
+// NewDeleteSurahHandler creates a new delete surah handler
+func NewDeleteSurahHandler(commandHandler *command.CommandHandler) *DeleteSurahHandler {
+	return &DeleteSurahHandler{
+		commandHandler: commandHandler,
+	}
+}
+
+// Handle processes the delete surah request
 // @Summary Delete a surah
-// @Description Delete a specific surah (chapter) from the Quran
+// @Description Delete an existing surah from the Quran
 // @Tags Surah
 // @Accept json
 // @Produce json
-// @Param id path int true "Surah ID"
-// @Success 200 {object} core.SuccessResponse "Surah deleted successfully"
-// @Failure 400 {object} core.ErrorResponse "Invalid surah ID"
-// @Failure 404 {object} core.ErrorResponse "Surah not found"
-// @Failure 500 {object} core.ErrorResponse "Failed to delete surah"
-// @Router /surahs/{id} [delete]
-func (h *Handler) DeleteSurah(c *gin.Context) {
+// @Param id path string true "Surah ID"
+// @Success 200 {object} DeleteSurahSuccessResponse "Surah deleted successfully"
+// @Failure 400 {object} QuranErrorResponse "Bad request"
+// @Failure 404 {object} QuranErrorResponse "Surah not found"
+// @Failure 500 {object} QuranErrorResponse "Internal server error"
+// @Router /api/v1/quran/surahs/{id} [delete]
+func (h *DeleteSurahHandler) Handle(c *gin.Context) {
 	start := time.Now()
+	ctx := c.Request.Context()
 
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid surah ID", &core.ErrorDetail{Reason: err.Error()}, start)
-		return
-	}
-
-	cmd := command.DeleteSurahCommand{ID: id}
-	err = h.commandHandler.DeleteSurah(c.Request.Context(), cmd)
-	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
-			core.Error(c, http.StatusNotFound, "Surah not found", &core.ErrorDetail{Reason: err.Error()}, start)
-			return
+	var req dto.DeleteSurahRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
 		}
-		core.Error(c, http.StatusInternalServerError, "Failed to delete surah", &core.ErrorDetail{Reason: err.Error()}, start)
+		core.Error(c, http.StatusBadRequest, "Invalid surah ID", errorDetail, start)
 		return
 	}
 
-	core.Success(c, http.StatusOK, "Surah deleted successfully", core.EmptyData{}, start)
+	cmd := command.DeleteSurahCommand{
+		ID: req.ID,
+	}
+
+	err := h.commandHandler.DeleteSurah(ctx, cmd)
+	if err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusInternalServerError, "Failed to delete surah", errorDetail, start)
+		return
+	}
+
+	core.Success(c, http.StatusOK, "Surah deleted successfully", map[string]interface{}{}, start)
 }

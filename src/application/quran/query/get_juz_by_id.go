@@ -2,26 +2,38 @@ package query
 
 import (
 	"context"
-	"fmt"
-	"github.com/achmdndy/safa-life-api/src/application/quran/dto"
+
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/domain/quran"
 )
 
-// GetJuzByIDQuery represents the query to get a juz by ID
-type GetJuzByIDQuery struct {
-	ID int
+type GetJuzByIdQuery struct {
+	ID      string
+	Include string
 }
 
-// GetJuzByID retrieves a juz by its ID
-func (h *QueryHandler) GetJuzByID(ctx context.Context, query GetJuzByIDQuery) (*dto.JuzResponse, error) {
-	if query.ID < 1 || query.ID > 30 {
-		return nil, fmt.Errorf("invalid juz ID: %d", query.ID)
-	}
-
-	juz, err := h.quranService.GetJuzByID(ctx, query.ID)
+func (h *QueryHandler) GetJuzById(ctx context.Context, query GetJuzByIdQuery) (interface{}, error) {
+	id, err := h.uuidGenerator.Parse(query.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	response := dto.ToJuzResponse(*juz)
-	return &response, nil
+	// Check if eager loading is requested
+	if query.Include == "relations" {
+		var juzWithRelations *quran.JuzWithRelations
+		juzWithRelations, err = h.juzService.GetJuzByIdWithRelations(ctx, id)
+		if err != nil {
+			return nil, err
+		}
+		return dto.ToJuzWithRelationsResponse(juzWithRelations), nil
+	}
+
+	// Default behavior without eager loading
+	var juz *quran.Juz
+	juz, err = h.juzService.GetJuzById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return dto.ToJuzResponse(juz), nil
 }

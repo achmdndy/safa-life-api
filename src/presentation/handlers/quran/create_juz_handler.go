@@ -5,42 +5,64 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/achmdndy/safa-life-api/src/application/quran/command"
-	"github.com/achmdndy/safa-life-api/src/application/quran/dto"
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
+
+	"github.com/safalife/core-api/src/application/quran/command"
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/presentation/core"
 )
 
-// CreateJuz handles POST /juz
+// CreateJuzHandler handles the create juz request
+type CreateJuzHandler struct {
+	commandHandler *command.CommandHandler
+}
+
+// NewCreateJuzHandler creates a new create juz handler
+func NewCreateJuzHandler(commandHandler *command.CommandHandler) *CreateJuzHandler {
+	return &CreateJuzHandler{
+		commandHandler: commandHandler,
+	}
+}
+
+// Handle processes the create juz request
 // @Summary Create a new juz
-// @Description Create a new juz (part) in the Quran
+// @Description Create a new juz with the provided information
 // @Tags Juz
 // @Accept json
 // @Produce json
-// @Param juz body dto.CreateJuzRequest true "Juz data"
-// @Success 201 {object} core.SuccessResponse{data=dto.JuzResponse} "Juz created successfully"
-// @Failure 400 {object} core.ErrorResponse "Invalid request body"
-// @Failure 500 {object} core.ErrorResponse "Failed to create juz"
-// @Router /juz [post]
-func (h *Handler) CreateJuz(c *gin.Context) {
+// @Param juz body dto.CreateJuzRequest true "Juz information"
+// @Success 201 {object} JuzSuccessResponse "Juz created successfully"
+// @Failure 400 {object} QuranErrorResponse "Bad request"
+// @Failure 500 {object} QuranErrorResponse "Internal server error"
+// @Router /api/v1/quran/juz [post]
+func (h *CreateJuzHandler) Handle(c *gin.Context) {
 	start := time.Now()
-	
+	ctx := c.Request.Context()
+
 	var req dto.CreateJuzRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid request body", &core.ErrorDetail{Reason: err.Error()}, start)
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusBadRequest, "Invalid request body", errorDetail, start)
 		return
 	}
 
-	cmd := command.FromCreateJuzRequest(req)
-	domainResult, err := h.commandHandler.CreateJuz(c.Request.Context(), cmd)
+	cmd := command.CreateJuzCommand{
+		StartSurahID: req.StartSurahID,
+		EndSurahID:   req.EndSurahID,
+		StartAyahID:  req.StartAyahID,
+		EndAyahID:    req.EndAyahID,
+		CreatedBy:    req.CreatedBy,
+	}
+
+	result, err := h.commandHandler.CreateJuz(ctx, cmd)
 	if err != nil {
-		core.Error(c, http.StatusInternalServerError, "Failed to create juz", &core.ErrorDetail{Reason: err.Error()}, start)
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusInternalServerError, "Failed to create juz", errorDetail, start)
 		return
 	}
 
-	if domainResult != nil {
-		result := dto.ToJuzResponse(*domainResult)
-		core.Success(c, http.StatusCreated, "Juz created successfully", result, start)
-	} else {
-		core.Success(c, http.StatusCreated, "Juz created successfully", core.EmptyData{}, start)
-	}
+	core.Success(c, http.StatusCreated, "Juz created successfully", result, start)
 }

@@ -5,62 +5,93 @@ import (
 	"log"
 	"time"
 
-	"github.com/achmdndy/safa-life-api/src/infrastructure/monitoring"
+	"github.com/safalife/core-api/src/infrastructure/monitoring"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 )
 
+// DatabaseConfig represents database configuration
 type DatabaseConfig struct {
-	Host     string
-	Port     int
-	User     string
-	Password string
-	DBName   string
-	SSLMode  string
-	TimeZone string
+	Host     string `mapstructure:"host"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	Name     string `mapstructure:"name"`
+	Port     int    `mapstructure:"port"`
+	SSLMode  string `mapstructure:"ssl_mode"`
+	TimeZone string `mapstructure:"timezone"`
 }
 
-type Database struct {
-	DB *gorm.DB
+var DB *gorm.DB
+
+// CustomNamingStrategy preserves PascalCase for both table and column names
+type CustomNamingStrategy struct {
+	schema.NamingStrategy
 }
 
-func NewDatabase(config DatabaseConfig) (*Database, error) {
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
+// ColumnName preserves the original column name (PascalCase) with quotes
+func (ns CustomNamingStrategy) ColumnName(table, column string) string {
+	return `"` + column + `"`
+}
+
+// TableName preserves the original table name (PascalCase)
+func (ns CustomNamingStrategy) TableName(table string) string {
+	return table
+}
+
+// InitDatabase initializes the database connection using GORM
+func InitDatabase(config DatabaseConfig) error {
+	return InitDatabaseWithTracing(config, monitoring.DatabaseTracingConfig{
+		ServiceName:    "safalife-api",
+		ServiceVersion: "1.0.0",
+		Environment:    "development",
+		Enabled:        true,
+		IncludeParams:  false,
+	})
+}
+
+// InitDatabaseWithTracing initializes the database connection with tracing support
+func InitDatabaseWithTracing(config DatabaseConfig, tracingConfig monitoring.DatabaseTracingConfig) error {
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
 		config.Host,
 		config.User,
 		config.Password,
-		config.DBName,
+		config.Name,
 		config.Port,
 		config.SSLMode,
 		config.TimeZone,
 	)
 
-	gormConfig := &gorm.Config{
+	// Open database connection with custom naming strategy
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
-		NowFunc: func() time.Time {
-			return time.Now().UTC()
+		NamingStrategy: CustomNamingStrategy{
+			NamingStrategy: schema.NamingStrategy{
+				SingularTable: true,
+			},
 		},
-	}
+	})
 
-	db, err := gorm.Open(postgres.Open(dsn), gormConfig)
+	// Enable debug mode to see SQL queries
+	db = db.Debug()
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %w", err)
+		return fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	// Add GORM tracing plugin for OpenTelemetry (fixed version)
-	tracingPlugin := monitoring.NewGormTracingPlugin()
-	if errTracing := db.Use(tracingPlugin); errTracing != nil {
-		log.Printf("⚠️  Failed to register GORM tracing plugin: %v", errTracing)
+	// Initialize GORM tracing
+	if tracingErr := monitoring.InitGormTracing(db, tracingConfig); tracingErr != nil {
+		log.Printf("Warning: Failed to initialize GORM tracing: %v", err)
+		// Continue without tracing rather than failing completely
 	} else {
-		log.Println("✅ GORM tracing plugin registered successfully")
+		log.Println("GORM tracing initialized successfully")
 	}
 
 	// Configure connection pool
 	sqlDB, err := db.DB()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get underlying sql.DB: %w", err)
+		return fmt.Errorf("failed to get underlying sql.DB: %w", err)
 	}
 
 	// Set connection pool settings
@@ -68,36 +99,37 @@ func NewDatabase(config DatabaseConfig) (*Database, error) {
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	// Test connection
+	// Test the connection
 	if err := sqlDB.Ping(); err != nil {
-		return nil, fmt.Errorf("failed to ping database: %w", err)
+		return fmt.Errorf("failed to ping database: %w", err)
 	}
 
-	log.Println("✅ Database connected successfully")
-
-	return &Database{DB: db}, nil
+	DB = db
+	log.Println("Database connected successfully")
+	return nil
 }
 
-func (d *Database) Close() error {
-	sqlDB, err := d.DB.DB()
-	if err != nil {
-		return err
+// GetDB returns the database instance
+func GetDB() *gorm.DB {
+	return DB
+}
+
+// WithTransaction executes a function within a database transaction
+func WithTransaction(fn func(tx *gorm.DB) error) error {
+	return DB.Transaction(fn)
+}
+
+// CloseDatabase closes the database connection
+func CloseDatabase() error {
+	if DB != nil {
+		sqlDB, err := DB.DB()
+		if err != nil {
+			return fmt.Errorf("failed to get underlying sql.DB: %w", err)
+		}
+		if err := sqlDB.Close(); err != nil {
+			return fmt.Errorf("failed to close database: %w", err)
+		}
+		log.Println("Database connection closed")
 	}
-	return sqlDB.Close()
-}
-
-func (d *Database) GetDB() *gorm.DB {
-	return d.DB
-}
-
-func (d *Database) Ping() error {
-	sqlDB, err := d.DB.DB()
-	if err != nil {
-		return err
-	}
-	return sqlDB.Ping()
-}
-
-func (d *Database) Migrate(models ...interface{}) error {
-	return d.DB.AutoMigrate(models...)
+	return nil
 }

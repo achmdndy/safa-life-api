@@ -2,49 +2,72 @@ package quran
 
 import (
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
-	"github.com/achmdndy/safa-life-api/src/application/quran/query"
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
 	"github.com/gin-gonic/gin"
+
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/application/quran/query"
+	"github.com/safalife/core-api/src/presentation/core"
 )
 
-// GetJuzByID handles GET /juz/:id
+// GetJuzByIdHandler handles the get juz by id request
+type GetJuzByIdHandler struct {
+	queryHandler *query.QueryHandler
+}
+
+// NewGetJuzByIdHandler creates a new get juz by id handler
+func NewGetJuzByIdHandler(queryHandler *query.QueryHandler) *GetJuzByIdHandler {
+	return &GetJuzByIdHandler{
+		queryHandler: queryHandler,
+	}
+}
+
+// Handle processes the get juz by id request
 // @Summary Get juz by ID
-// @Description Get a specific juz (part) by its ID
+// @Description Get a specific juz by its ID
 // @Tags Juz
 // @Accept json
 // @Produce json
-// @Param id path int true "Juz ID"
-// @Success 200 {object} core.SuccessResponse{data=dto.JuzResponse} "Juz retrieved successfully"
-// @Failure 400 {object} core.ErrorResponse "Invalid juz ID"
-// @Failure 404 {object} core.ErrorResponse "Juz not found"
-// @Failure 500 {object} core.ErrorResponse "Failed to get juz"
-// @Router /juz/{id} [get]
-func (h *Handler) GetJuzByID(c *gin.Context) {
+// @Param id path string true "Juz ID"
+// @Param include query string false "Include related data" Enums(relations) example(relations)
+// @Success 200 {object} JuzSuccessResponse "Juz retrieved successfully"
+// @Failure 400 {object} QuranErrorResponse "Bad request"
+// @Failure 404 {object} QuranErrorResponse "Juz not found"
+// @Failure 500 {object} QuranErrorResponse "Internal server error"
+// @Router /api/v1/quran/juz/{id} [get]
+func (h *GetJuzByIdHandler) Handle(c *gin.Context) {
 	start := time.Now()
+	ctx := c.Request.Context()
 
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid juz ID", &core.ErrorDetail{Reason: err.Error()}, start)
-		return
-	}
-
-	queryReq := query.GetJuzByIDQuery{ID: id}
-	result, err := h.queryHandler.GetJuzByID(c.Request.Context(), queryReq)
-	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
-			core.Error(c, http.StatusNotFound, "Juz not found", &core.ErrorDetail{Reason: err.Error()}, start)
-			return
+	var req dto.GetJuzByIdRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
 		}
-		core.Error(c, http.StatusInternalServerError, "Failed to get juz", &core.ErrorDetail{Reason: err.Error()}, start)
+		core.Error(c, http.StatusBadRequest, "Invalid juz ID", errorDetail, start)
 		return
 	}
 
-	if result == nil {
-		core.Error(c, http.StatusNotFound, "Juz not found", &core.ErrorDetail{}, start)
+	if err := c.ShouldBindQuery(&req); err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusBadRequest, "Invalid query parameters", errorDetail, start)
+		return
+	}
+
+	qry := query.GetJuzByIdQuery{
+		ID:      req.ID,
+		Include: req.Include,
+	}
+
+	result, err := h.queryHandler.GetJuzById(ctx, qry)
+	if err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusInternalServerError, "Failed to get juz", errorDetail, start)
 		return
 	}
 

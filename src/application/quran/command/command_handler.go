@@ -1,19 +1,30 @@
 package command
 
 import (
-	"github.com/achmdndy/safa-life-api/src/domain/quran"
+	"github.com/safalife/core-api/src/domain/core"
+	"github.com/safalife/core-api/src/domain/quran"
 )
 
-// CommandHandler handles all write operations for Quran module
 type CommandHandler struct {
-	quranService quran.QuranService
-	txManager    quran.TransactionManager
+	surahService   quran.SurahServiceInterface
+	ayahService    quran.AyahServiceInterface
+	juzService     quran.JuzServiceInterface
+	uuidGenerator  core.UUIDGenerator
+	transactionMgr core.ContextTransactionManager
 }
 
-// NewCommandHandler creates a new command handler
-func NewCommandHandler(quranService quran.QuranService, txManager quran.TransactionManager) *CommandHandler {
+func NewCommandHandler(
+	surahService quran.SurahServiceInterface,
+	ayahService quran.AyahServiceInterface,
+	juzService quran.JuzServiceInterface,
+	uuidGenerator core.UUIDGenerator,
+	transactionMgr core.ContextTransactionManager,
+) *CommandHandler {
 	return &CommandHandler{
-		quranService: quranService,
-		txManager:    txManager,
+		surahService:   surahService,
+		ayahService:    ayahService,
+		juzService:     juzService,
+		uuidGenerator:  uuidGenerator,
+		transactionMgr: transactionMgr,
 	}
 }

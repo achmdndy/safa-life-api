@@ -2,59 +2,63 @@ package quran
 
 import (
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
-	"github.com/achmdndy/safa-life-api/src/application/quran/query"
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
 	"github.com/gin-gonic/gin"
+
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/application/quran/query"
+	"github.com/safalife/core-api/src/presentation/core"
 )
 
-// GetAyahByID handles GET /ayahs/:surahId/:ayahId
+// GetAyahByIdHandler handles the get ayah by ID request
+type GetAyahByIdHandler struct {
+	queryHandler *query.QueryHandler
+}
+
+// NewGetAyahByIdHandler creates a new get ayah by ID handler
+func NewGetAyahByIdHandler(queryHandler *query.QueryHandler) *GetAyahByIdHandler {
+	return &GetAyahByIdHandler{
+		queryHandler: queryHandler,
+	}
+}
+
+// Handle processes the get ayah by ID request
 // @Summary Get ayah by ID
-// @Description Get a specific ayah by surah ID and ayah ID
+// @Description Get an ayah by its ID from the Quran
 // @Tags Ayah
 // @Accept json
 // @Produce json
-// @Param surahId path int true "Surah ID"
-// @Param ayahId path int true "Ayah ID"
-// @Success 200 {object} core.SuccessResponse{data=dto.AyahResponse} "Ayah retrieved successfully"
-// @Failure 400 {object} core.ErrorResponse "Invalid surah ID or ayah ID"
-// @Failure 404 {object} core.ErrorResponse "Ayah not found"
-// @Failure 500 {object} core.ErrorResponse "Failed to get ayah"
-// @Router /ayahs/{surahId}/{ayahId} [get]
-func (h *Handler) GetAyahByID(c *gin.Context) {
+// @Param id path string true "Ayah ID"
+// @Param include query string false "Include related data" Enums(surah) example(surah)
+// @Success 200 {object} GetAyahByIdSuccessResponse "Ayah retrieved successfully"
+// @Failure 400 {object} QuranErrorResponse "Bad request"
+// @Failure 404 {object} QuranErrorResponse "Ayah not found"
+// @Failure 500 {object} QuranErrorResponse "Internal server error"
+// @Router /api/v1/quran/ayahs/{id} [get]
+func (h *GetAyahByIdHandler) Handle(c *gin.Context) {
 	start := time.Now()
+	ctx := c.Request.Context()
 
-	surahID, err := strconv.Atoi(c.Param("surahId"))
-	if err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid surah ID", &core.ErrorDetail{Reason: err.Error()}, start)
-		return
-	}
-
-	ayahID, err := strconv.Atoi(c.Param("ayahId"))
-	if err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid ayah ID", &core.ErrorDetail{Reason: err.Error()}, start)
-		return
-	}
-
-	queryReq := query.GetAyahByIDQuery{SurahID: surahID, AyahID: ayahID}
-	result, err := h.queryHandler.GetAyahByID(c.Request.Context(), queryReq)
-	if err != nil {
-		// Check if the error is a validation error (invalid surah/ayah ID) or "not found" error
-		if strings.Contains(err.Error(), "invalid surah ID") ||
-			strings.Contains(err.Error(), "invalid ayah ID") ||
-			strings.Contains(err.Error(), "not found") {
-			core.Error(c, http.StatusNotFound, "Ayah not found", &core.ErrorDetail{Reason: err.Error()}, start)
-			return
+	var req dto.GetAyahByIdRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
 		}
-		core.Error(c, http.StatusInternalServerError, "Failed to get ayah", &core.ErrorDetail{Reason: err.Error()}, start)
+		core.Error(c, http.StatusBadRequest, "Invalid ayah ID", errorDetail, start)
 		return
 	}
 
-	if result == nil {
-		core.Error(c, http.StatusNotFound, "Ayah not found", &core.ErrorDetail{}, start)
+	qry := query.GetAyahByIdQuery{
+		ID: req.ID,
+	}
+
+	result, err := h.queryHandler.GetAyahById(ctx, qry)
+	if err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusInternalServerError, "Failed to get ayah", errorDetail, start)
 		return
 	}
 

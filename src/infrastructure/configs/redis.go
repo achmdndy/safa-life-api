@@ -6,55 +6,81 @@ import (
 	"log"
 	"time"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
+// RedisConfig represents Redis configuration
 type RedisConfig struct {
-	Host     string
-	Port     int
-	Password string
-	DB       int
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	Password string `mapstructure:"password"`
+	DB       int    `mapstructure:"db"`
 }
 
-type Redis struct {
-	Client *redis.Client
-}
+var RedisClient *redis.Client
 
-func NewRedis(config RedisConfig) (*Redis, error) {
+// InitRedis initializes the Redis connection
+func InitRedis(config RedisConfig) error {
+
+	// Create Redis client
 	rdb := redis.NewClient(&redis.Options{
 		Addr:         fmt.Sprintf("%s:%d", config.Host, config.Port),
 		Password:     config.Password,
 		DB:           config.DB,
-		DialTimeout:  5 * time.Second,
-		ReadTimeout:  3 * time.Second,
-		WriteTimeout: 3 * time.Second,
+		DialTimeout:  10 * time.Second,
+		ReadTimeout:  30 * time.Second,
+		WriteTimeout: 30 * time.Second,
 		PoolSize:     10,
-		MinIdleConns: 5,
+		PoolTimeout:  30 * time.Second,
 	})
 
-	// Test connection
+	// Test the connection
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	if err := rdb.Ping(ctx).Err(); err != nil {
-		return nil, fmt.Errorf("failed to connect to Redis: %w", err)
+	_, err := rdb.Ping(ctx).Result()
+	if err != nil {
+		return fmt.Errorf("failed to connect to Redis: %w", err)
 	}
 
-	log.Println("✅ Redis connected successfully")
-
-	return &Redis{Client: rdb}, nil
+	RedisClient = rdb
+	log.Println("Redis connected successfully")
+	return nil
 }
 
-func (r *Redis) Close() error {
-	return r.Client.Close()
+// GetRedis returns the Redis client instance
+func GetRedis() *redis.Client {
+	return RedisClient
 }
 
-func (r *Redis) GetClient() *redis.Client {
-	return r.Client
+// CloseRedis closes the Redis connection
+func CloseRedis() error {
+	if RedisClient != nil {
+		if err := RedisClient.Close(); err != nil {
+			return fmt.Errorf("failed to close Redis connection: %w", err)
+		}
+		log.Println("Redis connection closed")
+	}
+	return nil
 }
 
-func (r *Redis) Ping() error {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-	return r.Client.Ping(ctx).Err()
+// SetWithExpiration sets a key-value pair with expiration
+func SetWithExpiration(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
+	return RedisClient.Set(ctx, key, value, expiration).Err()
+}
+
+// Get retrieves a value by key
+func Get(ctx context.Context, key string) (string, error) {
+	return RedisClient.Get(ctx, key).Result()
+}
+
+// Delete removes a key
+func Delete(ctx context.Context, key string) error {
+	return RedisClient.Del(ctx, key).Err()
+}
+
+// Exists checks if a key exists
+func Exists(ctx context.Context, key string) (bool, error) {
+	result, err := RedisClient.Exists(ctx, key).Result()
+	return result > 0, err
 }

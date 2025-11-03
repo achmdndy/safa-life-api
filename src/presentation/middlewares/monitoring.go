@@ -1,66 +1,215 @@
 package middlewares
 
 import (
+	"context"
+	"reflect"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// MonitoringMiddleware provides monitoring capabilities for the presentation layer
-type MonitoringMiddleware struct {
-	requestDuration *prometheus.HistogramVec
-	requestCounter  *prometheus.CounterVec
-}
+// TracingMiddleware adds OpenTelemetry tracing to HTTP requests
+func TracingMiddleware(monitoringService interface{}) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Use reflection to call StartSpan if available
+		if service := reflect.ValueOf(monitoringService); service.IsValid() {
+			if method := service.MethodByName("StartSpan"); method.IsValid() {
+				// Call StartSpan method
+				results := method.Call([]reflect.Value{
+					reflect.ValueOf(c.Request.Context()),
+					reflect.ValueOf("HTTP " + c.Request.Method + " " + c.FullPath()),
+				})
 
-// NewMonitoringMiddleware creates a new monitoring middleware
-func NewMonitoringMiddleware() *MonitoringMiddleware {
-	requestDuration := prometheus.NewHistogramVec(
-		prometheus.HistogramOpts{
-			Name: "http_request_duration_seconds",
-			Help: "Duration of HTTP requests in seconds",
-		},
-		[]string{"method", "path", "status"},
-	)
+				if len(results) >= 2 {
+					// Update context if returned
+					if ctx, ok := results[0].Interface().(context.Context); ok {
+						c.Request = c.Request.WithContext(ctx)
+					}
 
-	requestCounter := prometheus.NewCounterVec(
-		prometheus.CounterOpts{
-			Name: "http_requests_total",
-			Help: "Total number of HTTP requests",
-		},
-		[]string{"method", "path", "status"},
-	)
+					// End span when request completes
+					if span := results[1]; span.IsValid() {
+						defer func() {
+							if endMethod := span.MethodByName("End"); endMethod.IsValid() {
+								endMethod.Call([]reflect.Value{})
+							}
+						}()
 
-	prometheus.MustRegister(requestDuration)
-	prometheus.MustRegister(requestCounter)
+						// Set attributes
+						if setAttrMethod := span.MethodByName("SetAttributes"); setAttrMethod.IsValid() {
+							// Create attributes using reflection
+							attrs := []reflect.Value{}
 
-	return &MonitoringMiddleware{
-		requestDuration: requestDuration,
-		requestCounter:  requestCounter,
+							// Add HTTP method attribute
+							if newStringAttr := service.MethodByName("NewStringAttribute"); newStringAttr.IsValid() {
+								attr := newStringAttr.Call([]reflect.Value{
+									reflect.ValueOf("http.method"),
+									reflect.ValueOf(c.Request.Method),
+								})
+								if len(attr) > 0 {
+									attrs = append(attrs, attr[0])
+								}
+							}
+
+							// Add URL attribute
+							if newStringAttr := service.MethodByName("NewStringAttribute"); newStringAttr.IsValid() {
+								attr := newStringAttr.Call([]reflect.Value{
+									reflect.ValueOf("http.url"),
+									reflect.ValueOf(c.Request.URL.String()),
+								})
+								if len(attr) > 0 {
+									attrs = append(attrs, attr[0])
+								}
+							}
+
+							if len(attrs) > 0 {
+								setAttrMethod.Call(attrs)
+							}
+						}
+					}
+				}
+			}
+		}
+
+		c.Next()
 	}
 }
 
-// Setup configures monitoring middleware on the router
-func (m *MonitoringMiddleware) Setup(router *gin.Engine, serviceName string) {
-	// Add metrics endpoint
-	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
-
-	// Add monitoring middleware
-	router.Use(m.MetricsMiddleware())
-}
-
-// MetricsMiddleware returns a gin middleware that records metrics
-func (m *MonitoringMiddleware) MetricsMiddleware() gin.HandlerFunc {
+// MetricsMiddleware records HTTP request metrics
+func MetricsMiddleware(monitoringService interface{}) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 
+		// Increment in-flight requests
+		if service := reflect.ValueOf(monitoringService); service.IsValid() {
+			if method := service.MethodByName("IncrementInFlightRequests"); method.IsValid() {
+				method.Call([]reflect.Value{})
+			}
+		}
+
 		c.Next()
 
-		duration := time.Since(start).Seconds()
-		status := string(rune(c.Writer.Status()))
+		// Decrement in-flight requests and record metrics
+		if service := reflect.ValueOf(monitoringService); service.IsValid() {
+			if method := service.MethodByName("DecrementInFlightRequests"); method.IsValid() {
+				method.Call([]reflect.Value{})
+			}
 
-		m.requestDuration.WithLabelValues(c.Request.Method, c.FullPath(), status).Observe(duration)
-		m.requestCounter.WithLabelValues(c.Request.Method, c.FullPath(), status).Inc()
+			// Record HTTP request
+			if method := service.MethodByName("RecordHTTPRequest"); method.IsValid() {
+				duration := time.Since(start)
+				method.Call([]reflect.Value{
+					reflect.ValueOf(c.Request.Method),
+					reflect.ValueOf(c.FullPath()),
+					reflect.ValueOf(strconv.Itoa(c.Writer.Status())),
+					reflect.ValueOf(duration),
+				})
+			}
+		}
+	}
+}
+
+// MonitoringMiddleware combines tracing and metrics
+func MonitoringMiddleware(monitoringService interface{}) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		start := time.Now()
+
+		// Increment in-flight requests
+		if service := reflect.ValueOf(monitoringService); service.IsValid() {
+			if method := service.MethodByName("IncrementInFlightRequests"); method.IsValid() {
+				method.Call([]reflect.Value{})
+			}
+		}
+
+		// Start tracing span
+		var spanValue reflect.Value
+		if service := reflect.ValueOf(monitoringService); service.IsValid() {
+			if method := service.MethodByName("StartSpan"); method.IsValid() {
+				results := method.Call([]reflect.Value{
+					reflect.ValueOf(c.Request.Context()),
+					reflect.ValueOf("HTTP " + c.Request.Method + " " + c.FullPath()),
+				})
+
+				if len(results) >= 2 {
+					if ctx, ok := results[0].Interface().(context.Context); ok {
+						c.Request = c.Request.WithContext(ctx)
+					}
+					spanValue = results[1]
+				}
+			}
+		}
+
+		c.Next()
+
+		// End span and record metrics
+		if spanValue.IsValid() {
+			// Set span attributes
+			if setAttrMethod := spanValue.MethodByName("SetAttributes"); setAttrMethod.IsValid() {
+				if service := reflect.ValueOf(monitoringService); service.IsValid() {
+					// Create attributes using reflection
+					attrs := []reflect.Value{}
+
+					// Add HTTP method attribute
+					if newStringAttr := service.MethodByName("NewStringAttribute"); newStringAttr.IsValid() {
+						attr := newStringAttr.Call([]reflect.Value{
+							reflect.ValueOf("http.method"),
+							reflect.ValueOf(c.Request.Method),
+						})
+						if len(attr) > 0 {
+							attrs = append(attrs, attr[0])
+						}
+					}
+
+					// Add HTTP status code attribute
+					if newIntAttr := service.MethodByName("NewIntAttribute"); newIntAttr.IsValid() {
+						attr := newIntAttr.Call([]reflect.Value{
+							reflect.ValueOf("http.status_code"),
+							reflect.ValueOf(int64(c.Writer.Status())),
+						})
+						if len(attr) > 0 {
+							attrs = append(attrs, attr[0])
+						}
+					}
+
+					// Add URL attribute
+					if newStringAttr := service.MethodByName("NewStringAttribute"); newStringAttr.IsValid() {
+						attr := newStringAttr.Call([]reflect.Value{
+							reflect.ValueOf("http.url"),
+							reflect.ValueOf(c.Request.URL.String()),
+						})
+						if len(attr) > 0 {
+							attrs = append(attrs, attr[0])
+						}
+					}
+
+					if len(attrs) > 0 {
+						setAttrMethod.Call(attrs)
+					}
+				}
+			}
+
+			// End span
+			if endMethod := spanValue.MethodByName("End"); endMethod.IsValid() {
+				endMethod.Call([]reflect.Value{})
+			}
+		}
+
+		// Decrement in-flight requests and record metrics
+		if service := reflect.ValueOf(monitoringService); service.IsValid() {
+			if method := service.MethodByName("DecrementInFlightRequests"); method.IsValid() {
+				method.Call([]reflect.Value{})
+			}
+
+			// Record HTTP request
+			if method := service.MethodByName("RecordHTTPRequest"); method.IsValid() {
+				duration := time.Since(start)
+				method.Call([]reflect.Value{
+					reflect.ValueOf(c.Request.Method),
+					reflect.ValueOf(c.FullPath()),
+					reflect.ValueOf(strconv.Itoa(c.Writer.Status())),
+					reflect.ValueOf(duration),
+				})
+			}
+		}
 	}
 }

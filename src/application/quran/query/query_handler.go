@@ -1,15 +1,27 @@
 package query
 
 import (
-	"github.com/achmdndy/safa-life-api/src/domain/quran"
+	"github.com/safalife/core-api/src/domain/core"
+	"github.com/safalife/core-api/src/domain/quran"
 )
 
 type QueryHandler struct {
-	quranService quran.QuranService
+	surahService  quran.SurahServiceInterface
+	ayahService   quran.AyahServiceInterface
+	juzService    quran.JuzServiceInterface
+	uuidGenerator core.UUIDGenerator
 }
 
-func NewQueryHandler(quranService quran.QuranService) *QueryHandler {
+func NewQueryHandler(
+	surahService quran.SurahServiceInterface,
+	ayahService quran.AyahServiceInterface,
+	juzService quran.JuzServiceInterface,
+	uuidGenerator core.UUIDGenerator,
+) *QueryHandler {
 	return &QueryHandler{
-		quranService: quranService,
+		surahService:  surahService,
+		ayahService:   ayahService,
+		juzService:    juzService,
+		uuidGenerator: uuidGenerator,
 	}
 }

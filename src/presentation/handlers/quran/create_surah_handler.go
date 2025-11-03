@@ -5,42 +5,65 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/achmdndy/safa-life-api/src/application/quran/command"
-	"github.com/achmdndy/safa-life-api/src/application/quran/dto"
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
+
+	"github.com/safalife/core-api/src/application/quran/command"
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/presentation/core"
 )
 
-// CreateSurah handles POST /surahs
+// CreateSurahHandler handles the create surah request
+type CreateSurahHandler struct {
+	commandHandler *command.CommandHandler
+}
+
+// NewCreateSurahHandler creates a new create surah handler
+func NewCreateSurahHandler(commandHandler *command.CommandHandler) *CreateSurahHandler {
+	return &CreateSurahHandler{
+		commandHandler: commandHandler,
+	}
+}
+
+// Handle processes the create surah request
 // @Summary Create a new surah
-// @Description Create a new surah (chapter) in the Quran
+// @Description Create a new surah in the Quran
 // @Tags Surah
 // @Accept json
 // @Produce json
-// @Param surah body dto.CreateSurahRequest true "Surah data"
-// @Success 201 {object} core.SuccessResponse{data=dto.SurahResponse} "Surah created successfully"
-// @Failure 400 {object} core.ErrorResponse "Invalid request body"
-// @Failure 500 {object} core.ErrorResponse "Failed to create surah"
-// @Router /surahs [post]
-func (h *Handler) CreateSurah(c *gin.Context) {
+// @Param request body dto.CreateSurahRequest true "Create surah request"
+// @Success 201 {object} CreateSurahSuccessResponse "Surah created successfully"
+// @Failure 400 {object} QuranErrorResponse "Bad request"
+// @Failure 500 {object} QuranErrorResponse "Internal server error"
+// @Router /api/v1/quran/surahs [post]
+func (h *CreateSurahHandler) Handle(c *gin.Context) {
 	start := time.Now()
-	
+	ctx := c.Request.Context()
+
 	var req dto.CreateSurahRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid request body", &core.ErrorDetail{Reason: err.Error()}, start)
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusBadRequest, "Invalid request body", errorDetail, start)
 		return
 	}
 
-	cmd := command.FromCreateSurahRequest(req)
-	domainResult, err := h.commandHandler.CreateSurah(c.Request.Context(), cmd)
+	cmd := command.CreateSurahCommand{
+		NameArabic:      req.NameArabic,
+		NameEnglish:     req.NameEnglish,
+		RevelationPlace: req.RevelationPlace,
+		RevelationOrder: req.RevelationOrder,
+		AyahCount:       req.AyahCount,
+		CreatedBy:       req.CreatedBy,
+	}
+
+	result, err := h.commandHandler.CreateSurah(ctx, cmd)
 	if err != nil {
-		core.Error(c, http.StatusInternalServerError, "Failed to create surah", &core.ErrorDetail{Reason: err.Error()}, start)
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusInternalServerError, "Failed to create surah", errorDetail, start)
 		return
 	}
 
-	if domainResult != nil {
-		result := dto.ToSurahResponse(*domainResult)
-		core.Success(c, http.StatusCreated, "Surah created successfully", result, start)
-	} else {
-		core.Success(c, http.StatusCreated, "Surah created successfully", core.EmptyData{}, start)
-	}
+	core.Success(c, http.StatusCreated, "Surah created successfully", result, start)
 }

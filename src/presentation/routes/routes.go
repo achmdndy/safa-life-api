@@ -1,76 +1,58 @@
 package routes
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
-	audioHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/audio"
-	healthHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/health"
-	quranHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/quran"
-	reciterHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/reciter"
-	resourceHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/resource"
-	storyHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/story"
-	tafsirHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/tafsir"
-	tajweedHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/tajweed"
-	topicHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/topic"
-	translationHandler "github.com/achmdndy/safa-life-api/src/presentation/handlers/translation"
-	"github.com/achmdndy/safa-life-api/src/presentation/middlewares"
+	"github.com/safalife/core-api/src/presentation/container"
+	"github.com/safalife/core-api/src/presentation/core"
+	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
-type RouteConfig struct {
-	HealthHandler      *healthHandler.Handler
-	QuranHandler       *quranHandler.Handler
-	ReciterHandler     *reciterHandler.Handler
-	TajweedHandler     *tajweedHandler.Handler
-	TranslationHandler *translationHandler.Handler
-	AudioHandler       *audioHandler.Handler
-	ResourceHandler    *resourceHandler.Handler
-	StoryHandler       *storyHandler.Handler
-	TafsirHandler      *tafsirHandler.Handler
-	TopicHandler       *topicHandler.Handler
-	MonitoringMiddleware *middlewares.MonitoringMiddleware
-}
+// SetupRoutes configures all application routes
+func SetupRoutes(router *gin.Engine, presentationContainer *container.PresentationContainer) {
+	// CORS middleware - should be first to handle preflight requests
+	router.Use(middlewares.CORS())
 
-func SetupRoutes(config RouteConfig) *gin.Engine {
-	gin.SetMode(gin.ReleaseMode)
-	router := gin.New()
+	// Attach monitoring middleware
+	router.Use(middlewares.TracingMiddleware(presentationContainer.GetMonitoringService()))
+	router.Use(middlewares.MetricsMiddleware(presentationContainer.GetMonitoringService()))
+	router.Use(middlewares.MonitoringMiddleware(presentationContainer.GetMonitoringService()))
 
-	// Add OpenTelemetry middleware first for comprehensive tracing
-	router.Use(otelgin.Middleware("safa-life-api"))
+	// Setup Prometheus and health endpoints
+	router.GET("/metrics", gin.WrapH(presentationContainer.GetMonitoringHandlers().GetPrometheusHandler()))
+	router.GET("/health", gin.WrapH(presentationContainer.GetMonitoringHandlers().GetHealthHandler()))
 
-	// Setup monitoring middleware (includes metrics endpoint and middleware)
-	if config.MonitoringMiddleware != nil {
-		config.MonitoringMiddleware.Setup(router, "safa-life-api")
-	}
-
-	router.Use(middlewares.LoggingMiddleware())
-	router.Use(middlewares.RecoveryMiddleware())
-	router.Use(middlewares.CORSMiddleware())
-
-	// Set up the actual routes
-	v1 := router.Group("/api/v1")
-
-	SetupHealthRoutes(v1, config.HealthHandler)
-	QuranRoutes(v1, config.QuranHandler)
-	ReciterRoutes(v1, config.ReciterHandler)
-	TajweedRoutes(v1, config.TajweedHandler)
-	TranslationRoutes(v1, config.TranslationHandler)
-	AudioRoutes(v1, config.AudioHandler)
-	ResourceRoutes(v1, config.ResourceHandler)
-	StoryRoutes(v1, config.StoryHandler)
-	TafsirRoutes(v1, config.TafsirHandler)
-	TopicRoutes(v1, config.TopicHandler)
-
+	// Root welcome route
 	router.GET("/", func(c *gin.Context) {
 		start := time.Now()
-		core.Success(c, 200, "🌙 Safa Life API - Islamic Lifestyle Backend", gin.H{
-			"version": "v1.0.0",
-			"status":  "running",
-		}, start)
+
+		welcomeData := map[string]interface{}{
+			"application": "Safa Life API",
+			"version":     "1.0.0",
+			"description": "Welcome to Safa Life API",
+			"endpoints": map[string]string{
+				"health":  "/health",
+				"metrics": "/metrics",
+				"api":     "/api/v1",
+				"docs":    "/swagger/index.html",
+			},
+		}
+
+		core.Success(c, http.StatusOK, "Welcome to Safa Life API", welcomeData, start)
 	})
 
-	return router
+	// Swagger documentation route
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// API version 1
+	v1 := router.Group("/api/v1")
+	{
+		// Quran routes
+		QuranRoutes(v1, presentationContainer.QuranHandler)
+	}
 }

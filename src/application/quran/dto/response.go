@@ -2,202 +2,334 @@ package dto
 
 import (
 	"time"
-	"github.com/achmdndy/safa-life-api/src/domain/quran"
+
+	"github.com/safalife/core-api/src/domain/quran"
 )
 
-// SurahResponse represents the response for a surah
+// Surah Response DTOs
 type SurahResponse struct {
-	ID              int       `json:"surah_id"`
-	NameArabic      string    `json:"name_ar"`
-	NameEnglish     string    `json:"name_en"`
-	RevelationPlace string    `json:"revelation_place"`
-	RevelationOrder int       `json:"revelation_order"`
-	AyahCount       int       `json:"ayah_count"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
+	ID              string    `json:"id"`
+	NameArabic      string    `json:"nameArabic"`
+	NameEnglish     string    `json:"nameEnglish"`
+	RevelationPlace string    `json:"revelationPlace"`
+	RevelationOrder int       `json:"revelationOrder"`
+	AyahCount       int       `json:"ayahCount"`
+	CreatedBy       string    `json:"createdBy"`
+	UpdatedBy       string    `json:"updatedBy"`
+	CreatedAt       time.Time `json:"createdAt"`
+	UpdatedAt       time.Time `json:"updatedAt"`
 }
 
-// AyahResponse represents the response for an ayah
+// ToSurahResponse converts a domain Surah to its DTO.
+func ToSurahResponse(d *quran.Surah) *SurahResponse {
+	if d == nil {
+		return nil
+	}
+	return &SurahResponse{
+		ID:              d.ID.String(),
+		NameArabic:      d.NameArabic,
+		NameEnglish:     d.NameEnglish,
+		RevelationPlace: d.RevelationPlace,
+		RevelationOrder: d.RevelationOrder,
+		AyahCount:       d.AyahCount,
+		CreatedBy:       d.CreatedBy,
+		UpdatedBy:       d.UpdatedBy,
+		CreatedAt:       d.CreatedAt,
+		UpdatedAt:       d.UpdatedAt,
+	}
+}
+
+// ToSurahResponseSlice converts a slice of domain Surahs to a slice of DTOs.
+func ToSurahResponseSlice(ds []*quran.Surah) []*SurahResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*SurahResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToSurahResponse(d)
+	}
+	return outs
+}
+
+// Ayah Response DTOs
 type AyahResponse struct {
-	SurahID      int       `json:"surah_id"`
-	AyahID       int       `json:"ayah_id"`
+	ID           string    `json:"id"`
+	SurahID      string    `json:"surahId"`
 	Text         string    `json:"text"`
-	PageNumber   int       `json:"page_number"`
-	JuzNumber    int       `json:"juz_number"`
-	HizbNumber   int       `json:"hizb_number"`
-	ManzilNumber int       `json:"manzil_number"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	PageNumber   int       `json:"pageNumber"`
+	JuzNumber    int       `json:"juzNumber"`
+	HizbNumber   int       `json:"hizbNumber"`
+	ManzilNumber int       `json:"manzilNumber"`
+	CreatedBy    string    `json:"createdBy"`
+	UpdatedBy    string    `json:"updatedBy"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
 }
 
-// JuzResponse represents the response for a juz
+// ToAyahResponse converts a domain Ayah to its DTO.
+func ToAyahResponse(d *quran.Ayah) *AyahResponse {
+	if d == nil {
+		return nil
+	}
+	return &AyahResponse{
+		ID:           d.ID.String(),
+		SurahID:      d.SurahID.String(),
+		Text:         d.Text,
+		PageNumber:   d.PageNumber,
+		JuzNumber:    d.JuzNumber,
+		HizbNumber:   d.HizbNumber,
+		ManzilNumber: d.ManzilNumber,
+		CreatedBy:    d.CreatedBy,
+		UpdatedBy:    d.UpdatedBy,
+		CreatedAt:    d.CreatedAt,
+		UpdatedAt:    d.UpdatedAt,
+	}
+}
+
+// ToAyahResponseSlice converts a slice of domain Ayahs to a slice of DTOs.
+func ToAyahResponseSlice(ds []*quran.Ayah) []*AyahResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*AyahResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToAyahResponse(d)
+	}
+	return outs
+}
+
+// Juz Response DTOs
 type JuzResponse struct {
-	ID         int       `json:"juz_id"`
-	StartSurah int       `json:"start_surah"`
-	StartAyah  int       `json:"start_ayah"`
-	EndSurah   int       `json:"end_surah"`
-	EndAyah    int       `json:"end_ayah"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	ID           string    `json:"id"`
+	StartSurahID string    `json:"startSurahId"`
+	EndSurahID   string    `json:"endSurahId"`
+	StartAyahID  string    `json:"startAyahId"`
+	EndAyahID    string    `json:"endAyahId"`
+	CreatedBy    string    `json:"createdBy"`
+	UpdatedBy    string    `json:"updatedBy"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
 }
 
-// SurahWithAyahsResponse represents the response for a surah with its ayahs
+// ToJuzResponse converts a domain Juz to its DTO.
+func ToJuzResponse(d *quran.Juz) *JuzResponse {
+	if d == nil {
+		return nil
+	}
+	return &JuzResponse{
+		ID:           d.ID.String(),
+		StartSurahID: d.StartSurahID.String(),
+		EndSurahID:   d.EndSurahID.String(),
+		StartAyahID:  d.StartAyahID.String(),
+		EndAyahID:    d.EndAyahID.String(),
+		CreatedBy:    d.CreatedBy,
+		UpdatedBy:    d.UpdatedBy,
+		CreatedAt:    d.CreatedAt,
+		UpdatedAt:    d.UpdatedAt,
+	}
+}
+
+// ToJuzResponseSlice converts a slice of domain Juz to a slice of DTOs.
+func ToJuzResponseSlice(ds []*quran.Juz) []*JuzResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*JuzResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToJuzResponse(d)
+	}
+	return outs
+}
+
+// Pagination Response
+type PaginationResponse struct {
+	Total  int64 `json:"total"`
+	Limit  int   `json:"limit"`
+	Offset int   `json:"offset"`
+}
+
+// Surah List Response with Pagination
+type SurahListResponse struct {
+	Data       []*SurahResponse    `json:"data"`
+	Pagination *PaginationResponse `json:"pagination"`
+}
+
+// Ayah List Response with Pagination
+type AyahListResponse struct {
+	Data       []*AyahResponse     `json:"data"`
+	Pagination *PaginationResponse `json:"pagination"`
+}
+
+// Juz List Response with Pagination
+type JuzListResponse struct {
+	Data       []*JuzResponse      `json:"data"`
+	Pagination *PaginationResponse `json:"pagination"`
+}
+
+// Count Response
+type CountResponse struct {
+	Count int64 `json:"count"`
+}
+
+// Surah with Ayahs Response DTO
 type SurahWithAyahsResponse struct {
-	SurahResponse
-	Ayahs []AyahResponse `json:"ayahs"`
+	ID              string          `json:"id"`
+	NameArabic      string          `json:"nameArabic"`
+	NameEnglish     string          `json:"nameEnglish"`
+	RevelationPlace string          `json:"revelationPlace"`
+	RevelationOrder int             `json:"revelationOrder"`
+	AyahCount       int             `json:"ayahCount"`
+	CreatedBy       string          `json:"createdBy"`
+	UpdatedBy       string          `json:"updatedBy"`
+	CreatedAt       time.Time       `json:"createdAt"`
+	UpdatedAt       time.Time       `json:"updatedAt"`
+	Ayahs           []*AyahResponse `json:"ayahs,omitempty"`
 }
 
-// JuzWithContentResponse represents the response for a juz with content details
-type JuzWithContentResponse struct {
-	JuzResponse
-	StartSurahName string `json:"start_surah_name"`
-	EndSurahName   string `json:"end_surah_name"`
-	TotalAyahs     int    `json:"total_ayahs"`
-}
-
-// PaginatedResponse represents a paginated response
-type PaginatedResponse[T any] struct {
-	Data       []T                `json:"data"`
-	Pagination PaginationMetadata `json:"pagination"`
-}
-
-// PaginationMetadata represents pagination metadata
-type PaginationMetadata struct {
-	Page       int `json:"page"`
-	Limit      int `json:"limit"`
-	Total      int `json:"total"`
-	TotalPages int `json:"total_pages"`
-}
-
-// SearchResponse represents the search response
-type SearchResponse struct {
-	Query   string        `json:"query"`
-	Type    string        `json:"type"`
-	Results interface{}   `json:"results"`
-	Count   int           `json:"count"`
-}
-
-// APIResponse represents a standard API response
-type APIResponse[T any] struct {
-	Success bool   `json:"success"`
-	Message string `json:"message"`
-	Data    T      `json:"data,omitempty"`
-	Error   string `json:"error,omitempty"`
-}
-
-// Conversion functions from domain to response DTOs
-
-// ToSurahResponse converts domain Surah to SurahResponse
-func ToSurahResponse(surah quran.Surah) SurahResponse {
-	return SurahResponse{
-		ID:              surah.ID,
-		NameArabic:      surah.NameArabic,
-		NameEnglish:     surah.NameEnglish,
-		RevelationPlace: surah.RevelationPlace,
-		RevelationOrder: surah.RevelationOrder,
-		AyahCount:       surah.AyahCount,
-		CreatedAt:       surah.CreatedAt,
-		UpdatedAt:       surah.UpdatedAt,
+// ToSurahWithAyahsResponse converts a domain SurahWithAyahs to its DTO.
+func ToSurahWithAyahsResponse(d *quran.SurahWithAyahs) *SurahWithAyahsResponse {
+	if d == nil {
+		return nil
+	}
+	return &SurahWithAyahsResponse{
+		ID:              d.ID.String(),
+		NameArabic:      d.NameArabic,
+		NameEnglish:     d.NameEnglish,
+		RevelationPlace: d.RevelationPlace,
+		RevelationOrder: d.RevelationOrder,
+		AyahCount:       d.AyahCount,
+		CreatedBy:       d.CreatedBy,
+		UpdatedBy:       d.UpdatedBy,
+		CreatedAt:       d.CreatedAt,
+		UpdatedAt:       d.UpdatedAt,
+		Ayahs:           ToAyahResponseSlice(d.Ayahs),
 	}
 }
 
-// ToAyahResponse converts domain Ayah to AyahResponse
-func ToAyahResponse(ayah quran.Ayah) AyahResponse {
-	return AyahResponse{
-		SurahID:      ayah.SurahID,
-		AyahID:       ayah.AyahID,
-		Text:         ayah.Text,
-		PageNumber:   ayah.PageNumber,
-		JuzNumber:    ayah.JuzNumber,
-		HizbNumber:   ayah.HizbNumber,
-		ManzilNumber: ayah.ManzilNumber,
-		CreatedAt:    ayah.CreatedAt,
-		UpdatedAt:    ayah.UpdatedAt,
+// ToSurahWithAyahsResponseSlice converts a slice of domain SurahWithAyahs to a slice of DTOs.
+func ToSurahWithAyahsResponseSlice(ds []*quran.SurahWithAyahs) []*SurahWithAyahsResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*SurahWithAyahsResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToSurahWithAyahsResponse(d)
+	}
+	return outs
+}
+
+// Ayah with Surah Response DTO
+type AyahWithSurahResponse struct {
+	ID           string         `json:"id"`
+	SurahID      string         `json:"surahId"`
+	Text         string         `json:"text"`
+	PageNumber   int            `json:"pageNumber"`
+	JuzNumber    int            `json:"juzNumber"`
+	HizbNumber   int            `json:"hizbNumber"`
+	ManzilNumber int            `json:"manzilNumber"`
+	CreatedBy    string         `json:"createdBy"`
+	UpdatedBy    string         `json:"updatedBy"`
+	CreatedAt    time.Time      `json:"createdAt"`
+	UpdatedAt    time.Time      `json:"updatedAt"`
+	Surah        *SurahResponse `json:"surah,omitempty"`
+}
+
+// ToAyahWithSurahResponse converts a domain AyahWithSurah to its DTO.
+func ToAyahWithSurahResponse(d *quran.AyahWithSurah) *AyahWithSurahResponse {
+	if d == nil {
+		return nil
+	}
+	return &AyahWithSurahResponse{
+		ID:           d.ID.String(),
+		SurahID:      d.SurahID.String(),
+		Text:         d.Text,
+		PageNumber:   d.PageNumber,
+		JuzNumber:    d.JuzNumber,
+		HizbNumber:   d.HizbNumber,
+		ManzilNumber: d.ManzilNumber,
+		CreatedBy:    d.CreatedBy,
+		UpdatedBy:    d.UpdatedBy,
+		CreatedAt:    d.CreatedAt,
+		UpdatedAt:    d.UpdatedAt,
+		Surah:        ToSurahResponse(d.Surah),
 	}
 }
 
-// ToJuzResponse converts domain Juz to JuzResponse
-func ToJuzResponse(juz quran.Juz) JuzResponse {
-	return JuzResponse{
-		ID:         juz.ID,
-		StartSurah: juz.StartSurah,
-		StartAyah:  juz.StartAyah,
-		EndSurah:   juz.EndSurah,
-		EndAyah:    juz.EndAyah,
-		CreatedAt:  juz.CreatedAt,
-		UpdatedAt:  juz.UpdatedAt,
+// ToAyahWithSurahResponseSlice converts a slice of domain AyahWithSurah to a slice of DTOs.
+func ToAyahWithSurahResponseSlice(ds []*quran.AyahWithSurah) []*AyahWithSurahResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*AyahWithSurahResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToAyahWithSurahResponse(d)
+	}
+	return outs
+}
+
+// Juz with Relations Response DTO
+type JuzWithRelationsResponse struct {
+	ID           string         `json:"id"`
+	StartSurahID string         `json:"startSurahId"`
+	EndSurahID   string         `json:"endSurahId"`
+	StartAyahID  string         `json:"startAyahId"`
+	EndAyahID    string         `json:"endAyahId"`
+	CreatedBy    string         `json:"createdBy"`
+	UpdatedBy    string         `json:"updatedBy"`
+	CreatedAt    time.Time      `json:"createdAt"`
+	UpdatedAt    time.Time      `json:"updatedAt"`
+	StartSurah   *SurahResponse `json:"startSurah,omitempty"`
+	EndSurah     *SurahResponse `json:"endSurah,omitempty"`
+	StartAyah    *AyahResponse  `json:"startAyah,omitempty"`
+	EndAyah      *AyahResponse  `json:"endAyah,omitempty"`
+}
+
+// ToJuzWithRelationsResponse converts a domain JuzWithRelations to its DTO.
+func ToJuzWithRelationsResponse(d *quran.JuzWithRelations) *JuzWithRelationsResponse {
+	if d == nil {
+		return nil
+	}
+	return &JuzWithRelationsResponse{
+		ID:           d.ID.String(),
+		StartSurahID: d.StartSurahID.String(),
+		EndSurahID:   d.EndSurahID.String(),
+		StartAyahID:  d.StartAyahID.String(),
+		EndAyahID:    d.EndAyahID.String(),
+		CreatedBy:    d.CreatedBy,
+		UpdatedBy:    d.UpdatedBy,
+		CreatedAt:    d.CreatedAt,
+		UpdatedAt:    d.UpdatedAt,
+		StartSurah:   ToSurahResponse(d.StartSurah),
+		EndSurah:     ToSurahResponse(d.EndSurah),
+		StartAyah:    ToAyahResponse(d.StartAyah),
+		EndAyah:      ToAyahResponse(d.EndAyah),
 	}
 }
 
-// ToSurahWithAyahsResponse converts domain SurahWithAyahs to SurahWithAyahsResponse
-func ToSurahWithAyahsResponse(surahWithAyahs quran.SurahWithAyahs) SurahWithAyahsResponse {
-	ayahs := make([]AyahResponse, len(surahWithAyahs.Ayahs))
-	for i, ayah := range surahWithAyahs.Ayahs {
-		ayahs[i] = ToAyahResponse(ayah)
+// ToJuzWithRelationsResponseSlice converts a slice of domain JuzWithRelations to a slice of DTOs.
+func ToJuzWithRelationsResponseSlice(ds []*quran.JuzWithRelations) []*JuzWithRelationsResponse {
+	if ds == nil {
+		return nil
 	}
-
-	return SurahWithAyahsResponse{
-		SurahResponse: ToSurahResponse(surahWithAyahs.Surah),
-		Ayahs:         ayahs,
+	outs := make([]*JuzWithRelationsResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToJuzWithRelationsResponse(d)
 	}
+	return outs
 }
 
-// ToJuzWithContentResponse converts domain JuzWithContent to JuzWithContentResponse
-func ToJuzWithContentResponse(juzWithContent quran.JuzWithContent) JuzWithContentResponse {
-	return JuzWithContentResponse{
-		JuzResponse:    ToJuzResponse(juzWithContent.Juz),
-		StartSurahName: juzWithContent.StartSurahName,
-		EndSurahName:   juzWithContent.EndSurahName,
-		TotalAyahs:     juzWithContent.TotalAyahs,
-	}
+// List responses with relations
+type SurahWithAyahsListResponse struct {
+	Data       []*SurahWithAyahsResponse `json:"data"`
+	Pagination *PaginationResponse       `json:"pagination"`
 }
 
-// ToSurahResponseSlice converts slice of domain Surah to slice of SurahResponse
-func ToSurahResponseSlice(surahs []quran.Surah) []SurahResponse {
-	result := make([]SurahResponse, len(surahs))
-	for i, surah := range surahs {
-		result[i] = ToSurahResponse(surah)
-	}
-	return result
+type AyahWithSurahListResponse struct {
+	Data       []*AyahWithSurahResponse `json:"data"`
+	Pagination *PaginationResponse      `json:"pagination"`
 }
 
-// ToAyahResponseSlice converts slice of domain Ayah to slice of AyahResponse
-func ToAyahResponseSlice(ayahs []quran.Ayah) []AyahResponse {
-	result := make([]AyahResponse, len(ayahs))
-	for i, ayah := range ayahs {
-		result[i] = ToAyahResponse(ayah)
-	}
-	return result
-}
-
-// ToJuzResponseSlice converts slice of domain Juz to slice of JuzResponse
-func ToJuzResponseSlice(juzs []quran.Juz) []JuzResponse {
-	result := make([]JuzResponse, len(juzs))
-	for i, juz := range juzs {
-		result[i] = ToJuzResponse(juz)
-	}
-	return result
-}
-
-// NewSuccessResponse creates a successful API response
-func NewSuccessResponse[T any](message string, data T) APIResponse[T] {
-	return APIResponse[T]{
-		Success: true,
-		Message: message,
-		Data:    data,
-	}
-}
-
-// NewErrorResponse creates an error API response
-func NewErrorResponse[T any](message string, err error) APIResponse[T] {
-	errorMsg := ""
-	if err != nil {
-		errorMsg = err.Error()
-	}
-	
-	return APIResponse[T]{
-		Success: false,
-		Message: message,
-		Error:   errorMsg,
-	}
+type JuzWithRelationsListResponse struct {
+	Data       []*JuzWithRelationsResponse `json:"data"`
+	Pagination *PaginationResponse         `json:"pagination"`
 }

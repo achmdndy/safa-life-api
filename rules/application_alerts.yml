@@ -1,0 +1,204 @@
+groups:
+  - name: application_health_alerts
+    rules:
+      # Generic application health checks
+      - alert: ApplicationEndpointDown
+        expr: probe_success{job="blackbox-http"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: application
+          team: backend
+        annotations:
+          summary: "Application endpoint is down"
+          description: "Endpoint {{ $labels.instance }} is not responding"
+          runbook_url: "https://wiki.company.com/runbooks/endpoint-down"
+
+      - alert: ApplicationHighResponseTime
+        expr: probe_duration_seconds{job="blackbox-http"} > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: application
+          team: backend
+        annotations:
+          summary: "Application endpoint high response time"
+          description: "Endpoint {{ $labels.instance }} response time is {{ $value }}s"
+          runbook_url: "https://wiki.company.com/runbooks/high-response-time"
+
+      # SSL certificate expiration
+      - alert: SSLCertificateExpiringSoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 7
+        for: 1h
+        labels:
+          severity: warning
+          service: ssl
+          team: infrastructure
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "SSL certificate for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://wiki.company.com/runbooks/ssl-expiry"
+
+      - alert: SSLCertificateExpired
+        expr: probe_ssl_earliest_cert_expiry - time() <= 0
+        for: 1m
+        labels:
+          severity: critical
+          service: ssl
+          team: infrastructure
+        annotations:
+          summary: "SSL certificate expired"
+          description: "SSL certificate for {{ $labels.instance }} has expired"
+          runbook_url: "https://wiki.company.com/runbooks/ssl-expired"
+
+  - name: application_performance_alerts
+    rules:
+      # Generic performance alerts
+      - alert: HighRequestVolume
+        expr: |
+          rate(http_requests_total[5m]) > 1000
+        for: 10m
+        labels:
+          severity: warning
+          service: application
+          team: backend
+        annotations:
+          summary: "High request volume detected"
+          description: "Request rate is {{ $value }} requests/second"
+          runbook_url: "https://wiki.company.com/runbooks/high-volume"
+
+      - alert: UnusualTrafficPattern
+        expr: |
+          abs(
+            rate(http_requests_total[5m]) -
+            rate(http_requests_total[5m] offset 1d)
+          ) / rate(http_requests_total[5m] offset 1d) > 2
+        for: 15m
+        labels:
+          severity: warning
+          service: application
+          team: backend
+        annotations:
+          summary: "Unusual traffic pattern detected"
+          description: "Traffic pattern differs significantly from same time yesterday"
+          runbook_url: "https://wiki.company.com/runbooks/traffic-anomaly"
+
+      # Error rate alerts
+      - alert: HighClientErrorRate
+        expr: |
+          (
+            rate(http_requests_total{code=~"4.."}[5m]) /
+            rate(http_requests_total[5m])
+          ) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: application
+          team: backend
+        annotations:
+          summary: "High client error rate"
+          description: "Client error rate is {{ $value | humanizePercentage }}"
+          runbook_url: "https://wiki.company.com/runbooks/client-errors"
+
+      - alert: HighServerErrorRate
+        expr: |
+          (
+            rate(http_requests_total{code=~"5.."}[5m]) /
+            rate(http_requests_total[5m])
+          ) > 0.02
+        for: 2m
+        labels:
+          severity: critical
+          service: application
+          team: backend
+        annotations:
+          summary: "High server error rate"
+          description: "Server error rate is {{ $value | humanizePercentage }}"
+          runbook_url: "https://wiki.company.com/runbooks/server-errors"
+
+  - name: application_business_alerts
+    rules:
+      # Business logic alerts
+      - alert: LowUserRegistrations
+        expr: |
+          rate(user_registrations_total[1h]) < 1
+        for: 2h
+        labels:
+          severity: warning
+          service: business
+          team: product
+        annotations:
+          summary: "Low user registration rate"
+          description: "User registration rate is {{ $value }} per hour"
+          runbook_url: "https://wiki.company.com/runbooks/low-registrations"
+
+      - alert: HighUserChurnRate
+        expr: |
+          rate(user_deletions_total[24h]) / rate(user_registrations_total[24h]) > 0.5
+        for: 1h
+        labels:
+          severity: warning
+          service: business
+          team: product
+        annotations:
+          summary: "High user churn rate"
+          description: "User churn rate is {{ $value | humanizePercentage }}"
+          runbook_url: "https://wiki.company.com/runbooks/high-churn"
+
+      - alert: PaymentFailureRateHigh
+        expr: |
+          (
+            rate(payment_transactions_total{status="failed"}[5m]) /
+            rate(payment_transactions_total[5m])
+          ) > 0.05
+        for: 10m
+        labels:
+          severity: critical
+          service: payments
+          team: backend
+        annotations:
+          summary: "High payment failure rate"
+          description: "Payment failure rate is {{ $value | humanizePercentage }}"
+          runbook_url: "https://wiki.company.com/runbooks/payment-failures"
+
+  - name: application_security_alerts
+    rules:
+      # Security-related alerts
+      - alert: SuspiciousLoginActivity
+        expr: |
+          rate(login_attempts_total{status="failed"}[5m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          service: security
+          team: security
+        annotations:
+          summary: "Suspicious login activity detected"
+          description: "Failed login rate is {{ $value }} attempts/second"
+          runbook_url: "https://wiki.company.com/runbooks/suspicious-login"
+
+      - alert: RateLimitExceeded
+        expr: |
+          rate(http_requests_total{code="429"}[5m]) > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: security
+          team: backend
+        annotations:
+          summary: "Rate limit frequently exceeded"
+          description: "Rate limit exceeded {{ $value }} times/second"
+          runbook_url: "https://wiki.company.com/runbooks/rate-limit"
+
+      - alert: UnauthorizedAccessAttempts
+        expr: |
+          rate(http_requests_total{code="401"}[5m]) > 20
+        for: 5m
+        labels:
+          severity: warning
+          service: security
+          team: security
+        annotations:
+          summary: "High number of unauthorized access attempts"
+          description: "Unauthorized access attempts: {{ $value }} per second"
+          runbook_url: "https://wiki.company.com/runbooks/unauthorized-access"

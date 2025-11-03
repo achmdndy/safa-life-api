@@ -2,18 +2,56 @@ package query
 
 import (
 	"context"
-	"github.com/achmdndy/safa-life-api/src/application/quran/dto"
+
+	"github.com/safalife/core-api/src/application/quran/dto"
 )
 
-// GetAllJuzQuery represents the query to get all juz
-type GetAllJuzQuery struct{}
+type GetAllJuzQuery struct {
+	Limit   int
+	Offset  int
+	Include string
+}
 
-// GetAllJuz retrieves all juz
-func (h *QueryHandler) GetAllJuz(ctx context.Context, query GetAllJuzQuery) ([]dto.JuzResponse, error) {
-	juzList, err := h.quranService.GetAllJuz(ctx)
+func (h *QueryHandler) GetAllJuz(ctx context.Context, query GetAllJuzQuery) (interface{}, error) {
+	// Check if eager loading is requested
+	if query.Include == "relations" {
+		juzList, err := h.juzService.GetAllJuzWithRelations(ctx, query.Limit, query.Offset)
+		if err != nil {
+			return nil, err
+		}
+
+		count, err := h.juzService.CountJuz(ctx)
+		if err != nil {
+			return nil, err
+		}
+
+		return &dto.JuzWithRelationsListResponse{
+			Data: dto.ToJuzWithRelationsResponseSlice(juzList),
+			Pagination: &dto.PaginationResponse{
+				Limit:  query.Limit,
+				Offset: query.Offset,
+				Total:  count,
+			},
+		}, nil
+	}
+
+	// Default behavior without eager loading
+	juzList, err := h.juzService.GetAllJuz(ctx, query.Limit, query.Offset)
 	if err != nil {
 		return nil, err
 	}
 
-	return dto.ToJuzResponseSlice(juzList), nil
+	count, err := h.juzService.CountJuz(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.JuzListResponse{
+		Data: dto.ToJuzResponseSlice(juzList),
+		Pagination: &dto.PaginationResponse{
+			Limit:  query.Limit,
+			Offset: query.Offset,
+			Total:  count,
+		},
+	}, nil
 }

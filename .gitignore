@@ -225,3 +225,8 @@ public
 # Temporary folders
 tmp/
 temp/
+
+# K6
+k6/results
+k6/*.json
+k6/*.sh

@@ -1,0 +1,126 @@
+groups:
+  - name: safalife_api_alerts
+    rules:
+      # High error rate alert
+      - alert: SafaLifeAPIHighErrorRate
+        expr: |
+          (
+            rate(http_requests_total{job="safalife-api",code=~"5.."}[5m]) /
+            rate(http_requests_total{job="safalife-api"}[5m])
+          ) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          service: safalife-api
+          team: backend
+        annotations:
+          summary: "High error rate detected for SafaLife API"
+          description: "Error rate is {{ $value | humanizePercentage }} for the last 5 minutes"
+          runbook_url: "https://wiki.company.com/runbooks/safalife-api-errors"
+
+      # High response time alert
+      - alert: SafaLifeAPIHighLatency
+        expr: |
+          histogram_quantile(0.95, 
+            rate(http_request_duration_seconds_bucket{job="safalife-api"}[5m])
+          ) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          service: safalife-api
+          team: backend
+        annotations:
+          summary: "High latency detected for SafaLife API"
+          description: "95th percentile latency is {{ $value }}s for the last 5 minutes"
+          runbook_url: "https://wiki.company.com/runbooks/safalife-api-latency"
+
+      # API service down
+      - alert: SafaLifeAPIDown
+        expr: up{job="safalife-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: safalife-api
+          team: backend
+        annotations:
+          summary: "SafaLife API is down"
+          description: "SafaLife API has been down for more than 1 minute"
+          runbook_url: "https://wiki.company.com/runbooks/safalife-api-down"
+
+      # High memory usage
+      - alert: SafaLifeAPIHighMemoryUsage
+        expr: |
+          (
+            go_memstats_alloc_bytes{job="safalife-api"} / 
+            go_memstats_sys_bytes{job="safalife-api"}
+          ) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: safalife-api
+          team: backend
+        annotations:
+          summary: "High memory usage for SafaLife API"
+          description: "Memory usage is {{ $value | humanizePercentage }} of allocated memory"
+          runbook_url: "https://wiki.company.com/runbooks/safalife-api-memory"
+
+      # High CPU usage
+      - alert: SafaLifeAPIHighCPUUsage
+        expr: |
+          rate(process_cpu_seconds_total{job="safalife-api"}[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: safalife-api
+          team: backend
+        annotations:
+          summary: "High CPU usage for SafaLife API"
+          description: "CPU usage is {{ $value | humanizePercentage }} for the last 5 minutes"
+          runbook_url: "https://wiki.company.com/runbooks/safalife-api-cpu"
+
+      # Too many goroutines
+      - alert: SafaLifeAPITooManyGoroutines
+        expr: go_goroutines{job="safalife-api"} > 1000
+        for: 5m
+        labels:
+          severity: warning
+          service: safalife-api
+          team: backend
+        annotations:
+          summary: "Too many goroutines in SafaLife API"
+          description: "Number of goroutines is {{ $value }}"
+          runbook_url: "https://wiki.company.com/runbooks/safalife-api-goroutines"
+
+      # Database connection pool exhaustion
+      - alert: SafaLifeAPIDatabaseConnectionPoolExhaustion
+        expr: |
+          (
+            db_connections_in_use{job="safalife-api"} /
+            db_connections_max{job="safalife-api"}
+          ) > 0.9
+        for: 2m
+        labels:
+          severity: critical
+          service: safalife-api
+          team: backend
+        annotations:
+          summary: "Database connection pool near exhaustion"
+          description: "Database connection pool usage is {{ $value | humanizePercentage }}"
+          runbook_url: "https://wiki.company.com/runbooks/safalife-api-db-pool"
+
+      # Request rate anomaly
+      - alert: SafaLifeAPIRequestRateAnomaly
+        expr: |
+          abs(
+            rate(http_requests_total{job="safalife-api"}[5m]) -
+            rate(http_requests_total{job="safalife-api"}[5m] offset 1h)
+          ) / rate(http_requests_total{job="safalife-api"}[5m] offset 1h) > 0.5
+        for: 10m
+        labels:
+          severity: warning
+          service: safalife-api
+          team: backend
+        annotations:
+          summary: "Unusual request rate pattern detected"
+          description: "Request rate has changed by {{ $value | humanizePercentage }} compared to 1 hour ago"
+          runbook_url: "https://wiki.company.com/runbooks/safalife-api-rate-anomaly"

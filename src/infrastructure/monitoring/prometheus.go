@@ -1,101 +1,67 @@
 package monitoring
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"strconv"
-	"time"
 )
 
-// PrometheusMetrics holds all the Prometheus metrics
-type PrometheusMetrics struct {
-	httpRequestsTotal     *prometheus.CounterVec
-	httpRequestDuration   *prometheus.HistogramVec
-	httpRequestsInFlight  prometheus.Gauge
-	applicationInfo       *prometheus.GaugeVec
+// PrometheusHandler creates a Gin handler for Prometheus metrics endpoint
+func PrometheusHandler(registry *prometheus.Registry) gin.HandlerFunc {
+	handler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{
+		EnableOpenMetrics: true,
+	})
+
+	return gin.WrapH(handler)
 }
 
-// NewPrometheusMetrics creates and registers Prometheus metrics
-func NewPrometheusMetrics() *PrometheusMetrics {
-	metrics := &PrometheusMetrics{
-		httpRequestsTotal: prometheus.NewCounterVec(
-			prometheus.CounterOpts{
-				Name: "http_requests_total",
-				Help: "Total number of HTTP requests",
-			},
-			[]string{"method", "endpoint", "status_code"},
-		),
-		httpRequestDuration: prometheus.NewHistogramVec(
-			prometheus.HistogramOpts{
-				Name:    "http_request_duration_seconds",
-				Help:    "Duration of HTTP requests in seconds",
-				Buckets: prometheus.DefBuckets,
-			},
-			[]string{"method", "endpoint"},
-		),
-		httpRequestsInFlight: prometheus.NewGauge(
-			prometheus.GaugeOpts{
-				Name: "http_requests_in_flight",
-				Help: "Number of HTTP requests currently being processed",
-			},
-		),
-		applicationInfo: prometheus.NewGaugeVec(
-			prometheus.GaugeOpts{
-				Name: "application_info",
-				Help: "Application information",
-			},
-			[]string{"version", "name"},
-		),
+// InitPrometheus initializes Prometheus metrics collection
+func InitPrometheus(config PrometheusConfig) (*prometheus.Registry, error) {
+	if !config.Enabled {
+		return nil, nil
 	}
 
-	// Register metrics with Prometheus
-	prometheus.MustRegister(
-		metrics.httpRequestsTotal,
-		metrics.httpRequestDuration,
-		metrics.httpRequestsInFlight,
-		metrics.applicationInfo,
-	)
+	// Create a new registry
+	registry := prometheus.NewRegistry()
 
-	// Set application info
-	metrics.applicationInfo.WithLabelValues("1.0.0", "safa-life-api").Set(1)
+	// Add Go runtime metrics using new collectors
+	registry.MustRegister(collectors.NewGoCollector())
+	registry.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 
-	return metrics
+	return registry, nil
 }
 
-// PrometheusMiddleware returns a Gin middleware that collects Prometheus metrics
-func (m *PrometheusMetrics) PrometheusMiddleware() gin.HandlerFunc {
+// HealthHandler returns a simple health check for monitoring
+func HealthHandler(serviceName string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Skip metrics endpoint to avoid self-monitoring
-		if c.Request.URL.Path == "/metrics" {
-			c.Next()
-			return
-		}
-
-		start := time.Now()
-		m.httpRequestsInFlight.Inc()
-
-		c.Next()
-
-		duration := time.Since(start).Seconds()
-		statusCode := strconv.Itoa(c.Writer.Status())
-
-		m.httpRequestsTotal.WithLabelValues(
-			c.Request.Method,
-			c.FullPath(),
-			statusCode,
-		).Inc()
-
-		m.httpRequestDuration.WithLabelValues(
-			c.Request.Method,
-			c.FullPath(),
-		).Observe(duration)
-
-		m.httpRequestsInFlight.Dec()
+		c.JSON(http.StatusOK, gin.H{
+			"status":  "healthy",
+			"service": serviceName,
+		})
 	}
 }
 
-// Handler returns the Prometheus metrics handler
-func (m *PrometheusMetrics) Handler() gin.HandlerFunc {
-	return gin.WrapH(promhttp.Handler())
+// PrometheusHTTPHandler returns an http.Handler for Prometheus metrics
+func PrometheusHTTPHandler(registry *prometheus.Registry) http.Handler {
+	return promhttp.HandlerFor(registry, promhttp.HandlerOpts{
+		EnableOpenMetrics: true,
+	})
+}
+
+// HealthHTTPHandler returns an http.Handler for health checks
+func HealthHTTPHandler(serviceName string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		response := fmt.Sprintf(`{"status":"healthy","service":"%s"}`, serviceName)
+		if _, err := w.Write([]byte(response)); err != nil {
+			log.Printf("Error writing health check response: %v", err)
+		}
+	})
 }

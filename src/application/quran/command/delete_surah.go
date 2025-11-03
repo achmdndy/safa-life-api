@@ -2,22 +2,19 @@ package command
 
 import (
 	"context"
-	"fmt"
 )
 
-// DeleteSurahCommand represents the command to delete a surah
 type DeleteSurahCommand struct {
-	ID int
+	ID string
 }
 
-// DeleteSurah deletes a surah
-func (h *CommandHandler) DeleteSurah(ctx context.Context, cmd DeleteSurahCommand) error {
-	// Validate ID
-	if cmd.ID < 1 || cmd.ID > 114 {
-		return fmt.Errorf("invalid surah ID: %d", cmd.ID)
+func (h *CommandHandler) DeleteSurah(ctx context.Context, command DeleteSurahCommand) error {
+	id, err := h.uuidGenerator.Parse(command.ID)
+	if err != nil {
+		return err
 	}
 
-	return h.txManager.WithTransaction(ctx, func(ctx context.Context) error {
-		return h.quranService.DeleteSurah(ctx, cmd.ID)
+	return h.transactionMgr.WithTransaction(ctx, func(ctx context.Context) error {
+		return h.surahService.DeleteSurah(ctx, id)
 	})
 }

@@ -2,53 +2,61 @@ package command
 
 import (
 	"context"
-	"fmt"
-	"github.com/achmdndy/safa-life-api/src/domain/quran"
+
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/domain/quran"
 )
 
-// CreateJuzCommand represents the command to create a new juz
 type CreateJuzCommand struct {
-	StartSurah int
-	StartAyah  int
-	EndSurah   int
-	EndAyah    int
+	StartSurahID string
+	EndSurahID   string
+	StartAyahID  string
+	EndAyahID    string
+	CreatedBy    string
 }
 
-// CreateJuz creates a new juz
-func (h *CommandHandler) CreateJuz(ctx context.Context, cmd CreateJuzCommand) (*quran.Juz, error) {
-	// Validate start surah
-	if cmd.StartSurah < 1 || cmd.StartSurah > 114 {
-		return nil, fmt.Errorf("invalid start surah: %d", cmd.StartSurah)
+func (h *CommandHandler) CreateJuz(ctx context.Context, command CreateJuzCommand) (*dto.JuzResponse, error) {
+	id := h.uuidGenerator.New()
+
+	startSurahID, err := h.uuidGenerator.Parse(command.StartSurahID)
+	if err != nil {
+		return nil, err
 	}
 
-	// Validate end surah
-	if cmd.EndSurah < 1 || cmd.EndSurah > 114 {
-		return nil, fmt.Errorf("invalid end surah: %d", cmd.EndSurah)
+	endSurahID, err := h.uuidGenerator.Parse(command.EndSurahID)
+	if err != nil {
+		return nil, err
 	}
 
-	// Validate start ayah
-	if cmd.StartAyah < 1 {
-		return nil, fmt.Errorf("invalid start ayah: %d", cmd.StartAyah)
+	startAyahID, err := h.uuidGenerator.Parse(command.StartAyahID)
+	if err != nil {
+		return nil, err
 	}
 
-	// Validate end ayah
-	if cmd.EndAyah < 1 {
-		return nil, fmt.Errorf("invalid end ayah: %d", cmd.EndAyah)
+	endAyahID, err := h.uuidGenerator.Parse(command.EndAyahID)
+	if err != nil {
+		return nil, err
 	}
 
-	juz := &quran.Juz{
-		StartSurah: cmd.StartSurah,
-		StartAyah:  cmd.StartAyah,
-		EndSurah:   cmd.EndSurah,
-		EndAyah:    cmd.EndAyah,
-	}
+	juz := quran.NewJuz(
+		id,
+		startSurahID,
+		endSurahID,
+		startAyahID,
+		endAyahID,
+		command.CreatedBy,
+	)
 
-	var result *quran.Juz
-	err := h.txManager.WithTransaction(ctx, func(ctx context.Context) error {
-		var err error
-		result, err = h.quranService.CreateJuz(ctx, juz)
-		return err
+	var createdJuz *quran.Juz
+	err = h.transactionMgr.WithTransaction(ctx, func(ctx context.Context) error {
+		var txErr error
+		createdJuz, txErr = h.juzService.CreateJuz(ctx, juz)
+		return txErr
 	})
 
-	return result, err
+	if err != nil {
+		return nil, err
+	}
+
+	return dto.ToJuzResponse(createdJuz), nil
 }

@@ -2,49 +2,63 @@ package quran
 
 import (
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
-	"github.com/achmdndy/safa-life-api/src/application/quran/query"
-	"github.com/achmdndy/safa-life-api/src/presentation/core"
 	"github.com/gin-gonic/gin"
+
+	"github.com/safalife/core-api/src/application/quran/dto"
+	"github.com/safalife/core-api/src/application/quran/query"
+	"github.com/safalife/core-api/src/presentation/core"
 )
 
-// GetSurahByID handles GET /surahs/:id
+// GetSurahByIdHandler handles the get surah by ID request
+type GetSurahByIdHandler struct {
+	queryHandler *query.QueryHandler
+}
+
+// NewGetSurahByIdHandler creates a new get surah by ID handler
+func NewGetSurahByIdHandler(queryHandler *query.QueryHandler) *GetSurahByIdHandler {
+	return &GetSurahByIdHandler{
+		queryHandler: queryHandler,
+	}
+}
+
+// Handle processes the get surah by ID request
 // @Summary Get surah by ID
-// @Description Get a specific surah (chapter) by its ID
+// @Description Get a surah by its ID from the Quran
 // @Tags Surah
 // @Accept json
 // @Produce json
-// @Param id path int true "Surah ID"
-// @Success 200 {object} core.SuccessResponse{data=dto.SurahResponse} "Surah retrieved successfully"
-// @Failure 400 {object} core.ErrorResponse "Invalid surah ID"
-// @Failure 404 {object} core.ErrorResponse "Surah not found"
-// @Failure 500 {object} core.ErrorResponse "Failed to get surah"
-// @Router /surahs/{id} [get]
-func (h *Handler) GetSurahByID(c *gin.Context) {
+// @Param id path string true "Surah ID"
+// @Param include query string false "Include related data" Enums(ayahs) example(ayahs)
+// @Success 200 {object} GetSurahByIdSuccessResponse "Surah retrieved successfully"
+// @Failure 400 {object} QuranErrorResponse "Bad request"
+// @Failure 404 {object} QuranErrorResponse "Surah not found"
+// @Failure 500 {object} QuranErrorResponse "Internal server error"
+// @Router /api/v1/quran/surahs/{id} [get]
+func (h *GetSurahByIdHandler) Handle(c *gin.Context) {
 	start := time.Now()
+	ctx := c.Request.Context()
 
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		core.Error(c, http.StatusBadRequest, "Invalid surah ID", &core.ErrorDetail{Reason: err.Error()}, start)
-		return
-	}
-
-	queryReq := query.GetSurahByIDQuery{ID: id}
-	result, err := h.queryHandler.GetSurahByID(c.Request.Context(), queryReq)
-	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
-			core.Error(c, http.StatusNotFound, "Surah not found", &core.ErrorDetail{Reason: err.Error()}, start)
-			return
+	var req dto.GetSurahByIdRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
 		}
-		core.Error(c, http.StatusInternalServerError, "Failed to get surah", &core.ErrorDetail{Reason: err.Error()}, start)
+		core.Error(c, http.StatusBadRequest, "Invalid surah ID", errorDetail, start)
 		return
 	}
 
-	if result == nil {
-		core.Error(c, http.StatusNotFound, "Surah not found", &core.ErrorDetail{}, start)
+	qry := query.GetSurahByIdQuery{
+		ID: req.ID,
+	}
+
+	result, err := h.queryHandler.GetSurahById(ctx, qry)
+	if err != nil {
+		errorDetail := &core.ErrorDetail{
+			Reason: err.Error(),
+		}
+		core.Error(c, http.StatusInternalServerError, "Failed to get surah", errorDetail, start)
 		return
 	}
 
