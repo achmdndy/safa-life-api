@@ -54,8 +54,8 @@ services:
     image: redis:6-alpine
     container_name: safalife-core-redis
     restart: always
-    expose:
-      - "6379"
+    ports:
+      - "${REDIS_HOST_PORT:-6379}:6379"
     volumes:
       - safalife-core-redis-data:/data
     networks:
@@ -70,12 +70,12 @@ services:
     image: jaegertracing/all-in-one:latest
     container_name: safalife-core-jaeger
     restart: always
-    expose:
-      - "16686"
-      - "14268"
-      - "14250"
-      - "4317"
-      - "4318"
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
+      - "4317:4317"
+      - "4318:4318"
     networks:
       - safalife-net
     environment:
@@ -91,8 +91,8 @@ services:
     image: prom/prometheus:latest
     container_name: safalife-core-prometheus
     restart: always
-    expose:
-      - "9090"
+    ports:
+      - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -115,8 +115,8 @@ services:
     image: grafana/grafana:latest
     container_name: safalife-core-grafana
     restart: always
-    expose:
-      - "3000"
+    ports:
+      - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
