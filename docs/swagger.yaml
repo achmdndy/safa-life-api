@@ -767,8 +767,8 @@ paths:
       - application/json
       description: Get all juz with pagination
       parameters:
-      - default: 10
-        description: Limit
+      - default: 0
+        description: Limit (0 for all)
         in: query
         name: limit
         type: integer
@@ -952,8 +952,8 @@ paths:
         name: juzNumber
         required: true
         type: integer
-      - default: 10
-        description: Limit
+      - default: 0
+        description: Limit (0 for all)
         in: query
         name: limit
         type: integer
@@ -1026,8 +1026,8 @@ paths:
       - application/json
       description: Get all surahs from the Quran with pagination
       parameters:
-      - default: 10
-        description: Limit
+      - default: 0
+        description: Limit (0 for all)
         in: query
         name: limit
         type: integer
@@ -1211,8 +1211,8 @@ paths:
         name: surahId
         required: true
         type: string
-      - default: 10
-        description: Limit
+      - default: 0
+        description: Limit (0 for all)
         in: query
         name: limit
         type: integer

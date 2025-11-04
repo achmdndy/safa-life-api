@@ -219,7 +219,14 @@ func (r *AyahRepositoryImpl) GetById(ctx context.Context, id core.UUID) (*quran.
 func (r *AyahRepositoryImpl) GetBySurahId(ctx context.Context, surahId core.UUID, limit, offset int) ([]*quran.Ayah, error) {
 	googleUUID := infraCore.ToGoogleUUID(surahId)
 	var models []AyahModel
-	if err := r.db.WithContext(ctx).Where("surah_id = ?", googleUUID).Limit(limit).Offset(offset).Find(&models).Error; err != nil {
+	query := r.db.WithContext(ctx).Where("surah_id = ?", googleUUID).Order("created_at ASC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
 		return nil, fmt.Errorf("failed to get ayahs by surah id: %w", err)
 	}
 
@@ -247,7 +254,14 @@ func (r *AyahRepositoryImpl) GetByIdWithSurah(ctx context.Context, id core.UUID)
 func (r *AyahRepositoryImpl) GetBySurahIdWithSurah(ctx context.Context, surahId core.UUID, limit, offset int) ([]*quran.AyahWithSurah, error) {
 	googleUUID := infraCore.ToGoogleUUID(surahId)
 	var models []AyahModel
-	if err := r.db.WithContext(ctx).Preload("Surah").Where("surah_id = ?", googleUUID).Limit(limit).Offset(offset).Find(&models).Error; err != nil {
+	query := r.db.WithContext(ctx).Preload("Surah").Where("surah_id = ?", googleUUID).Order("created_at ASC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
 		return nil, fmt.Errorf("failed to get ayahs by surah id with surah: %w", err)
 	}
 

@@ -251,8 +251,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "default": 10,
-                        "description": "Limit",
+                        "default": 0,
+                        "description": "Limit (0 for all)",
                         "name": "limit",
                         "in": "query"
                     },
@@ -588,8 +588,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "default": 10,
-                        "description": "Limit",
+                        "default": 0,
+                        "description": "Limit (0 for all)",
                         "name": "limit",
                         "in": "query"
                     },
@@ -639,8 +639,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "default": 10,
-                        "description": "Limit",
+                        "default": 0,
+                        "description": "Limit (0 for all)",
                         "name": "limit",
                         "in": "query"
                     },
@@ -976,8 +976,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "default": 10,
-                        "description": "Limit",
+                        "default": 0,
+                        "description": "Limit (0 for all)",
                         "name": "limit",
                         "in": "query"
                     },

@@ -31,7 +31,7 @@ type GetSurahByNumberRequest struct {
 }
 
 type GetAllSurahsRequest struct {
-	Limit   int    `form:"limit" binding:"omitempty,min=1,max=100"`
+	Limit   int    `form:"limit" binding:"omitempty,min=0,max=100"`
 	Offset  int    `form:"offset" binding:"omitempty,min=0"`
 	Include string `form:"include" binding:"omitempty" example:"ayahs" enums:"ayahs" doc:"Include related data (ayahs)"`
 }
@@ -74,14 +74,14 @@ type GetAyahByIdRequest struct {
 
 type GetAyahsBySurahIdRequest struct {
 	SurahID string `uri:"surahId" binding:"required"`
-	Limit   int    `form:"limit" binding:"omitempty,min=1,max=100"`
+	Limit   int    `form:"limit" binding:"omitempty,min=0,max=100"`
 	Offset  int    `form:"offset" binding:"omitempty,min=0"`
 	Include string `form:"include" binding:"omitempty" example:"surah" enums:"surah" doc:"Include related data (surah)"`
 }
 
 type GetAyahsByJuzNumberRequest struct {
 	JuzNumber int `uri:"juzNumber" binding:"required,min=1,max=30"`
-	Limit     int `form:"limit" binding:"omitempty,min=1,max=100"`
+	Limit     int `form:"limit" binding:"omitempty,min=0,max=100"`
 	Offset    int `form:"offset" binding:"omitempty,min=0"`
 }
 
@@ -142,7 +142,7 @@ type GetJuzByNumberRequest struct {
 }
 
 type GetAllJuzRequest struct {
-	Limit   int    `form:"limit" binding:"omitempty,min=1,max=100"`
+	Limit   int    `form:"limit" binding:"omitempty,min=0,max=100"`
 	Offset  int    `form:"offset" binding:"omitempty,min=0"`
 	Include string `form:"include" binding:"omitempty" example:"relations" enums:"relations" doc:"Include related data (relations - includes start/end surah and ayah)"`
 }

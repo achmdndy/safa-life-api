@@ -29,7 +29,7 @@ func NewGetAllSurahsHandler(queryHandler *query.QueryHandler) *GetAllSurahsHandl
 // @Tags Surahs
 // @Accept json
 // @Produce json
-// @Param limit query int false "Limit" default(10)
+// @Param limit query int false "Limit (0 for all)" default(0)
 // @Param offset query int false "Offset" default(0)
 // @Param include query string false "Include related data" Enums(ayahs) example(ayahs)
 // @Success 200 {object} GetAllSurahsSuccessResponse "Surahs retrieved successfully"
@@ -47,11 +47,6 @@ func (h *GetAllSurahsHandler) Handle(c *gin.Context) {
 		}
 		core.Error(c, http.StatusBadRequest, "Invalid query parameters", errorDetail, start)
 		return
-	}
-
-	// Set default values if not provided
-	if req.Limit == 0 {
-		req.Limit = 10
 	}
 
 	qry := query.GetAllSurahsQuery{

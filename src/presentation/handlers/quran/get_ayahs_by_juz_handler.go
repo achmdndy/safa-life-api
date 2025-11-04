@@ -30,7 +30,7 @@ func NewGetAyahsByJuzHandler(queryHandler *query.QueryHandler) *GetAyahsByJuzHan
 // @Accept json
 // @Produce json
 // @Param juzNumber path int true "Juz Number"
-// @Param limit query int false "Limit" default(10)
+// @Param limit query int false "Limit (0 for all)" default(0)
 // @Param offset query int false "Offset" default(0)
 // @Success 200 {object} GetAyahsByJuzSuccessResponse "Ayahs retrieved successfully"
 // @Failure 400 {object} QuranErrorResponse "Bad request"
@@ -55,11 +55,6 @@ func (h *GetAyahsByJuzHandler) Handle(c *gin.Context) {
 		}
 		core.Error(c, http.StatusBadRequest, "Invalid query parameters", errorDetail, start)
 		return
-	}
-
-	// Set default values if not provided
-	if req.Limit == 0 {
-		req.Limit = 10
 	}
 
 	qry := query.GetAyahsByJuzQuery{
