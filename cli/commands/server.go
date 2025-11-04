@@ -13,7 +13,7 @@ package commands
 // @license.url https://opensource.org/licenses/MIT
 
 // @host localhost:8080
-// @BasePath /api/v1
+// @BasePath /v1
 // @schemes http https
 
 // @securityDefinitions.basic BasicAuth
@@ -180,7 +180,7 @@ func RunServer() {
 	fmt.Printf("│                                                                              │\n")
 	fmt.Printf("│  Server Address: http://localhost:%s                                       │\n", port)
 	fmt.Printf("│  Environment: %s                                                    │\n", getEnvironment())
-	fmt.Printf("│  Health Check: http://localhost:%s/api/v1/health                           │\n", port)
+	fmt.Printf("│  Health Check: http://localhost:%s/v1/health                           │\n", port)
 	fmt.Printf("│  API Documentation: http://localhost:%s/swagger/index.html                 │\n", port)
 	fmt.Printf("│                                                                              │\n")
 	fmt.Printf("│  Status: RUNNING                                                             │\n")

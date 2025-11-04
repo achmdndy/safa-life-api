@@ -161,7 +161,7 @@ GET /
 GET /metrics
 
 # Health check for monitoring
-GET /api/v1/health
+GET /v1/health
 ```
 
 ## 📊 Monitoring & Observability

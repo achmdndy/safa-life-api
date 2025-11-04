@@ -1,33 +1,63 @@
+version: "3.9"
+
 services:
-  # Database Services
+  api:
+    container_name: safalife-core-api
+    build:
+      context: .
+      args:
+        APP_PORT: ${APP_PORT:-8080}
+    env_file:
+      - .env
+    expose:
+      - "${APP_PORT:-8080}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      jaeger:
+        condition: service_healthy
+    restart: always
+    networks:
+      - safalife-net
+      - kong-net
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${APP_PORT:-8080}/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   postgres:
     image: postgres:14-alpine
-    container_name: safalife-postgres
+    container_name: safalife-core-postgres
+    restart: always
     environment:
-      POSTGRES_DB: safalife_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${POSTGRES_DB:-safalife_core_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
     ports:
-      - "5432:5432"
+      - "${DB_HOST_PORT:-9543}:5432"
     volumes:
-      - safalife-go-postgres-data:/var/lib/postgresql/data
+      - safalife-core-postgres-data:/var/lib/postgresql/data
       - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - safalife-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d safalife_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-safalife_core_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:6-alpine
-    container_name: safalife-redis
-    ports:
-      - "6379:6379"
+    container_name: safalife-core-redis
+    restart: always
+    expose:
+      - "6379"
     volumes:
-      - safalife-go-redis-data:/data
+      - safalife-core-redis-data:/data
     networks:
       - safalife-net
     healthcheck:
@@ -36,23 +66,21 @@ services:
       timeout: 5s
       retries: 5
 
-  # Monitoring Services
   jaeger:
     image: jaegertracing/all-in-one:latest
-    container_name: safalife-jaeger
-    ports:
-      - "16686:16686"  # Jaeger UI
-      - "14268:14268"  # HTTP collector
-      - "14250:14250"  # gRPC collector
-      - "4317:4317"    # OTLP gRPC receiver
-      - "4318:4318"    # OTLP HTTP receiver
-      - "6831:6831/udp"  # UDP agent
-      - "6832:6832/udp"  # UDP agent
+    container_name: safalife-core-jaeger
+    restart: always
+    expose:
+      - "16686"
+      - "14268"
+      - "14250"
+      - "4317"
+      - "4318"
+    networks:
+      - safalife-net
     environment:
       - COLLECTOR_OTLP_ENABLED=true
       - COLLECTOR_ZIPKIN_HOST_PORT=:9411
-    networks:
-      - safalife-net
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:16686/"]
       interval: 30s
@@ -61,41 +89,41 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
-    container_name: safalife-prometheus
-    ports:
-      - "9090:9090"
+    container_name: safalife-core-prometheus
+    restart: always
+    expose:
+      - "9090"
     volumes:
-      - safalife-go-prometheus-data:/prometheus
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.retention.time=200h'
-      - '--web.enable-lifecycle'
-      - '--web.enable-remote-write-receiver'
     networks:
       - safalife-net
+    depends_on:
+      jaeger:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  # Grafana (optional, for visualization)
   grafana:
     image: grafana/grafana:latest
-    container_name: safalife-grafana
-    ports:
-      - "3000:3000"
+    container_name: safalife-core-grafana
+    restart: always
+    expose:
+      - "3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_INSTALL_PLUGINS=grafana-piechart-panel
     volumes:
-      - safalife-go-grafana-storage:/var/lib/grafana
+      - grafana-storage:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
     networks:
       - safalife-net
@@ -110,105 +138,14 @@ services:
       timeout: 10s
       retries: 3
 
-  # Optional: Database Admin Tool
-  adminer:
-    image: adminer:latest
-    container_name: safalife-adminer
-    ports:
-      - "8081:8080"
-    environment:
-      - ADMINER_DEFAULT_SERVER=postgres
-    networks:
-      - safalife-net
-    depends_on:
-      - postgres
-    profiles:
-      - admin
-
-  # Optional: Redis Admin Tool
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    container_name: safalife-redis-commander
-    ports:
-      - "8082:8081"
-    environment:
-      - REDIS_HOSTS=local:redis:6379
-    networks:
-      - safalife-net
-    depends_on:
-      - redis
-    profiles:
-      - admin
-
-  # Application Service
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: safalife-api
-    ports:
-      - "8080:8080"
-    environment:
-      # Database Configuration
-      - SAFALIFE_DB_HOST=postgres
-      - SAFALIFE_DB_USER=postgres
-      - SAFALIFE_DB_PASSWORD=password
-      - SAFALIFE_DB_NAME=safalife_db
-      - SAFALIFE_DB_PORT=5432
-      - SAFALIFE_DB_SSL_MODE=disable
-      - SAFALIFE_DB_TIMEZONE=UTC
-      
-      # Redis Configuration
-      - SAFALIFE_REDIS_HOST=redis
-      - SAFALIFE_REDIS_PORT=6379
-      - SAFALIFE_REDIS_PASSWORD=
-      - SAFALIFE_REDIS_DB=0
-      
-      # Server Configuration
-      - SAFALIFE_SERVER_HOST=0.0.0.0
-      - SAFALIFE_SERVER_PORT=8080
-      - SAFALIFE_SERVER_ENV=development
-      
-      # Application Configuration
-      - SAFALIFE_APP_NAME="Safalife API"
-      - SAFALIFE_APP_VERSION=1.0.0
-      
-      # Monitoring Configuration
-      - SAFALIFE_MONITORING_JAEGER_ENDPOINT=jaeger:4318
-      - SAFALIFE_MONITORING_JAEGER_SERVICE_NAME=safalife-api
-      - SAFALIFE_MONITORING_JAEGER_SERVICE_VERSION=1.0.0
-      - SAFALIFE_MONITORING_JAEGER_ENVIRONMENT=development
-    volumes:
-      - ./configs:/app/configs:ro
-    networks:
-      - safalife-net
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      jaeger:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-
 volumes:
-  safalife-go-postgres-data:
-    driver: local
-  safalife-go-redis-data:
-    driver: local
-  safalife-go-prometheus-data:
-    driver: local
-  safalife-go-grafana-data:
-    driver: local
-  safalife-go-grafana-storage:
-    driver: local
+  safalife-core-postgres-data:
+  safalife-core-redis-data:
+  prometheus_data:
+  grafana-storage:
 
 networks:
   safalife-net:
-    driver: bridge
+    external: true
+  kong-net:
+    external: true

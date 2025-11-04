@@ -38,7 +38,7 @@ func SetupRoutes(router *gin.Engine, presentationContainer *container.Presentati
 			"endpoints": map[string]string{
 				"health":  "/health",
 				"metrics": "/metrics",
-				"api":     "/api/v1",
+				"api":     "/v1",
 				"docs":    "/swagger/index.html",
 			},
 		}
@@ -50,7 +50,7 @@ func SetupRoutes(router *gin.Engine, presentationContainer *container.Presentati
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// API version 1
-	v1 := router.Group("/api/v1")
+	v1 := router.Group("/v1")
 	{
 		// Quran routes
 		QuranRoutes(v1, presentationContainer.QuranHandler)

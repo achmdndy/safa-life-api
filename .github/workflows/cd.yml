@@ -138,7 +138,7 @@ jobs:
           
           # Run basic health checks
           curl -f "$STAGING_URL/health" || exit 1
-          curl -f "$STAGING_URL/api/v1/health" || exit 1
+          curl -f "$STAGING_URL/v1/health" || exit 1
           
           echo "✅ Staging deployment successful!"
 
@@ -212,7 +212,7 @@ jobs:
           
           # Run basic health checks
           curl -f "$PRODUCTION_URL/health" || exit 1
-          curl -f "$PRODUCTION_URL/api/v1/health" || exit 1
+          curl -f "$PRODUCTION_URL/v1/health" || exit 1
           
           echo "✅ Production deployment successful!"
 

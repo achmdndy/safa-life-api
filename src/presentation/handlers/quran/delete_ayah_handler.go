@@ -34,7 +34,7 @@ func NewDeleteAyahHandler(commandHandler *command.CommandHandler) *DeleteAyahHan
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 404 {object} QuranErrorResponse "Ayah not found"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /api/v1/quran/ayahs/{id} [delete]
+// @Router /v1/quran/ayahs/{id} [delete]
 func (h *DeleteAyahHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()

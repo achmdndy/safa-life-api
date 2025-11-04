@@ -35,7 +35,7 @@ func NewGetAyahByIdHandler(queryHandler *query.QueryHandler) *GetAyahByIdHandler
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 404 {object} QuranErrorResponse "Ayah not found"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /api/v1/quran/ayahs/{id} [get]
+// @Router /v1/quran/ayahs/{id} [get]
 func (h *GetAyahByIdHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()

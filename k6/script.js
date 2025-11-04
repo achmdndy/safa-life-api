@@ -6,7 +6,7 @@ import { Rate, Trend } from 'k6/metrics';
 const errorRate = new Rate('errors');
 const apiResponseTime = new Trend('api_response_time');
 
-const BASE_URL = 'http://localhost:8080/api/v1';
+const BASE_URL = 'http://localhost:8080/v1';
 
 // Environment variables for test configuration
 const STRICT_MODE = __ENV.STRICT_MODE === 'true' || false;
@@ -227,7 +227,7 @@ function getAllArticles() {
   ]);
 
   responses.forEach((response) => {
-    const endpoint = response.request.url.split('/api/v1/')[1];
+    const endpoint = response.request.url.split('/v1/')[1];
     let expectedStatuses = [200];
     
     if (endpoint.includes('slug/') || endpoint.includes(`/${sampleId}`)) {
@@ -273,7 +273,7 @@ function getAllArticles() {
   ]);
 
   managementResponses.forEach((response) => {
-    const endpoint = response.request.url.split('/api/v1/')[1];
+    const endpoint = response.request.url.split('/v1/')[1];
     const check_result = check(response, {
       [`Articles management ${endpoint} responds correctly`]: (r) => [200, 404, 401].includes(r.status),
       [`Articles management ${endpoint} response time < 500ms`]: (r) => r.timings.duration < 500,

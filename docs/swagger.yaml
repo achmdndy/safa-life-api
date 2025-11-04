@@ -1,4 +1,4 @@
-basePath: /api/v1
+basePath: /v1
 definitions:
   core.ErrorDetail:
     properties:
@@ -621,7 +621,7 @@ info:
   title: Safalife API
   version: 1.0.0
 paths:
-  /api/v1/quran/ayahs:
+  /v1/quran/ayahs:
     post:
       consumes:
       - application/json
@@ -651,7 +651,7 @@ paths:
       summary: Create a new ayah
       tags:
       - Ayahs
-  /api/v1/quran/ayahs/{id}:
+  /v1/quran/ayahs/{id}:
     delete:
       consumes:
       - application/json
@@ -761,7 +761,7 @@ paths:
       summary: Update an ayah
       tags:
       - Ayahs
-  /api/v1/quran/juz:
+  /v1/quran/juz:
     get:
       consumes:
       - application/json
@@ -831,7 +831,7 @@ paths:
       summary: Create a new juz
       tags:
       - Juz
-  /api/v1/quran/juz/{id}:
+  /v1/quran/juz/{id}:
     delete:
       consumes:
       - application/json
@@ -941,7 +941,7 @@ paths:
       summary: Update a juz
       tags:
       - Juz
-  /api/v1/quran/juz/{juzNumber}/ayahs:
+  /v1/quran/juz/{juzNumber}/ayahs:
     get:
       consumes:
       - application/json
@@ -980,7 +980,7 @@ paths:
       summary: Get ayahs by juz
       tags:
       - Ayahs
-  /api/v1/quran/juz/number/{number}:
+  /v1/quran/juz/number/{number}:
     get:
       consumes:
       - application/json
@@ -1020,7 +1020,7 @@ paths:
       summary: Get juz by number
       tags:
       - Juz
-  /api/v1/quran/surahs:
+  /v1/quran/surahs:
     get:
       consumes:
       - application/json
@@ -1090,7 +1090,7 @@ paths:
       summary: Create a new surah
       tags:
       - Surahs
-  /api/v1/quran/surahs/{id}:
+  /v1/quran/surahs/{id}:
     delete:
       consumes:
       - application/json
@@ -1200,7 +1200,7 @@ paths:
       summary: Update a surah
       tags:
       - Surahs
-  /api/v1/quran/surahs/{surahId}/ayahs:
+  /v1/quran/surahs/{surahId}/ayahs:
     get:
       consumes:
       - application/json
@@ -1246,7 +1246,7 @@ paths:
       summary: Get ayahs by surah
       tags:
       - Ayahs
-  /api/v1/quran/surahs/number/{number}:
+  /v1/quran/surahs/number/{number}:
     get:
       consumes:
       - application/json

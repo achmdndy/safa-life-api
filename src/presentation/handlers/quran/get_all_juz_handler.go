@@ -35,7 +35,7 @@ func NewGetAllJuzHandler(queryHandler *query.QueryHandler) *GetAllJuzHandler {
 // @Success 200 {object} JuzListSuccessResponse "Juz list retrieved successfully"
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /api/v1/quran/juz [get]
+// @Router /v1/quran/juz [get]
 func (h *GetAllJuzHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()

@@ -20,9 +20,9 @@
         "version": "1.0.0"
     },
     "host": "localhost:8080",
-    "basePath": "/api/v1",
+    "basePath": "/v1",
     "paths": {
-        "/api/v1/quran/ayahs": {
+        "/v1/quran/ayahs": {
             "post": {
                 "description": "Create a new ayah in the Quran",
                 "consumes": [
@@ -68,7 +68,7 @@
                 }
             }
         },
-        "/api/v1/quran/ayahs/{id}": {
+        "/v1/quran/ayahs/{id}": {
             "get": {
                 "description": "Get an ayah by its ID from the Quran",
                 "consumes": [
@@ -233,7 +233,7 @@
                 }
             }
         },
-        "/api/v1/quran/juz": {
+        "/v1/quran/juz": {
             "get": {
                 "description": "Get all juz with pagination",
                 "consumes": [
@@ -338,7 +338,7 @@
                 }
             }
         },
-        "/api/v1/quran/juz/number/{number}": {
+        "/v1/quran/juz/number/{number}": {
             "get": {
                 "description": "Get a specific juz by its number",
                 "consumes": [
@@ -398,7 +398,7 @@
                 }
             }
         },
-        "/api/v1/quran/juz/{id}": {
+        "/v1/quran/juz/{id}": {
             "get": {
                 "description": "Get a specific juz by its ID",
                 "consumes": [
@@ -563,7 +563,7 @@
                 }
             }
         },
-        "/api/v1/quran/juz/{juzNumber}/ayahs": {
+        "/v1/quran/juz/{juzNumber}/ayahs": {
             "get": {
                 "description": "Get all ayahs from a specific juz with pagination",
                 "consumes": [
@@ -621,7 +621,7 @@
                 }
             }
         },
-        "/api/v1/quran/surahs": {
+        "/v1/quran/surahs": {
             "get": {
                 "description": "Get all surahs from the Quran with pagination",
                 "consumes": [
@@ -726,7 +726,7 @@
                 }
             }
         },
-        "/api/v1/quran/surahs/number/{number}": {
+        "/v1/quran/surahs/number/{number}": {
             "get": {
                 "description": "Get a surah by its number from the Quran",
                 "consumes": [
@@ -786,7 +786,7 @@
                 }
             }
         },
-        "/api/v1/quran/surahs/{id}": {
+        "/v1/quran/surahs/{id}": {
             "get": {
                 "description": "Get a surah by its ID from the Quran",
                 "consumes": [
@@ -951,7 +951,7 @@
                 }
             }
         },
-        "/api/v1/quran/surahs/{surahId}/ayahs": {
+        "/v1/quran/surahs/{surahId}/ayahs": {
             "get": {
                 "description": "Get all ayahs from a specific surah with pagination",
                 "consumes": [

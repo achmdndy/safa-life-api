@@ -24,7 +24,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/quran/ayahs": {
+        "/v1/quran/ayahs": {
             "post": {
                 "description": "Create a new ayah in the Quran",
                 "consumes": [
@@ -70,7 +70,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/quran/ayahs/{id}": {
+        "/v1/quran/ayahs/{id}": {
             "get": {
                 "description": "Get an ayah by its ID from the Quran",
                 "consumes": [
@@ -235,7 +235,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/quran/juz": {
+        "/v1/quran/juz": {
             "get": {
                 "description": "Get all juz with pagination",
                 "consumes": [
@@ -340,7 +340,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/quran/juz/number/{number}": {
+        "/v1/quran/juz/number/{number}": {
             "get": {
                 "description": "Get a specific juz by its number",
                 "consumes": [
@@ -400,7 +400,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/quran/juz/{id}": {
+        "/v1/quran/juz/{id}": {
             "get": {
                 "description": "Get a specific juz by its ID",
                 "consumes": [
@@ -565,7 +565,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/quran/juz/{juzNumber}/ayahs": {
+        "/v1/quran/juz/{juzNumber}/ayahs": {
             "get": {
                 "description": "Get all ayahs from a specific juz with pagination",
                 "consumes": [
@@ -623,7 +623,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/quran/surahs": {
+        "/v1/quran/surahs": {
             "get": {
                 "description": "Get all surahs from the Quran with pagination",
                 "consumes": [
@@ -728,7 +728,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/quran/surahs/number/{number}": {
+        "/v1/quran/surahs/number/{number}": {
             "get": {
                 "description": "Get a surah by its number from the Quran",
                 "consumes": [
@@ -788,7 +788,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/quran/surahs/{id}": {
+        "/v1/quran/surahs/{id}": {
             "get": {
                 "description": "Get a surah by its ID from the Quran",
                 "consumes": [
@@ -953,7 +953,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/quran/surahs/{surahId}/ayahs": {
+        "/v1/quran/surahs/{surahId}/ayahs": {
             "get": {
                 "description": "Get all ayahs from a specific surah with pagination",
                 "consumes": [
@@ -1895,7 +1895,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.0",
 	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
+	BasePath:         "/v1",
 	Schemes:          []string{"http", "https"},
 	Title:            "Safalife API",
 	Description:      "Safalife API is a comprehensive backend service for Safalife's competition management system. This API provides endpoints for health monitoring, user management, competition tracking, and administrative functions. Built with Go using Clean Architecture principles, it offers high performance and reliability for managing large-scale competitions.",

@@ -43,7 +43,7 @@ curl http://localhost:8080/health
 curl http://localhost:8080/metrics
 
 # Test API endpoint
-curl http://localhost:8080/api/v1/health
+curl http://localhost:8080/v1/health
 ```
 
 ## 🔗 Access Monitoring Tools
@@ -236,7 +236,7 @@ services:
 # Generate multiple requests
 for i in {1..10}; do
   curl http://localhost:8080/health
-  curl http://localhost:8080/api/v1/health
+  curl http://localhost:8080/v1/health
   sleep 1
 done
 

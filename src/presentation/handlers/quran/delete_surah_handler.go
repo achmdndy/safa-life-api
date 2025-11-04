@@ -34,7 +34,7 @@ func NewDeleteSurahHandler(commandHandler *command.CommandHandler) *DeleteSurahH
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 404 {object} QuranErrorResponse "Surah not found"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /api/v1/quran/surahs/{id} [delete]
+// @Router /v1/quran/surahs/{id} [delete]
 func (h *DeleteSurahHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()
