@@ -308,8 +308,3 @@ func (m *Mapper) JuzEntitiesToModels(entities []*quran.Juz) []*JuzModel {
 func (m *Mapper) coreUUIDToGoogleUUID(coreUUID core.UUID) uuid.UUID {
 	return infraCore.ToGoogleUUID(coreUUID)
 }
-
-// googleUUIDToCoreUUID converts google/uuid.UUID to core.UUID
-func (m *Mapper) googleUUIDToCoreUUID(googleUUID uuid.UUID) core.UUID {
-	return infraCore.FromGoogleUUID(googleUUID)
-}
