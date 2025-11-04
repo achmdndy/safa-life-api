@@ -36,7 +36,7 @@ func NewGetAyahsBySurahHandler(queryHandler *query.QueryHandler) *GetAyahsBySura
 // @Success 200 {object} GetAyahsBySurahSuccessResponse "Ayahs retrieved successfully"
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /v1/quran/surahs/{surahId}/ayahs [get]
+// @Router /v1/quran/ayahs/surah/{surahId} [get]
 func (h *GetAyahsBySurahHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()

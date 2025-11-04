@@ -761,6 +761,52 @@ paths:
       summary: Update an ayah
       tags:
       - Ayahs
+  /v1/quran/ayahs/surah/{surahId}:
+    get:
+      consumes:
+      - application/json
+      description: Get all ayahs from a specific surah with pagination
+      parameters:
+      - description: Surah ID
+        in: path
+        name: surahId
+        required: true
+        type: string
+      - default: 0
+        description: Limit (0 for all)
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: Include related data
+        enum:
+        - surah
+        example: surah
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayahs retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.GetAyahsBySurahSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get ayahs by surah
+      tags:
+      - Ayahs
   /v1/quran/juz:
     get:
       consumes:
@@ -1200,52 +1246,6 @@ paths:
       summary: Update a surah
       tags:
       - Surahs
-  /v1/quran/surahs/{surahId}/ayahs:
-    get:
-      consumes:
-      - application/json
-      description: Get all ayahs from a specific surah with pagination
-      parameters:
-      - description: Surah ID
-        in: path
-        name: surahId
-        required: true
-        type: string
-      - default: 0
-        description: Limit (0 for all)
-        in: query
-        name: limit
-        type: integer
-      - default: 0
-        description: Offset
-        in: query
-        name: offset
-        type: integer
-      - description: Include related data
-        enum:
-        - surah
-        example: surah
-        in: query
-        name: include
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Ayahs retrieved successfully
-          schema:
-            $ref: '#/definitions/quran.GetAyahsBySurahSuccessResponse'
-        "400":
-          description: Bad request
-          schema:
-            $ref: '#/definitions/quran.QuranErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/quran.QuranErrorResponse'
-      summary: Get ayahs by surah
-      tags:
-      - Ayahs
   /v1/quran/surahs/number/{number}:
     get:
       consumes:

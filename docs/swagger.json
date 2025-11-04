@@ -68,6 +68,74 @@
                 }
             }
         },
+        "/v1/quran/ayahs/surah/{surahId}": {
+            "get": {
+                "description": "Get all ayahs from a specific surah with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ayahs"
+                ],
+                "summary": "Get ayahs by surah",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Surah ID",
+                        "name": "surahId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Limit (0 for all)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "surah"
+                        ],
+                        "type": "string",
+                        "example": "surah",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayahs retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.GetAyahsBySurahSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/quran/ayahs/{id}": {
             "get": {
                 "description": "Get an ayah by its ID from the Quran",
@@ -938,74 +1006,6 @@
                     },
                     "404": {
                         "description": "Surah not found",
-                        "schema": {
-                            "$ref": "#/definitions/quran.QuranErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/quran.QuranErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/quran/surahs/{surahId}/ayahs": {
-            "get": {
-                "description": "Get all ayahs from a specific surah with pagination",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Ayahs"
-                ],
-                "summary": "Get ayahs by surah",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Surah ID",
-                        "name": "surahId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "default": 0,
-                        "description": "Limit (0 for all)",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 0,
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "enum": [
-                            "surah"
-                        ],
-                        "type": "string",
-                        "example": "surah",
-                        "description": "Include related data",
-                        "name": "include",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Ayahs retrieved successfully",
-                        "schema": {
-                            "$ref": "#/definitions/quran.GetAyahsBySurahSuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/quran.QuranErrorResponse"
                         }
