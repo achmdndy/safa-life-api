@@ -35,7 +35,7 @@ func NewUpdateJuzHandler(commandHandler *command.CommandHandler) *UpdateJuzHandl
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 404 {object} QuranErrorResponse "Juz not found"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /v1/quran/juz/{id} [put]
+// @Router /quran/juz/{id} [put]
 func (h *UpdateJuzHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()

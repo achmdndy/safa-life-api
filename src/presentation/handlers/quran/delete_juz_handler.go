@@ -34,7 +34,7 @@ func NewDeleteJuzHandler(commandHandler *command.CommandHandler) *DeleteJuzHandl
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 404 {object} QuranErrorResponse "Juz not found"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /v1/quran/juz/{id} [delete]
+// @Router /quran/juz/{id} [delete]
 func (h *DeleteJuzHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()

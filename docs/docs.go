@@ -24,7 +24,306 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/quran/ayahs": {
+        "/quran/audio/ayahs": {
+            "post": {
+                "description": "Create a new ayah audio file",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Audio"
+                ],
+                "summary": "Create a new ayah audio file",
+                "parameters": [
+                    {
+                        "description": "Create ayah audio file request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateAyahAudioFileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Ayah audio file created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.CreateAyahAudioFileSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/audio/ayahs/ayah/{ayahId}/reciter/{reciterId}": {
+            "get": {
+                "description": "Get an ayah audio file by ayah and reciter IDs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Audio"
+                ],
+                "summary": "Get ayah audio file by ayah and reciter",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ayah ID",
+                        "name": "ayahId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Reciter ID",
+                        "name": "reciterId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayah audio file retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.AyahAudioFileSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/audio/ayahs/surah/{surahId}/reciter/{reciterId}": {
+            "get": {
+                "description": "List ayah audio files by surah and reciter IDs with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Audio"
+                ],
+                "summary": "List ayah audio files by surah and reciter",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Surah ID",
+                        "name": "surahId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Reciter ID",
+                        "name": "reciterId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Limit (0 for all)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayah audio files retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.AyahAudioFileListSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/audio/ayahs/{id}": {
+            "get": {
+                "description": "Get an ayah audio file by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Audio"
+                ],
+                "summary": "Get ayah audio file by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ayah audio file ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayah audio file retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.AyahAudioFileSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing ayah audio file",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Audio"
+                ],
+                "summary": "Update an ayah audio file",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ayah audio file ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update ayah audio file request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateAyahAudioFileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayah audio file updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.UpdateAyahAudioFileSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an ayah audio file by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Audio"
+                ],
+                "summary": "Delete an ayah audio file",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ayah audio file ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayah audio file deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.DeleteAyahAudioFileSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/ayahs": {
             "post": {
                 "description": "Create a new ayah in the Quran",
                 "consumes": [
@@ -70,7 +369,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/quran/ayahs/surah/{surahId}": {
+        "/quran/ayahs/surah/{surahId}": {
             "get": {
                 "description": "Get all ayahs from a specific surah with pagination",
                 "consumes": [
@@ -114,13 +413,25 @@ const docTemplate = `{
                         "description": "Include related data",
                         "name": "include",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Translation edition ID to include per-ayah translation",
+                        "name": "editionId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Reciter ID to include per-ayah audio",
+                        "name": "reciterId",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Ayahs retrieved successfully",
+                        "description": "Ayahs with translations retrieved successfully",
                         "schema": {
-                            "$ref": "#/definitions/quran.GetAyahsBySurahSuccessResponse"
+                            "$ref": "#/definitions/quran.GetAyahsBySurahWithTranslationsSuccessResponse"
                         }
                     },
                     "400": {
@@ -138,7 +449,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/quran/ayahs/{id}": {
+        "/quran/ayahs/{id}": {
             "get": {
                 "description": "Get an ayah by its ID from the Quran",
                 "consumes": [
@@ -303,7 +614,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/quran/juz": {
+        "/quran/juz": {
             "get": {
                 "description": "Get all juz with pagination",
                 "consumes": [
@@ -408,7 +719,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/quran/juz/number/{number}": {
+        "/quran/juz/number/{number}": {
             "get": {
                 "description": "Get a specific juz by its number",
                 "consumes": [
@@ -468,7 +779,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/quran/juz/{id}": {
+        "/quran/juz/{id}": {
             "get": {
                 "description": "Get a specific juz by its ID",
                 "consumes": [
@@ -633,7 +944,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/quran/juz/{juzNumber}/ayahs": {
+        "/quran/juz/{juzNumber}/ayahs": {
             "get": {
                 "description": "Get all ayahs from a specific juz with pagination",
                 "consumes": [
@@ -691,7 +1002,283 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/quran/surahs": {
+        "/quran/reciters": {
+            "get": {
+                "description": "Get all reciters with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reciters"
+                ],
+                "summary": "Get all reciters",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Limit (0 for all)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reciters retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.ReciterListSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new reciter",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reciters"
+                ],
+                "summary": "Create a new reciter",
+                "parameters": [
+                    {
+                        "description": "Create reciter request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateReciterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Reciter created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.CreateReciterSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/reciters/name/{name}": {
+            "get": {
+                "description": "Get a reciter by name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reciters"
+                ],
+                "summary": "Get reciter by name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Reciter name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reciter retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.ReciterSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/reciters/{id}": {
+            "get": {
+                "description": "Get a reciter by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reciters"
+                ],
+                "summary": "Get reciter by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Reciter ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reciter retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.ReciterSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing reciter",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reciters"
+                ],
+                "summary": "Update a reciter",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Reciter ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update reciter request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateReciterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reciter updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.UpdateReciterSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a reciter by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reciters"
+                ],
+                "summary": "Delete a reciter",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Reciter ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reciter deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.DeleteReciterSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/surahs": {
             "get": {
                 "description": "Get all surahs from the Quran with pagination",
                 "consumes": [
@@ -796,7 +1383,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/quran/surahs/number/{number}": {
+        "/quran/surahs/number/{number}": {
             "get": {
                 "description": "Get a surah by its number from the Quran",
                 "consumes": [
@@ -856,7 +1443,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/quran/surahs/{id}": {
+        "/quran/surahs/{id}": {
             "get": {
                 "description": "Get a surah by its ID from the Quran",
                 "consumes": [
@@ -1020,6 +1607,185 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/quran/translations/ayahs/ayah/{ayahId}/edition/{editionId}": {
+            "get": {
+                "description": "Get a translated ayah text by ayah ID and translation edition ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Translations"
+                ],
+                "summary": "Get ayah translation by ayah and edition",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ayah ID",
+                        "name": "ayahId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Translation Edition ID",
+                        "name": "editionId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayah translation retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.GetAyahTranslationSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/translations/ayahs/surah/{surahId}/edition/{editionId}": {
+            "get": {
+                "description": "Get translated ayahs for a surah by translation edition with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Translations"
+                ],
+                "summary": "Get ayah translations by surah and edition",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Surah ID",
+                        "name": "surahId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Translation Edition ID",
+                        "name": "editionId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Limit (0 for all)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ayah translations retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.GetAyahTranslationListSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/translations/editions": {
+            "get": {
+                "description": "Get translation editions with optional language filter and pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Translations"
+                ],
+                "summary": "Get translation editions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Language code (e.g., en, id)",
+                        "name": "language",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Limit (0 for all)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Translation editions retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.GetTranslationEditionListSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1030,6 +1796,58 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "reason": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AyahAudioFileListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.AyahAudioFileResponse"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationResponse"
+                }
+            }
+        },
+        "dto.AyahAudioFileResponse": {
+            "type": "object",
+            "properties": {
+                "ayahId": {
+                    "type": "string"
+                },
+                "byteSize": {
+                    "type": "number"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "duration": {
+                    "type": "number"
+                },
+                "filePath": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "reciterId": {
+                    "type": "string"
+                },
+                "surahId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
                     "type": "string"
                 }
             }
@@ -1082,6 +1900,136 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updatedBy": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AyahTranslationListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.AyahTranslationResponse"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationResponse"
+                }
+            }
+        },
+        "dto.AyahTranslationResponse": {
+            "type": "object",
+            "properties": {
+                "ayahId": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "surahId": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "translationEditionId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AyahWithTranslationResponse": {
+            "type": "object",
+            "properties": {
+                "audio": {
+                    "$ref": "#/definitions/dto.AyahAudioFileResponse"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "hizbNumber": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "juzNumber": {
+                    "type": "integer"
+                },
+                "manzilNumber": {
+                    "type": "integer"
+                },
+                "pageNumber": {
+                    "type": "integer"
+                },
+                "surahId": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "translation": {
+                    "$ref": "#/definitions/dto.AyahTranslationResponse"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateAyahAudioFileRequest": {
+            "type": "object",
+            "required": [
+                "ayahId",
+                "byteSize",
+                "createdBy",
+                "duration",
+                "filePath",
+                "reciterId",
+                "surahId"
+            ],
+            "properties": {
+                "ayahId": {
+                    "type": "string"
+                },
+                "byteSize": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "createdBy": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "duration": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "filePath": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "reciterId": {
+                    "type": "string"
+                },
+                "surahId": {
                     "type": "string"
                 }
             }
@@ -1158,6 +2106,31 @@ const docTemplate = `{
                 },
                 "startSurahId": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.CreateReciterRequest": {
+            "type": "object",
+            "required": [
+                "createdBy",
+                "name",
+                "style"
+            ],
+            "properties": {
+                "createdBy": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "style": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
                 }
             }
         },
@@ -1263,6 +2236,66 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.ReciterListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ReciterResponse"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationResponse"
+                }
+            }
+        },
+        "dto.ReciterResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "style": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SurahAyahsWithTranslationsResponse": {
+            "type": "object",
+            "properties": {
+                "ayahs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.AyahWithTranslationResponse"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationResponse"
+                },
+                "reciter": {
+                    "$ref": "#/definitions/dto.ReciterResponse"
+                },
+                "surah": {
+                    "$ref": "#/definitions/dto.SurahResponse"
+                }
+            }
+        },
         "dto.SurahListResponse": {
             "type": "object",
             "properties": {
@@ -1309,6 +2342,81 @@ const docTemplate = `{
                 },
                 "updatedBy": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.TranslationEditionListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.TranslationEditionResponse"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationResponse"
+                }
+            }
+        },
+        "dto.TranslationEditionResponse": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdateAyahAudioFileRequest": {
+            "type": "object",
+            "required": [
+                "byteSize",
+                "duration",
+                "filePath",
+                "id",
+                "updatedBy"
+            ],
+            "properties": {
+                "byteSize": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "duration": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "filePath": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "id": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
                 }
             }
         },
@@ -1391,6 +2499,35 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.UpdateReciterRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "name",
+                "style",
+                "updatedBy"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "style": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "updatedBy": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                }
+            }
+        },
         "dto.UpdateSurahRequest": {
             "type": "object",
             "required": [
@@ -1437,6 +2574,90 @@ const docTemplate = `{
                 }
             }
         },
+        "quran.AyahAudioFileListSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.AyahAudioFileListResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Ayah audio files retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.AyahAudioFileSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.AyahAudioFileResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Ayah audio file retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.CreateAyahAudioFileSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.AyahAudioFileResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Ayah audio file created successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 201
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
         "quran.CreateAyahSuccessResponse": {
             "type": "object",
             "properties": {
@@ -1446,6 +2667,34 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Ayah created successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 201
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.CreateReciterSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.ReciterResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Reciter created successfully"
                 },
                 "responseTime": {
                     "type": "string",
@@ -1493,6 +2742,35 @@ const docTemplate = `{
                 }
             }
         },
+        "quran.DeleteAyahAudioFileSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Ayah audio file deleted successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
         "quran.DeleteAyahSuccessResponse": {
             "type": "object",
             "properties": {
@@ -1503,6 +2781,35 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Ayah deleted successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.DeleteReciterSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Reciter deleted successfully"
                 },
                 "responseTime": {
                     "type": "string",
@@ -1607,6 +2914,62 @@ const docTemplate = `{
                 }
             }
         },
+        "quran.GetAyahTranslationListSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.AyahTranslationListResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Ayah translations retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.GetAyahTranslationSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.AyahTranslationResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Ayah translation retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
         "quran.GetAyahsByJuzSuccessResponse": {
             "type": "object",
             "properties": {
@@ -1663,6 +3026,34 @@ const docTemplate = `{
                 }
             }
         },
+        "quran.GetAyahsBySurahWithTranslationsSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.SurahAyahsWithTranslationsResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Ayahs with translations retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
         "quran.GetSurahByIdSuccessResponse": {
             "type": "object",
             "properties": {
@@ -1700,6 +3091,34 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Surah retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.GetTranslationEditionListSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.TranslationEditionListResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Translation editions retrieved successfully"
                 },
                 "responseTime": {
                     "type": "string",
@@ -1803,6 +3222,90 @@ const docTemplate = `{
                 }
             }
         },
+        "quran.ReciterListSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.ReciterListResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Reciters retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.ReciterSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.ReciterResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Reciter retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.UpdateAyahAudioFileSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.AyahAudioFileResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Ayah audio file updated successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
         "quran.UpdateAyahSuccessResponse": {
             "type": "object",
             "properties": {
@@ -1812,6 +3315,34 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Ayah updated successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.UpdateReciterSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.ReciterResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Reciter updated successfully"
                 },
                 "responseTime": {
                     "type": "string",

@@ -33,7 +33,7 @@ func NewCreateJuzHandler(commandHandler *command.CommandHandler) *CreateJuzHandl
 // @Success 201 {object} JuzSuccessResponse "Juz created successfully"
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /v1/quran/juz [post]
+// @Router /quran/juz [post]
 func (h *CreateJuzHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()

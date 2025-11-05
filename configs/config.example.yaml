@@ -35,3 +35,15 @@ jwt:
   access_token_ttl: 60      # in minutes (1 hour)
   refresh_token_ttl: 10080  # in minutes (7 days)
   issuer: "safa-life-api"
+
+# AWS S3 storage configuration (example)
+storage:
+  s3:
+    enabled: true
+    bucket: "your-bucket-name"
+    region: "ap-southeast-1"
+    access_key_id: "YOUR_AWS_ACCESS_KEY_ID"
+    secret_access_key: "YOUR_AWS_SECRET_ACCESS_KEY"
+    endpoint: ""           # optional custom endpoint (leave empty for AWS)
+    use_path_style: false   # set true for MinIO/compat providers
+    public_url_base: ""    # optional CDN or bucket public base URL

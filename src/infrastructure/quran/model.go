@@ -70,80 +70,80 @@ func (JuzModel) TableName() string {
 	return "juz"
 }
 
-// type ReciterModel struct {
-// 	ID        uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
-// 	Name      string         `gorm:"column:name;not null;unique;size:255"`
-// 	Style     string         `gorm:"column:style;not null;size:100"`
-// 	CreatedBy string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
-// 	UpdatedBy string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
-// 	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
-// 	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
-// 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
-// }
+type ReciterModel struct {
+	ID        uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	Name      string         `gorm:"column:name;not null;unique;size:255"`
+	Style     string         `gorm:"column:style;not null;size:100"`
+	CreatedBy string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
+	UpdatedBy string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
+	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
+}
 
-// func (ReciterModel) TableName() string {
-// 	return "reciters"
-// }
+func (ReciterModel) TableName() string {
+	return "reciters"
+}
 
-// type AyahAudioFileModel struct {
-// 	ID        uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
-// 	ReciterID uuid.UUID      `gorm:"column:reciter_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"reciter_id"`
-// 	SurahID   uuid.UUID      `gorm:"column:surah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"surah_id"`
-// 	AyahID    uuid.UUID      `gorm:"column:ayah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"ayah_id"`
-// 	FilePath  string         `gorm:"column:file_path;not null;size:512"`
-// 	Duration  float64        `gorm:"column:duration"`
-// 	ByteSize  float64        `gorm:"column:byte_size"`
-// 	CreatedBy string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
-// 	UpdatedBy string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
-// 	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
-// 	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
-// 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
+type AyahAudioFileModel struct {
+	ID        uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	ReciterID uuid.UUID      `gorm:"column:reciter_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"reciter_id"`
+	SurahID   uuid.UUID      `gorm:"column:surah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"surah_id"`
+	AyahID    uuid.UUID      `gorm:"column:ayah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"ayah_id"`
+	FilePath  string         `gorm:"column:file_path;not null;size:512"`
+	Duration  float64        `gorm:"column:duration"`
+	ByteSize  float64        `gorm:"column:byte_size"`
+	CreatedBy string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
+	UpdatedBy string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
+	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
 
-// 	Reciter ReciterModel `gorm:"foreignKey:reciter_id;references:id" json:"reciter,omitempty"`
-// 	Surah   SurahModel   `gorm:"foreignKey:surah_id;references:id" json:"surah,omitempty"`
-// 	Ayah    AyahModel    `gorm:"foreignKey:ayah_id;references:id" json:"ayah,omitempty"`
-// }
+	Reciter ReciterModel `gorm:"foreignKey:reciter_id;references:id" json:"reciter,omitempty"`
+	Surah   SurahModel   `gorm:"foreignKey:surah_id;references:id" json:"surah,omitempty"`
+	Ayah    AyahModel    `gorm:"foreignKey:ayah_id;references:id" json:"ayah,omitempty"`
+}
 
-// func (AyahAudioFileModel) TableName() string {
-// 	return "ayah_audio_files"
-// }
+func (AyahAudioFileModel) TableName() string {
+	return "ayah_audio_files"
+}
 
-// type TranslationEditionModel struct {
-// 	ID        uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
-// 	Name      string         `gorm:"column:name;not null;size:255"`
-// 	Author    string         `gorm:"column:author;not null;size:255"`
-// 	Language  string         `gorm:"column:language;not null;size:50"`
-// 	CreatedBy string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
-// 	UpdatedBy string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
-// 	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
-// 	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
-// 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
-// }
+type TranslationEditionModel struct {
+	ID        uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	Name      string         `gorm:"column:name;not null;size:255"`
+	Author    string         `gorm:"column:author;not null;size:255"`
+	Language  string         `gorm:"column:language;not null;size:50"`
+	CreatedBy string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
+	UpdatedBy string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
+	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
+}
 
-// func (TranslationEditionModel) TableName() string {
-// 	return "translation_editions"
-// }
+func (TranslationEditionModel) TableName() string {
+	return "translation_editions"
+}
 
-// type AyahTranslationModel struct {
-// 	ID                   uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
-// 	TranslationEditionID uuid.UUID      `gorm:"column:translation_edition_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"translation_edition_id"`
-// 	SurahID              uuid.UUID      `gorm:"column:surah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"surah_id"`
-// 	AyahID               uuid.UUID      `gorm:"column:ayah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"ayah_id"`
-// 	Text                 string         `gorm:"column:text;not null;type:text"`
-// 	CreatedBy            string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
-// 	UpdatedBy            string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
-// 	CreatedAt            time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
-// 	UpdatedAt            time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
-// 	DeletedAt            gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
+type AyahTranslationModel struct {
+	ID                   uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	TranslationEditionID uuid.UUID      `gorm:"column:translation_edition_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"translation_edition_id"`
+	SurahID              uuid.UUID      `gorm:"column:surah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"surah_id"`
+	AyahID               uuid.UUID      `gorm:"column:ayah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"ayah_id"`
+	Text                 string         `gorm:"column:text;not null;type:text"`
+	CreatedBy            string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
+	UpdatedBy            string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
+	CreatedAt            time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
+	UpdatedAt            time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
+	DeletedAt            gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
 
-// 	TranslationEdition TranslationEditionModel `gorm:"foreignKey:translation_edition_id;references:id" json:"translation_edition,omitempty"`
-// 	Surah              SurahModel              `gorm:"foreignKey:surah_id;references:id" json:"surah,omitempty"`
-// 	Ayah               AyahModel               `gorm:"foreignKey:ayah_id;references:id" json:"ayah,omitempty"`
-// }
+	TranslationEdition TranslationEditionModel `gorm:"foreignKey:translation_edition_id;references:id" json:"translation_edition,omitempty"`
+	Surah              SurahModel              `gorm:"foreignKey:surah_id;references:id" json:"surah,omitempty"`
+	Ayah               AyahModel               `gorm:"foreignKey:ayah_id;references:id" json:"ayah,omitempty"`
+}
 
-// func (AyahTranslationModel) TableName() string {
-// 	return "ayah_translations"
-// }
+func (AyahTranslationModel) TableName() string {
+	return "ayah_translations"
+}
 
 // type TopicModel struct {
 // 	ID          uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`

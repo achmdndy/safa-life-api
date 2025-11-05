@@ -7,6 +7,40 @@ definitions:
       reason:
         type: string
     type: object
+  dto.AyahAudioFileListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.AyahAudioFileResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationResponse'
+    type: object
+  dto.AyahAudioFileResponse:
+    properties:
+      ayahId:
+        type: string
+      byteSize:
+        type: number
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      duration:
+        type: number
+      filePath:
+        type: string
+      id:
+        type: string
+      reciterId:
+        type: string
+      surahId:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        type: string
+    type: object
   dto.AyahListResponse:
     properties:
       data:
@@ -40,6 +74,95 @@ definitions:
         type: string
       updatedBy:
         type: string
+    type: object
+  dto.AyahTranslationListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.AyahTranslationResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationResponse'
+    type: object
+  dto.AyahTranslationResponse:
+    properties:
+      ayahId:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      id:
+        type: string
+      surahId:
+        type: string
+      text:
+        type: string
+      translationEditionId:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        type: string
+    type: object
+  dto.AyahWithTranslationResponse:
+    properties:
+      audio:
+        $ref: '#/definitions/dto.AyahAudioFileResponse'
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      hizbNumber:
+        type: integer
+      id:
+        type: string
+      juzNumber:
+        type: integer
+      manzilNumber:
+        type: integer
+      pageNumber:
+        type: integer
+      surahId:
+        type: string
+      text:
+        type: string
+      translation:
+        $ref: '#/definitions/dto.AyahTranslationResponse'
+      updatedAt:
+        type: string
+      updatedBy:
+        type: string
+    type: object
+  dto.CreateAyahAudioFileRequest:
+    properties:
+      ayahId:
+        type: string
+      byteSize:
+        minimum: 0
+        type: number
+      createdBy:
+        maxLength: 255
+        minLength: 1
+        type: string
+      duration:
+        minimum: 0
+        type: number
+      filePath:
+        minLength: 1
+        type: string
+      reciterId:
+        type: string
+      surahId:
+        type: string
+    required:
+    - ayahId
+    - byteSize
+    - createdBy
+    - duration
+    - filePath
+    - reciterId
+    - surahId
     type: object
   dto.CreateAyahRequest:
     properties:
@@ -97,6 +220,25 @@ definitions:
     - endSurahId
     - startAyahId
     - startSurahId
+    type: object
+  dto.CreateReciterRequest:
+    properties:
+      createdBy:
+        maxLength: 255
+        minLength: 1
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      style:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - createdBy
+    - name
+    - style
     type: object
   dto.CreateSurahRequest:
     properties:
@@ -170,6 +312,45 @@ definitions:
       total:
         type: integer
     type: object
+  dto.ReciterListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.ReciterResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationResponse'
+    type: object
+  dto.ReciterResponse:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      style:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        type: string
+    type: object
+  dto.SurahAyahsWithTranslationsResponse:
+    properties:
+      ayahs:
+        items:
+          $ref: '#/definitions/dto.AyahWithTranslationResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationResponse'
+      reciter:
+        $ref: '#/definitions/dto.ReciterResponse'
+      surah:
+        $ref: '#/definitions/dto.SurahResponse'
+    type: object
   dto.SurahListResponse:
     properties:
       data:
@@ -201,6 +382,58 @@ definitions:
         type: string
       updatedBy:
         type: string
+    type: object
+  dto.TranslationEditionListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.TranslationEditionResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationResponse'
+    type: object
+  dto.TranslationEditionResponse:
+    properties:
+      author:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      id:
+        type: string
+      language:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        type: string
+    type: object
+  dto.UpdateAyahAudioFileRequest:
+    properties:
+      byteSize:
+        minimum: 0
+        type: number
+      duration:
+        minimum: 0
+        type: number
+      filePath:
+        minLength: 1
+        type: string
+      id:
+        type: string
+      updatedBy:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - byteSize
+    - duration
+    - filePath
+    - id
+    - updatedBy
     type: object
   dto.UpdateAyahRequest:
     properties:
@@ -262,6 +495,28 @@ definitions:
     - startSurahId
     - updatedBy
     type: object
+  dto.UpdateReciterRequest:
+    properties:
+      id:
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      style:
+        maxLength: 255
+        minLength: 1
+        type: string
+      updatedBy:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - id
+    - name
+    - style
+    - updatedBy
+    type: object
   dto.UpdateSurahRequest:
     properties:
       ayahCount:
@@ -298,12 +553,92 @@ definitions:
     - revelationPlace
     - updatedBy
     type: object
+  quran.AyahAudioFileListSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.AyahAudioFileListResponse'
+      message:
+        example: Ayah audio files retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.AyahAudioFileSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.AyahAudioFileResponse'
+      message:
+        example: Ayah audio file retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.CreateAyahAudioFileSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.AyahAudioFileResponse'
+      message:
+        example: Ayah audio file created successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 201
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
   quran.CreateAyahSuccessResponse:
     properties:
       data:
         $ref: '#/definitions/dto.AyahResponse'
       message:
         example: Ayah created successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 201
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.CreateReciterSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.ReciterResponse'
+      message:
+        example: Reciter created successfully
         type: string
       responseTime:
         example: 15.234ms
@@ -338,6 +673,27 @@ definitions:
         example: "2024-01-01T00:00:00Z"
         type: string
     type: object
+  quran.DeleteAyahAudioFileSuccessResponse:
+    properties:
+      data:
+        example: "null"
+        type: string
+      message:
+        example: Ayah audio file deleted successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
   quran.DeleteAyahSuccessResponse:
     properties:
       data:
@@ -345,6 +701,27 @@ definitions:
         type: string
       message:
         example: Ayah deleted successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.DeleteReciterSuccessResponse:
+    properties:
+      data:
+        example: "null"
+        type: string
+      message:
+        example: Reciter deleted successfully
         type: string
       responseTime:
         example: 15.234ms
@@ -420,6 +797,46 @@ definitions:
         example: "2024-01-01T00:00:00Z"
         type: string
     type: object
+  quran.GetAyahTranslationListSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.AyahTranslationListResponse'
+      message:
+        example: Ayah translations retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.GetAyahTranslationSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.AyahTranslationResponse'
+      message:
+        example: Ayah translation retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
   quran.GetAyahsByJuzSuccessResponse:
     properties:
       data:
@@ -460,6 +877,26 @@ definitions:
         example: "2024-01-01T00:00:00Z"
         type: string
     type: object
+  quran.GetAyahsBySurahWithTranslationsSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.SurahAyahsWithTranslationsResponse'
+      message:
+        example: Ayahs with translations retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
   quran.GetSurahByIdSuccessResponse:
     properties:
       data:
@@ -486,6 +923,26 @@ definitions:
         $ref: '#/definitions/dto.SurahResponse'
       message:
         example: Surah retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.GetTranslationEditionListSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.TranslationEditionListResponse'
+      message:
+        example: Translation editions retrieved successfully
         type: string
       responseTime:
         example: 15.234ms
@@ -560,12 +1017,92 @@ definitions:
         example: "2024-01-01T00:00:00Z"
         type: string
     type: object
+  quran.ReciterListSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.ReciterListResponse'
+      message:
+        example: Reciters retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.ReciterSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.ReciterResponse'
+      message:
+        example: Reciter retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.UpdateAyahAudioFileSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.AyahAudioFileResponse'
+      message:
+        example: Ayah audio file updated successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
   quran.UpdateAyahSuccessResponse:
     properties:
       data:
         $ref: '#/definitions/dto.AyahResponse'
       message:
         example: Ayah updated successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.UpdateReciterSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.ReciterResponse'
+      message:
+        example: Reciter updated successfully
         type: string
       responseTime:
         example: 15.234ms
@@ -621,7 +1158,206 @@ info:
   title: Safalife API
   version: 1.0.0
 paths:
-  /v1/quran/ayahs:
+  /quran/audio/ayahs:
+    post:
+      consumes:
+      - application/json
+      description: Create a new ayah audio file
+      parameters:
+      - description: Create ayah audio file request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateAyahAudioFileRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Ayah audio file created successfully
+          schema:
+            $ref: '#/definitions/quran.CreateAyahAudioFileSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Create a new ayah audio file
+      tags:
+      - Audio
+  /quran/audio/ayahs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an ayah audio file by ID
+      parameters:
+      - description: Ayah audio file ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayah audio file deleted successfully
+          schema:
+            $ref: '#/definitions/quran.DeleteAyahAudioFileSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Delete an ayah audio file
+      tags:
+      - Audio
+    get:
+      consumes:
+      - application/json
+      description: Get an ayah audio file by ID
+      parameters:
+      - description: Ayah audio file ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayah audio file retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.AyahAudioFileSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get ayah audio file by ID
+      tags:
+      - Audio
+    put:
+      consumes:
+      - application/json
+      description: Update an existing ayah audio file
+      parameters:
+      - description: Ayah audio file ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update ayah audio file request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateAyahAudioFileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayah audio file updated successfully
+          schema:
+            $ref: '#/definitions/quran.UpdateAyahAudioFileSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Update an ayah audio file
+      tags:
+      - Audio
+  /quran/audio/ayahs/ayah/{ayahId}/reciter/{reciterId}:
+    get:
+      consumes:
+      - application/json
+      description: Get an ayah audio file by ayah and reciter IDs
+      parameters:
+      - description: Ayah ID
+        in: path
+        name: ayahId
+        required: true
+        type: string
+      - description: Reciter ID
+        in: path
+        name: reciterId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayah audio file retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.AyahAudioFileSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get ayah audio file by ayah and reciter
+      tags:
+      - Audio
+  /quran/audio/ayahs/surah/{surahId}/reciter/{reciterId}:
+    get:
+      consumes:
+      - application/json
+      description: List ayah audio files by surah and reciter IDs with pagination
+      parameters:
+      - description: Surah ID
+        in: path
+        name: surahId
+        required: true
+        type: string
+      - description: Reciter ID
+        in: path
+        name: reciterId
+        required: true
+        type: string
+      - default: 0
+        description: Limit (0 for all)
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayah audio files retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.AyahAudioFileListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: List ayah audio files by surah and reciter
+      tags:
+      - Audio
+  /quran/ayahs:
     post:
       consumes:
       - application/json
@@ -651,7 +1387,7 @@ paths:
       summary: Create a new ayah
       tags:
       - Ayahs
-  /v1/quran/ayahs/{id}:
+  /quran/ayahs/{id}:
     delete:
       consumes:
       - application/json
@@ -761,7 +1497,7 @@ paths:
       summary: Update an ayah
       tags:
       - Ayahs
-  /v1/quran/ayahs/surah/{surahId}:
+  /quran/ayahs/surah/{surahId}:
     get:
       consumes:
       - application/json
@@ -789,13 +1525,21 @@ paths:
         in: query
         name: include
         type: string
+      - description: Translation edition ID to include per-ayah translation
+        in: query
+        name: editionId
+        type: string
+      - description: Reciter ID to include per-ayah audio
+        in: query
+        name: reciterId
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: Ayahs retrieved successfully
+          description: Ayahs with translations retrieved successfully
           schema:
-            $ref: '#/definitions/quran.GetAyahsBySurahSuccessResponse'
+            $ref: '#/definitions/quran.GetAyahsBySurahWithTranslationsSuccessResponse'
         "400":
           description: Bad request
           schema:
@@ -807,7 +1551,7 @@ paths:
       summary: Get ayahs by surah
       tags:
       - Ayahs
-  /v1/quran/juz:
+  /quran/juz:
     get:
       consumes:
       - application/json
@@ -877,7 +1621,7 @@ paths:
       summary: Create a new juz
       tags:
       - Juz
-  /v1/quran/juz/{id}:
+  /quran/juz/{id}:
     delete:
       consumes:
       - application/json
@@ -987,7 +1731,7 @@ paths:
       summary: Update a juz
       tags:
       - Juz
-  /v1/quran/juz/{juzNumber}/ayahs:
+  /quran/juz/{juzNumber}/ayahs:
     get:
       consumes:
       - application/json
@@ -1026,7 +1770,7 @@ paths:
       summary: Get ayahs by juz
       tags:
       - Ayahs
-  /v1/quran/juz/number/{number}:
+  /quran/juz/number/{number}:
     get:
       consumes:
       - application/json
@@ -1066,7 +1810,190 @@ paths:
       summary: Get juz by number
       tags:
       - Juz
-  /v1/quran/surahs:
+  /quran/reciters:
+    get:
+      consumes:
+      - application/json
+      description: Get all reciters with pagination
+      parameters:
+      - default: 0
+        description: Limit (0 for all)
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reciters retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.ReciterListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get all reciters
+      tags:
+      - Reciters
+    post:
+      consumes:
+      - application/json
+      description: Create a new reciter
+      parameters:
+      - description: Create reciter request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateReciterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Reciter created successfully
+          schema:
+            $ref: '#/definitions/quran.CreateReciterSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Create a new reciter
+      tags:
+      - Reciters
+  /quran/reciters/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a reciter by ID
+      parameters:
+      - description: Reciter ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reciter deleted successfully
+          schema:
+            $ref: '#/definitions/quran.DeleteReciterSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Delete a reciter
+      tags:
+      - Reciters
+    get:
+      consumes:
+      - application/json
+      description: Get a reciter by ID
+      parameters:
+      - description: Reciter ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reciter retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.ReciterSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get reciter by ID
+      tags:
+      - Reciters
+    put:
+      consumes:
+      - application/json
+      description: Update an existing reciter
+      parameters:
+      - description: Reciter ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update reciter request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateReciterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reciter updated successfully
+          schema:
+            $ref: '#/definitions/quran.UpdateReciterSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Update a reciter
+      tags:
+      - Reciters
+  /quran/reciters/name/{name}:
+    get:
+      consumes:
+      - application/json
+      description: Get a reciter by name
+      parameters:
+      - description: Reciter name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reciter retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.ReciterSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get reciter by name
+      tags:
+      - Reciters
+  /quran/surahs:
     get:
       consumes:
       - application/json
@@ -1136,7 +2063,7 @@ paths:
       summary: Create a new surah
       tags:
       - Surahs
-  /v1/quran/surahs/{id}:
+  /quran/surahs/{id}:
     delete:
       consumes:
       - application/json
@@ -1246,7 +2173,7 @@ paths:
       summary: Update a surah
       tags:
       - Surahs
-  /v1/quran/surahs/number/{number}:
+  /quran/surahs/number/{number}:
     get:
       consumes:
       - application/json
@@ -1286,6 +2213,126 @@ paths:
       summary: Get surah by number
       tags:
       - Surahs
+  /quran/translations/ayahs/ayah/{ayahId}/edition/{editionId}:
+    get:
+      consumes:
+      - application/json
+      description: Get a translated ayah text by ayah ID and translation edition ID
+      parameters:
+      - description: Ayah ID
+        in: path
+        name: ayahId
+        required: true
+        type: string
+      - description: Translation Edition ID
+        in: path
+        name: editionId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayah translation retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.GetAyahTranslationSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get ayah translation by ayah and edition
+      tags:
+      - Translations
+  /quran/translations/ayahs/surah/{surahId}/edition/{editionId}:
+    get:
+      consumes:
+      - application/json
+      description: Get translated ayahs for a surah by translation edition with pagination
+      parameters:
+      - description: Surah ID
+        in: path
+        name: surahId
+        required: true
+        type: string
+      - description: Translation Edition ID
+        in: path
+        name: editionId
+        required: true
+        type: string
+      - default: 0
+        description: Limit (0 for all)
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ayah translations retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.GetAyahTranslationListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get ayah translations by surah and edition
+      tags:
+      - Translations
+  /quran/translations/editions:
+    get:
+      consumes:
+      - application/json
+      description: Get translation editions with optional language filter and pagination
+      parameters:
+      - description: Language code (e.g., en, id)
+        in: query
+        name: language
+        type: string
+      - default: 0
+        description: Limit (0 for all)
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Translation editions retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.GetTranslationEditionListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get translation editions
+      tags:
+      - Translations
 schemes:
 - http
 - https

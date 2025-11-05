@@ -14,6 +14,7 @@ type AppConfig struct {
 	Redis      RedisConfig      `mapstructure:"redis"`
 	Monitoring MonitoringConfig `mapstructure:"monitoring"`
 	JWT        JWTConfig        `mapstructure:"jwt"`
+	Storage    StorageConfig    `mapstructure:"storage"`
 }
 
 type AppInfo struct {
@@ -62,6 +63,21 @@ type JWTConfig struct {
 	AccessTokenTTL  int    `mapstructure:"access_token_ttl"`  // in minutes
 	RefreshTokenTTL int    `mapstructure:"refresh_token_ttl"` // in minutes
 	Issuer          string `mapstructure:"issuer"`
+}
+
+type StorageConfig struct {
+	S3 S3Config `mapstructure:"s3"`
+}
+
+type S3Config struct {
+	Enabled         bool   `mapstructure:"enabled"`
+	Bucket          string `mapstructure:"bucket"`
+	Region          string `mapstructure:"region"`
+	AccessKeyID     string `mapstructure:"access_key_id"`
+	SecretAccessKey string `mapstructure:"secret_access_key"`
+	Endpoint        string `mapstructure:"endpoint"`
+	UsePathStyle    bool   `mapstructure:"use_path_style"`
+	PublicURLBase   string `mapstructure:"public_url_base"`
 }
 
 var Config AppConfig
@@ -160,6 +176,32 @@ func InitConfig(configFlag string) {
 	}
 	if err := viper.BindEnv("monitoring.prometheus.metrics_path", "SAFALIFE_PROMETHEUS_METRICS_PATH"); err != nil {
 		panic(fmt.Errorf("failed to bind env SAFALIFE_PROMETHEUS_METRICS_PATH: %w", err))
+	}
+
+	// Storage S3 bindings
+	if err := viper.BindEnv("storage.s3.enabled", "SAFALIFE_STORAGE_S3_ENABLED"); err != nil {
+		panic(fmt.Errorf("failed to bind env SAFALIFE_STORAGE_S3_ENABLED: %w", err))
+	}
+	if err := viper.BindEnv("storage.s3.bucket", "SAFALIFE_STORAGE_S3_BUCKET"); err != nil {
+		panic(fmt.Errorf("failed to bind env SAFALIFE_STORAGE_S3_BUCKET: %w", err))
+	}
+	if err := viper.BindEnv("storage.s3.region", "SAFALIFE_STORAGE_S3_REGION"); err != nil {
+		panic(fmt.Errorf("failed to bind env SAFALIFE_STORAGE_S3_REGION: %w", err))
+	}
+	if err := viper.BindEnv("storage.s3.access_key_id", "SAFALIFE_STORAGE_S3_ACCESS_KEY_ID"); err != nil {
+		panic(fmt.Errorf("failed to bind env SAFALIFE_STORAGE_S3_ACCESS_KEY_ID: %w", err))
+	}
+	if err := viper.BindEnv("storage.s3.secret_access_key", "SAFALIFE_STORAGE_S3_SECRET_ACCESS_KEY"); err != nil {
+		panic(fmt.Errorf("failed to bind env SAFALIFE_STORAGE_S3_SECRET_ACCESS_KEY: %w", err))
+	}
+	if err := viper.BindEnv("storage.s3.endpoint", "SAFALIFE_STORAGE_S3_ENDPOINT"); err != nil {
+		panic(fmt.Errorf("failed to bind env SAFALIFE_STORAGE_S3_ENDPOINT: %w", err))
+	}
+	if err := viper.BindEnv("storage.s3.use_path_style", "SAFALIFE_STORAGE_S3_USE_PATH_STYLE"); err != nil {
+		panic(fmt.Errorf("failed to bind env SAFALIFE_STORAGE_S3_USE_PATH_STYLE: %w", err))
+	}
+	if err := viper.BindEnv("storage.s3.public_url_base", "SAFALIFE_STORAGE_S3_PUBLIC_URL_BASE"); err != nil {
+		panic(fmt.Errorf("failed to bind env SAFALIFE_STORAGE_S3_PUBLIC_URL_BASE: %w", err))
 	}
 
 	viper.SetConfigFile(fullConfigPath)

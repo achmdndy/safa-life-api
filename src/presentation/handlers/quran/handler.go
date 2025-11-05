@@ -16,12 +16,12 @@ type Handler struct {
 	getAllSurahsHandler     *GetAllSurahsHandler
 
 	// Ayah handlers
-	createAyahHandler        *CreateAyahHandler
-	updateAyahHandler        *UpdateAyahHandler
-	deleteAyahHandler        *DeleteAyahHandler
-	getAyahByIdHandler       *GetAyahByIdHandler
-	getAyahsBySurahHandler   *GetAyahsBySurahHandler
-	getAyahsByJuzHandler     *GetAyahsByJuzHandler
+	createAyahHandler      *CreateAyahHandler
+	updateAyahHandler      *UpdateAyahHandler
+	deleteAyahHandler      *DeleteAyahHandler
+	getAyahByIdHandler     *GetAyahByIdHandler
+	getAyahsBySurahHandler *GetAyahsBySurahHandler
+	getAyahsByJuzHandler   *GetAyahsByJuzHandler
 
 	// Juz handlers
 	createJuzHandler      *CreateJuzHandler
@@ -30,6 +30,27 @@ type Handler struct {
 	getJuzByIdHandler     *GetJuzByIdHandler
 	getJuzByNumberHandler *GetJuzByNumberHandler
 	getAllJuzHandler      *GetAllJuzHandler
+
+	// Translation handlers
+	getTranslationEditionsHandler               *GetTranslationEditionsHandler
+	getAyahTranslationByAyahAndEditionHandler   *GetAyahTranslationByAyahAndEditionHandler
+	getAyahTranslationsBySurahAndEditionHandler *GetAyahTranslationsBySurahAndEditionHandler
+
+	// Reciter handlers
+	createReciterHandler    *CreateReciterHandler
+	updateReciterHandler    *UpdateReciterHandler
+	deleteReciterHandler    *DeleteReciterHandler
+	getReciterByIdHandler   *GetReciterByIdHandler
+	getReciterByNameHandler *GetReciterByNameHandler
+	getAllRecitersHandler   *GetAllRecitersHandler
+
+	// Ayah Audio File handlers
+	createAyahAudioFileHandler                *CreateAyahAudioFileHandler
+	updateAyahAudioFileHandler                *UpdateAyahAudioFileHandler
+	deleteAyahAudioFileHandler                *DeleteAyahAudioFileHandler
+	getAyahAudioFileByIdHandler               *GetAyahAudioFileByIdHandler
+	getAyahAudioFileByAyahAndReciterHandler   *GetAyahAudioFileByAyahAndReciterHandler
+	getAyahAudioFilesBySurahAndReciterHandler *GetAyahAudioFilesBySurahAndReciterHandler
 }
 
 // NewHandler creates a new Quran handler
@@ -47,12 +68,12 @@ func NewHandler(
 		getAllSurahsHandler:     NewGetAllSurahsHandler(queryHandler),
 
 		// Ayah handlers
-		createAyahHandler:        NewCreateAyahHandler(commandHandler),
-		updateAyahHandler:        NewUpdateAyahHandler(commandHandler),
-		deleteAyahHandler:        NewDeleteAyahHandler(commandHandler),
-		getAyahByIdHandler:       NewGetAyahByIdHandler(queryHandler),
-		getAyahsBySurahHandler:   NewGetAyahsBySurahHandler(queryHandler),
-		getAyahsByJuzHandler:     NewGetAyahsByJuzHandler(queryHandler),
+		createAyahHandler:      NewCreateAyahHandler(commandHandler),
+		updateAyahHandler:      NewUpdateAyahHandler(commandHandler),
+		deleteAyahHandler:      NewDeleteAyahHandler(commandHandler),
+		getAyahByIdHandler:     NewGetAyahByIdHandler(queryHandler),
+		getAyahsBySurahHandler: NewGetAyahsBySurahHandler(queryHandler),
+		getAyahsByJuzHandler:   NewGetAyahsByJuzHandler(queryHandler),
 
 		// Juz handlers
 		createJuzHandler:      NewCreateJuzHandler(commandHandler),
@@ -61,6 +82,27 @@ func NewHandler(
 		getJuzByIdHandler:     NewGetJuzByIdHandler(queryHandler),
 		getJuzByNumberHandler: NewGetJuzByNumberHandler(queryHandler),
 		getAllJuzHandler:      NewGetAllJuzHandler(queryHandler),
+
+		// Translation handlers
+		getTranslationEditionsHandler:               NewGetTranslationEditionsHandler(queryHandler),
+		getAyahTranslationByAyahAndEditionHandler:   NewGetAyahTranslationByAyahAndEditionHandler(queryHandler),
+		getAyahTranslationsBySurahAndEditionHandler: NewGetAyahTranslationsBySurahAndEditionHandler(queryHandler),
+
+		// Reciter handlers
+		createReciterHandler:    NewCreateReciterHandler(commandHandler),
+		updateReciterHandler:    NewUpdateReciterHandler(commandHandler),
+		deleteReciterHandler:    NewDeleteReciterHandler(commandHandler),
+		getReciterByIdHandler:   NewGetReciterByIdHandler(queryHandler),
+		getReciterByNameHandler: NewGetReciterByNameHandler(queryHandler),
+		getAllRecitersHandler:   NewGetAllRecitersHandler(queryHandler),
+
+		// Ayah Audio File handlers
+		createAyahAudioFileHandler:                NewCreateAyahAudioFileHandler(commandHandler),
+		updateAyahAudioFileHandler:                NewUpdateAyahAudioFileHandler(commandHandler),
+		deleteAyahAudioFileHandler:                NewDeleteAyahAudioFileHandler(commandHandler),
+		getAyahAudioFileByIdHandler:               NewGetAyahAudioFileByIdHandler(queryHandler),
+		getAyahAudioFileByAyahAndReciterHandler:   NewGetAyahAudioFileByAyahAndReciterHandler(queryHandler),
+		getAyahAudioFilesBySurahAndReciterHandler: NewGetAyahAudioFilesBySurahAndReciterHandler(queryHandler),
 	}
 }
 
@@ -137,4 +179,47 @@ func (h *Handler) GetJuzByNumberHandler() *GetJuzByNumberHandler {
 
 func (h *Handler) GetAllJuzHandler() *GetAllJuzHandler {
 	return h.getAllJuzHandler
+}
+
+// Translation handler getters
+func (h *Handler) GetTranslationEditionsHandler() *GetTranslationEditionsHandler {
+	return h.getTranslationEditionsHandler
+}
+
+func (h *Handler) GetAyahTranslationByAyahAndEditionHandler() *GetAyahTranslationByAyahAndEditionHandler {
+	return h.getAyahTranslationByAyahAndEditionHandler
+}
+
+func (h *Handler) GetAyahTranslationsBySurahAndEditionHandler() *GetAyahTranslationsBySurahAndEditionHandler {
+	return h.getAyahTranslationsBySurahAndEditionHandler
+}
+
+// Reciter handler getters
+func (h *Handler) CreateReciterHandler() *CreateReciterHandler   { return h.createReciterHandler }
+func (h *Handler) UpdateReciterHandler() *UpdateReciterHandler   { return h.updateReciterHandler }
+func (h *Handler) DeleteReciterHandler() *DeleteReciterHandler   { return h.deleteReciterHandler }
+func (h *Handler) GetReciterByIdHandler() *GetReciterByIdHandler { return h.getReciterByIdHandler }
+func (h *Handler) GetReciterByNameHandler() *GetReciterByNameHandler {
+	return h.getReciterByNameHandler
+}
+func (h *Handler) GetAllRecitersHandler() *GetAllRecitersHandler { return h.getAllRecitersHandler }
+
+// Ayah Audio File handler getters
+func (h *Handler) CreateAyahAudioFileHandler() *CreateAyahAudioFileHandler {
+	return h.createAyahAudioFileHandler
+}
+func (h *Handler) UpdateAyahAudioFileHandler() *UpdateAyahAudioFileHandler {
+	return h.updateAyahAudioFileHandler
+}
+func (h *Handler) DeleteAyahAudioFileHandler() *DeleteAyahAudioFileHandler {
+	return h.deleteAyahAudioFileHandler
+}
+func (h *Handler) GetAyahAudioFileByIdHandler() *GetAyahAudioFileByIdHandler {
+	return h.getAyahAudioFileByIdHandler
+}
+func (h *Handler) GetAyahAudioFileByAyahAndReciterHandler() *GetAyahAudioFileByAyahAndReciterHandler {
+	return h.getAyahAudioFileByAyahAndReciterHandler
+}
+func (h *Handler) GetAyahAudioFilesBySurahAndReciterHandler() *GetAyahAudioFilesBySurahAndReciterHandler {
+	return h.getAyahAudioFilesBySurahAndReciterHandler
 }

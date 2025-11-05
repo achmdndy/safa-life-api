@@ -28,6 +28,12 @@ func registerModels() []interface{} {
 		&quran.SurahModel{},
 		&quran.AyahModel{},
 		&quran.JuzModel{},
+		&quran.ReciterModel{},
+		&quran.AyahAudioFileModel{},
+		&quran.TranslationEditionModel{},
+		&quran.AyahTranslationModel{},
+		&quran.ReciterModel{},
+		&quran.AyahAudioFileModel{},
 	}
 }
 
@@ -52,6 +58,28 @@ func (j *JuzSeeder) GetName() string {
 
 func (j *JuzSeeder) Seed(db *gorm.DB, force bool) error {
 	seeder := &seeders.JuzSeeder{}
+	return seeder.SeedWithForce(db, force)
+}
+
+// TranslationAyahSeeder implements the Seeder interface for Ayah translations
+type TranslationAyahSeeder struct{}
+
+func (t *TranslationAyahSeeder) GetName() string {
+	return "translation_ayah"
+}
+
+func (t *TranslationAyahSeeder) Seed(db *gorm.DB, force bool) error {
+	seeder := &seeders.TranslationAyahSeeder{}
+	return seeder.SeedWithForce(db, force)
+}
+
+// ReciterAyahSeeder implements the Seeder interface for Ayah audio files
+type ReciterAudioSeeder struct{}
+
+func (r *ReciterAudioSeeder) GetName() string { return "reciter_ayah" }
+
+func (r *ReciterAudioSeeder) Seed(db *gorm.DB, force bool) error {
+	seeder := &seeders.ReciterAyahSeeder{}
 	return seeder.SeedWithForce(db, force)
 }
 
@@ -158,6 +186,7 @@ var DBSeedCmd = &cobra.Command{
 Examples:
   safalife db:seed                    # Seed all models
   safalife db:seed -m quran           # Seed only Quran data
+  safalife db:seed -m translation_ayah # Seed Ayah translations
   safalife db:seed --force            # Force seed (wipe existing data)`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Initialize configuration with the parsed config flag
@@ -176,8 +205,10 @@ Examples:
 
 		// Initialize available seeders
 		seeders := map[string]Seeder{
-			"quran": &SurahSeeder{},
-			"juz":   &JuzSeeder{},
+			"quran":            &SurahSeeder{},
+			"juz":              &JuzSeeder{},
+			"translation_ayah": &TranslationAyahSeeder{},
+			"reciter_ayah":     &ReciterAudioSeeder{},
 		}
 
 		// Seed based on model flag

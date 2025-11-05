@@ -42,5 +42,45 @@ func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler) {
 			juzGroup.PUT("/:id", quranHandler.UpdateJuzHandler().Handle)
 			juzGroup.DELETE("/:id", quranHandler.DeleteJuzHandler().Handle)
 		}
+
+		// Translation routes
+		translationGroup := quranGroup.Group("/translations")
+		{
+			editionGroup := translationGroup.Group("/editions")
+			{
+				editionGroup.GET("", quranHandler.GetTranslationEditionsHandler().Handle)
+			}
+
+			ayahTranslationGroup := translationGroup.Group("/ayahs")
+			{
+				ayahTranslationGroup.GET("/surah/:surahId/edition/:editionId", quranHandler.GetAyahTranslationsBySurahAndEditionHandler().Handle)
+				ayahTranslationGroup.GET("/ayah/:ayahId/edition/:editionId", quranHandler.GetAyahTranslationByAyahAndEditionHandler().Handle)
+			}
+		}
+
+		// Reciter routes
+		reciterGroup := quranGroup.Group("/reciters")
+		{
+			reciterGroup.GET("", quranHandler.GetAllRecitersHandler().Handle)
+			reciterGroup.GET("/:id", quranHandler.GetReciterByIdHandler().Handle)
+			reciterGroup.GET("/name/:name", quranHandler.GetReciterByNameHandler().Handle)
+			reciterGroup.POST("", quranHandler.CreateReciterHandler().Handle)
+			reciterGroup.PUT("/:id", quranHandler.UpdateReciterHandler().Handle)
+			reciterGroup.DELETE("/:id", quranHandler.DeleteReciterHandler().Handle)
+		}
+
+		// Ayah Audio routes
+		audioGroup := quranGroup.Group("/audio")
+		{
+			ayahAudioGroup := audioGroup.Group("/ayahs")
+			{
+				ayahAudioGroup.GET("/:id", quranHandler.GetAyahAudioFileByIdHandler().Handle)
+				ayahAudioGroup.GET("/ayah/:ayahId/reciter/:reciterId", quranHandler.GetAyahAudioFileByAyahAndReciterHandler().Handle)
+				ayahAudioGroup.GET("/surah/:surahId/reciter/:reciterId", quranHandler.GetAyahAudioFilesBySurahAndReciterHandler().Handle)
+				ayahAudioGroup.POST("", quranHandler.CreateAyahAudioFileHandler().Handle)
+				ayahAudioGroup.PUT("/:id", quranHandler.UpdateAyahAudioFileHandler().Handle)
+				ayahAudioGroup.DELETE("/:id", quranHandler.DeleteAyahAudioFileHandler().Handle)
+			}
+		}
 	}
 }

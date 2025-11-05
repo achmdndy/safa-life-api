@@ -35,6 +35,7 @@ package commands
 // @externalDocs.url https://docs.safalife.com/api
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -51,6 +52,7 @@ import (
 	"github.com/safalife/core-api/src/infrastructure/configs"
 	infraContainer "github.com/safalife/core-api/src/infrastructure/container"
 	"github.com/safalife/core-api/src/infrastructure/monitoring"
+	infraStorage "github.com/safalife/core-api/src/infrastructure/storage"
 	presentationContainer "github.com/safalife/core-api/src/presentation/container"
 	"github.com/safalife/core-api/src/presentation/routes"
 )
@@ -143,7 +145,20 @@ func RunServer() {
 
 	// Setup dependency injection containers
 	fmt.Print("[5/6] Initializing dependency containers... ")
+	// Build S3 config from loaded app config
+	s3Cfg := infraStorage.S3Config{
+		Enabled:         core.Config.Storage.S3.Enabled,
+		Bucket:          core.Config.Storage.S3.Bucket,
+		Region:          core.Config.Storage.S3.Region,
+		AccessKeyID:     core.Config.Storage.S3.AccessKeyID,
+		SecretAccessKey: core.Config.Storage.S3.SecretAccessKey,
+		Endpoint:        core.Config.Storage.S3.Endpoint,
+		UsePathStyle:    core.Config.Storage.S3.UsePathStyle,
+		PublicURLBase:   core.Config.Storage.S3.PublicURLBase,
+	}
+
 	infraCont := infraContainer.NewInfrastructureContainer(
+		context.Background(),
 		sqlDB,
 		gormDB,
 		configs.GetRedis(),
@@ -152,14 +167,20 @@ func RunServer() {
 		core.Config.JWT.AccessTokenTTL,
 		core.Config.JWT.RefreshTokenTTL,
 		core.Config.JWT.Issuer,
+		s3Cfg,
 	)
 	domainCont := domainContainer.NewDomainContainer(
 		infraCont.MonitoringService,
 		infraCont.TransactionManager,
 		infraCont.UUIDGenerator,
+		infraCont.StorageService,
 		infraCont.SurahRepository,
 		infraCont.AyahRepository,
 		infraCont.JuzRepository,
+		infraCont.TranslationEditionRepository,
+		infraCont.AyahTranslationRepository,
+		infraCont.ReciterRepository,
+		infraCont.AyahAudioFileRepository,
 	)
 	appCont := appContainer.NewApplicationContainer(domainCont)
 	presentationCont := presentationContainer.NewPresentationContainer(appCont)

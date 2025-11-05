@@ -23,6 +23,8 @@ func NewApplicationContainer(domainContainer *domainContainer.DomainContainer) *
 		domainContainer.SurahService,
 		domainContainer.AyahService,
 		domainContainer.JuzService,
+		domainContainer.ReciterService,
+		domainContainer.AyahAudioFileService,
 		domainContainer.IDGenerator,
 		domainContainer.TransactionManager,
 	)
@@ -31,6 +33,10 @@ func NewApplicationContainer(domainContainer *domainContainer.DomainContainer) *
 		domainContainer.SurahService,
 		domainContainer.AyahService,
 		domainContainer.JuzService,
+		domainContainer.ReciterService,
+		domainContainer.AyahAudioFileService,
+		domainContainer.TranslationEditionService,
+		domainContainer.AyahTranslationService,
 		domainContainer.IDGenerator,
 	)
 

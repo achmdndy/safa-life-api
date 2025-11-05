@@ -640,3 +640,445 @@ func (r *JuzRepositoryImpl) Count(ctx context.Context) (int64, error) {
 	}
 	return count, nil
 }
+
+// TranslationEditionRepositoryImpl implements TranslationEditionRepositoryInterface using GORM
+type TranslationEditionRepositoryImpl struct {
+	db     *gorm.DB
+	mapper *Mapper
+}
+
+// NewTranslationEditionRepository creates a new instance of TranslationEditionRepositoryImpl
+func NewTranslationEditionRepository(db *gorm.DB, mapper *Mapper) quran.TranslationEditionRepositoryInterface {
+	return &TranslationEditionRepositoryImpl{
+		db:     db,
+		mapper: mapper,
+	}
+}
+
+// GetById retrieves a TranslationEdition by its ID
+func (r *TranslationEditionRepositoryImpl) GetById(ctx context.Context, id core.UUID) (*quran.TranslationEdition, error) {
+	googleUUID := infraCore.ToGoogleUUID(id)
+	var model TranslationEditionModel
+	if err := r.db.WithContext(ctx).Where("id = ?", googleUUID).First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrTranslationEditionNotFound
+		}
+		return nil, fmt.Errorf("failed to get translation edition by id: %w", err)
+	}
+	return r.mapper.TranslationEditionModelToEntity(&model), nil
+}
+
+// GetAll retrieves all TranslationEditions with pagination
+func (r *TranslationEditionRepositoryImpl) GetAll(ctx context.Context, limit, offset int) ([]*quran.TranslationEdition, error) {
+	var models []TranslationEditionModel
+	query := r.db.WithContext(ctx).Order("created_at ASC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
+		return nil, fmt.Errorf("failed to get translation editions: %w", err)
+	}
+	outs := make([]*quran.TranslationEdition, len(models))
+	for i := range models {
+		outs[i] = r.mapper.TranslationEditionModelToEntity(&models[i])
+	}
+	return outs, nil
+}
+
+// GetByLanguage retrieves TranslationEditions filtered by language with pagination
+func (r *TranslationEditionRepositoryImpl) GetByLanguage(ctx context.Context, language string, limit, offset int) ([]*quran.TranslationEdition, error) {
+	var models []TranslationEditionModel
+	query := r.db.WithContext(ctx).Where("language = ?", language).Order("created_at ASC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
+		return nil, fmt.Errorf("failed to get translation editions by language: %w", err)
+	}
+	outs := make([]*quran.TranslationEdition, len(models))
+	for i := range models {
+		outs[i] = r.mapper.TranslationEditionModelToEntity(&models[i])
+	}
+	return outs, nil
+}
+
+// Create creates a new TranslationEdition
+func (r *TranslationEditionRepositoryImpl) Create(ctx context.Context, edition *quran.TranslationEdition) (*quran.TranslationEdition, error) {
+	model := r.mapper.TranslationEditionEntityToModel(edition)
+	if err := r.db.WithContext(ctx).Create(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to create translation edition: %w", err)
+	}
+	return r.mapper.TranslationEditionModelToEntity(model), nil
+}
+
+// Update updates an existing TranslationEdition
+func (r *TranslationEditionRepositoryImpl) Update(ctx context.Context, edition *quran.TranslationEdition) (*quran.TranslationEdition, error) {
+	model := r.mapper.TranslationEditionEntityToModel(edition)
+	if err := r.db.WithContext(ctx).Where("id = ?", infraCore.ToGoogleUUID(edition.ID)).Updates(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to update translation edition: %w", err)
+	}
+	return r.mapper.TranslationEditionModelToEntity(model), nil
+}
+
+// Delete soft deletes a TranslationEdition
+func (r *TranslationEditionRepositoryImpl) Delete(ctx context.Context, id core.UUID) error {
+	googleUUID := infraCore.ToGoogleUUID(id)
+	if err := r.db.WithContext(ctx).Delete(&TranslationEditionModel{}, googleUUID).Error; err != nil {
+		return fmt.Errorf("failed to delete translation edition: %w", err)
+	}
+	return nil
+}
+
+// Count returns the number of TranslationEdition records
+func (r *TranslationEditionRepositoryImpl) Count(ctx context.Context) (int64, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&TranslationEditionModel{}).Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count translation editions: %w", err)
+	}
+	return count, nil
+}
+
+// CountByLanguage returns the number of TranslationEdition records by language
+func (r *TranslationEditionRepositoryImpl) CountByLanguage(ctx context.Context, language string) (int64, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&TranslationEditionModel{}).Where("language = ?", language).Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count translation editions by language: %w", err)
+	}
+	return count, nil
+}
+
+// AyahTranslationRepositoryImpl implements AyahTranslationRepositoryInterface using GORM
+type AyahTranslationRepositoryImpl struct {
+	db     *gorm.DB
+	mapper *Mapper
+}
+
+// NewAyahTranslationRepository creates a new instance of AyahTranslationRepositoryImpl
+func NewAyahTranslationRepository(db *gorm.DB, mapper *Mapper) quran.AyahTranslationRepositoryInterface {
+	return &AyahTranslationRepositoryImpl{
+		db:     db,
+		mapper: mapper,
+	}
+}
+
+// GetById retrieves an AyahTranslation by its ID
+func (r *AyahTranslationRepositoryImpl) GetById(ctx context.Context, id core.UUID) (*quran.AyahTranslation, error) {
+	googleUUID := infraCore.ToGoogleUUID(id)
+	var model AyahTranslationModel
+	if err := r.db.WithContext(ctx).Where("id = ?", googleUUID).First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrAyahTranslationNotFound
+		}
+		return nil, fmt.Errorf("failed to get ayah translation by id: %w", err)
+	}
+	return r.mapper.AyahTranslationModelToEntity(&model), nil
+}
+
+// GetByAyahAndEdition retrieves an AyahTranslation by ayah and edition IDs
+func (r *AyahTranslationRepositoryImpl) GetByAyahAndEdition(ctx context.Context, ayahId core.UUID, editionId core.UUID) (*quran.AyahTranslation, error) {
+	googleAyah := infraCore.ToGoogleUUID(ayahId)
+	googleEdition := infraCore.ToGoogleUUID(editionId)
+	var model AyahTranslationModel
+	if err := r.db.WithContext(ctx).
+		Where("ayah_id = ? AND translation_edition_id = ?", googleAyah, googleEdition).
+		First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrAyahTranslationNotFound
+		}
+		return nil, fmt.Errorf("failed to get ayah translation by ayah and edition: %w", err)
+	}
+	return r.mapper.AyahTranslationModelToEntity(&model), nil
+}
+
+// GetBySurahAndEdition retrieves AyahTranslations by surah and edition IDs with pagination
+func (r *AyahTranslationRepositoryImpl) GetBySurahAndEdition(ctx context.Context, surahId core.UUID, editionId core.UUID, limit, offset int) ([]*quran.AyahTranslation, error) {
+	googleSurah := infraCore.ToGoogleUUID(surahId)
+	googleEdition := infraCore.ToGoogleUUID(editionId)
+	var models []AyahTranslationModel
+	query := r.db.WithContext(ctx).
+		Where("surah_id = ? AND translation_edition_id = ?", googleSurah, googleEdition).
+		Order("created_at ASC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
+		return nil, fmt.Errorf("failed to get ayah translations by surah and edition: %w", err)
+	}
+	outs := make([]*quran.AyahTranslation, len(models))
+	for i := range models {
+		outs[i] = r.mapper.AyahTranslationModelToEntity(&models[i])
+	}
+	return outs, nil
+}
+
+// Create creates a new AyahTranslation
+func (r *AyahTranslationRepositoryImpl) Create(ctx context.Context, t *quran.AyahTranslation) (*quran.AyahTranslation, error) {
+	model := r.mapper.AyahTranslationEntityToModel(t)
+	if err := r.db.WithContext(ctx).Create(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to create ayah translation: %w", err)
+	}
+	return r.mapper.AyahTranslationModelToEntity(model), nil
+}
+
+// Update updates an existing AyahTranslation
+func (r *AyahTranslationRepositoryImpl) Update(ctx context.Context, t *quran.AyahTranslation) (*quran.AyahTranslation, error) {
+	model := r.mapper.AyahTranslationEntityToModel(t)
+	if err := r.db.WithContext(ctx).Where("id = ?", infraCore.ToGoogleUUID(t.ID)).Updates(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to update ayah translation: %w", err)
+	}
+	return r.mapper.AyahTranslationModelToEntity(model), nil
+}
+
+// Delete soft deletes an AyahTranslation
+func (r *AyahTranslationRepositoryImpl) Delete(ctx context.Context, id core.UUID) error {
+	googleUUID := infraCore.ToGoogleUUID(id)
+	if err := r.db.WithContext(ctx).Delete(&AyahTranslationModel{}, googleUUID).Error; err != nil {
+		return fmt.Errorf("failed to delete ayah translation: %w", err)
+	}
+	return nil
+}
+
+// Count returns the number of AyahTranslation records
+func (r *AyahTranslationRepositoryImpl) Count(ctx context.Context) (int64, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&AyahTranslationModel{}).Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count ayah translations: %w", err)
+	}
+	return count, nil
+}
+
+// CountByEdition returns the number of AyahTranslation records for a given edition
+func (r *AyahTranslationRepositoryImpl) CountByEdition(ctx context.Context, editionId core.UUID) (int64, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&AyahTranslationModel{}).
+		Where("translation_edition_id = ?", infraCore.ToGoogleUUID(editionId)).
+		Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count ayah translations by edition: %w", err)
+	}
+	return count, nil
+}
+
+// CountBySurahAndEdition returns the number of AyahTranslation records for a given surah and edition
+func (r *AyahTranslationRepositoryImpl) CountBySurahAndEdition(ctx context.Context, surahId core.UUID, editionId core.UUID) (int64, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&AyahTranslationModel{}).
+		Where("surah_id = ? AND translation_edition_id = ?", infraCore.ToGoogleUUID(surahId), infraCore.ToGoogleUUID(editionId)).
+		Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count ayah translations by surah and edition: %w", err)
+	}
+	return count, nil
+}
+
+// ReciterRepositoryImpl implements ReciterRepositoryInterface using GORM
+type ReciterRepositoryImpl struct {
+	db     *gorm.DB
+	mapper *Mapper
+}
+
+// NewReciterRepository creates a new instance of ReciterRepositoryImpl
+func NewReciterRepository(db *gorm.DB, mapper *Mapper) quran.ReciterRepositoryInterface {
+	return &ReciterRepositoryImpl{
+		db:     db,
+		mapper: mapper,
+	}
+}
+
+// GetById retrieves a Reciter by its ID
+func (r *ReciterRepositoryImpl) GetById(ctx context.Context, id core.UUID) (*quran.Reciter, error) {
+	googleUUID := infraCore.ToGoogleUUID(id)
+	var model ReciterModel
+	if err := r.db.WithContext(ctx).Where("id = ?", googleUUID).First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrReciterNotFound
+		}
+		return nil, fmt.Errorf("failed to get reciter by id: %w", err)
+	}
+	return r.mapper.ReciterModelToEntity(&model), nil
+}
+
+// GetByName retrieves a Reciter by its name
+func (r *ReciterRepositoryImpl) GetByName(ctx context.Context, name string) (*quran.Reciter, error) {
+	var model ReciterModel
+	if err := r.db.WithContext(ctx).Where("name = ?", name).First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrReciterNotFound
+		}
+		return nil, fmt.Errorf("failed to get reciter by name: %w", err)
+	}
+	return r.mapper.ReciterModelToEntity(&model), nil
+}
+
+// GetAll retrieves all Reciters with pagination
+func (r *ReciterRepositoryImpl) GetAll(ctx context.Context, limit, offset int) ([]*quran.Reciter, error) {
+	var models []ReciterModel
+	query := r.db.WithContext(ctx).Order("created_at ASC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
+		return nil, fmt.Errorf("failed to get reciters: %w", err)
+	}
+	outs := make([]*quran.Reciter, len(models))
+	for i := range models {
+		outs[i] = r.mapper.ReciterModelToEntity(&models[i])
+	}
+	return outs, nil
+}
+
+// Create creates a new Reciter
+func (r *ReciterRepositoryImpl) Create(ctx context.Context, reciter *quran.Reciter) (*quran.Reciter, error) {
+	model := r.mapper.ReciterEntityToModel(reciter)
+	if err := r.db.WithContext(ctx).Create(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to create reciter: %w", err)
+	}
+	return r.mapper.ReciterModelToEntity(model), nil
+}
+
+// Update updates an existing Reciter
+func (r *ReciterRepositoryImpl) Update(ctx context.Context, reciter *quran.Reciter) (*quran.Reciter, error) {
+	model := r.mapper.ReciterEntityToModel(reciter)
+	if err := r.db.WithContext(ctx).Where("id = ?", infraCore.ToGoogleUUID(reciter.ID)).Updates(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to update reciter: %w", err)
+	}
+	return r.mapper.ReciterModelToEntity(model), nil
+}
+
+// Delete soft deletes a Reciter
+func (r *ReciterRepositoryImpl) Delete(ctx context.Context, id core.UUID) error {
+	googleUUID := infraCore.ToGoogleUUID(id)
+	if err := r.db.WithContext(ctx).Delete(&ReciterModel{}, googleUUID).Error; err != nil {
+		return fmt.Errorf("failed to delete reciter: %w", err)
+	}
+	return nil
+}
+
+// Count returns the number of Reciter records
+func (r *ReciterRepositoryImpl) Count(ctx context.Context) (int64, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&ReciterModel{}).Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count reciters: %w", err)
+	}
+	return count, nil
+}
+
+// AyahAudioFileRepositoryImpl implements AyahAudioFileRepositoryInterface using GORM
+type AyahAudioFileRepositoryImpl struct {
+	db     *gorm.DB
+	mapper *Mapper
+}
+
+// NewAyahAudioFileRepository creates a new instance of AyahAudioFileRepositoryImpl
+func NewAyahAudioFileRepository(db *gorm.DB, mapper *Mapper) quran.AyahAudioFileRepositoryInterface {
+	return &AyahAudioFileRepositoryImpl{
+		db:     db,
+		mapper: mapper,
+	}
+}
+
+// GetById retrieves an AyahAudioFile by its ID
+func (r *AyahAudioFileRepositoryImpl) GetById(ctx context.Context, id core.UUID) (*quran.AyahAudioFile, error) {
+	googleUUID := infraCore.ToGoogleUUID(id)
+	var model AyahAudioFileModel
+	if err := r.db.WithContext(ctx).Where("id = ?", googleUUID).First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrAyahAudioFileNotFound
+		}
+		return nil, fmt.Errorf("failed to get ayah audio file by id: %w", err)
+	}
+	return r.mapper.AyahAudioFileModelToEntity(&model), nil
+}
+
+// GetByAyahAndReciter retrieves an AyahAudioFile by ayah and reciter IDs
+func (r *AyahAudioFileRepositoryImpl) GetByAyahAndReciter(ctx context.Context, ayahId core.UUID, reciterId core.UUID) (*quran.AyahAudioFile, error) {
+	var model AyahAudioFileModel
+	if err := r.db.WithContext(ctx).
+		Where("ayah_id = ? AND reciter_id = ?", infraCore.ToGoogleUUID(ayahId), infraCore.ToGoogleUUID(reciterId)).
+		First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrAyahAudioFileNotFound
+		}
+		return nil, fmt.Errorf("failed to get ayah audio file by ayah and reciter: %w", err)
+	}
+	return r.mapper.AyahAudioFileModelToEntity(&model), nil
+}
+
+// GetBySurahAndReciter retrieves AyahAudioFiles by surah and reciter IDs with pagination
+func (r *AyahAudioFileRepositoryImpl) GetBySurahAndReciter(ctx context.Context, surahId core.UUID, reciterId core.UUID, limit, offset int) ([]*quran.AyahAudioFile, error) {
+	var models []AyahAudioFileModel
+	query := r.db.WithContext(ctx).
+		Where("surah_id = ? AND reciter_id = ?", infraCore.ToGoogleUUID(surahId), infraCore.ToGoogleUUID(reciterId)).
+		Order("created_at ASC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
+		return nil, fmt.Errorf("failed to get ayah audio files by surah and reciter: %w", err)
+	}
+	outs := make([]*quran.AyahAudioFile, len(models))
+	for i := range models {
+		outs[i] = r.mapper.AyahAudioFileModelToEntity(&models[i])
+	}
+	return outs, nil
+}
+
+// Create creates a new AyahAudioFile
+func (r *AyahAudioFileRepositoryImpl) Create(ctx context.Context, audio *quran.AyahAudioFile) (*quran.AyahAudioFile, error) {
+	model := r.mapper.AyahAudioFileEntityToModel(audio)
+	if err := r.db.WithContext(ctx).Create(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to create ayah audio file: %w", err)
+	}
+	return r.mapper.AyahAudioFileModelToEntity(model), nil
+}
+
+// Update updates an existing AyahAudioFile
+func (r *AyahAudioFileRepositoryImpl) Update(ctx context.Context, audio *quran.AyahAudioFile) (*quran.AyahAudioFile, error) {
+	model := r.mapper.AyahAudioFileEntityToModel(audio)
+	if err := r.db.WithContext(ctx).Where("id = ?", infraCore.ToGoogleUUID(audio.ID)).Updates(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to update ayah audio file: %w", err)
+	}
+	return r.mapper.AyahAudioFileModelToEntity(model), nil
+}
+
+// Delete soft deletes an AyahAudioFile
+func (r *AyahAudioFileRepositoryImpl) Delete(ctx context.Context, id core.UUID) error {
+	googleUUID := infraCore.ToGoogleUUID(id)
+	if err := r.db.WithContext(ctx).Delete(&AyahAudioFileModel{}, googleUUID).Error; err != nil {
+		return fmt.Errorf("failed to delete ayah audio file: %w", err)
+	}
+	return nil
+}
+
+// Count returns the number of AyahAudioFile records
+func (r *AyahAudioFileRepositoryImpl) Count(ctx context.Context) (int64, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&AyahAudioFileModel{}).Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count ayah audio files: %w", err)
+	}
+	return count, nil
+}
+
+// CountBySurahAndReciter returns the number of AyahAudioFile records by surah and reciter
+func (r *AyahAudioFileRepositoryImpl) CountBySurahAndReciter(ctx context.Context, surahId core.UUID, reciterId core.UUID) (int64, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&AyahAudioFileModel{}).
+		Where("surah_id = ? AND reciter_id = ?", infraCore.ToGoogleUUID(surahId), infraCore.ToGoogleUUID(reciterId)).
+		Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count ayah audio files by surah and reciter: %w", err)
+	}
+	return count, nil
+}

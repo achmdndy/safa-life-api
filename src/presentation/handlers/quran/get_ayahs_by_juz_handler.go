@@ -35,7 +35,7 @@ func NewGetAyahsByJuzHandler(queryHandler *query.QueryHandler) *GetAyahsByJuzHan
 // @Success 200 {object} GetAyahsByJuzSuccessResponse "Ayahs retrieved successfully"
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /v1/quran/juz/{juzNumber}/ayahs [get]
+// @Router /quran/juz/{juzNumber}/ayahs [get]
 func (h *GetAyahsByJuzHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()

@@ -73,10 +73,12 @@ type GetAyahByIdRequest struct {
 }
 
 type GetAyahsBySurahIdRequest struct {
-	SurahID string `uri:"surahId" binding:"required"`
-	Limit   int    `form:"limit" binding:"omitempty,min=0,max=100"`
-	Offset  int    `form:"offset" binding:"omitempty,min=0"`
-	Include string `form:"include" binding:"omitempty" example:"surah" enums:"surah" doc:"Include related data (surah)"`
+	SurahID   string `uri:"surahId" binding:"required"`
+	Limit     int    `form:"limit" binding:"omitempty,min=0,max=100"`
+	Offset    int    `form:"offset" binding:"omitempty,min=0"`
+	Include   string `form:"include" binding:"omitempty" example:"surah" enums:"surah" doc:"Include related data (surah)"`
+	EditionID string `form:"editionId" binding:"omitempty" doc:"Translation edition ID to include per-ayah translation"`
+	ReciterID string `form:"reciterId" binding:"omitempty" doc:"Reciter ID to include per-ayah audio"`
 }
 
 type GetAyahsByJuzNumberRequest struct {
@@ -148,5 +150,95 @@ type GetAllJuzRequest struct {
 }
 
 type DeleteJuzRequest struct {
+	ID string `uri:"id" binding:"required"`
+}
+
+// Translation Edition queries
+type GetTranslationEditionsRequest struct {
+	Language string `form:"language" binding:"omitempty"`
+	Limit    int    `form:"limit" binding:"omitempty,min=0,max=100"`
+	Offset   int    `form:"offset" binding:"omitempty,min=0"`
+}
+
+// Ayah Translation queries
+type GetAyahTranslationByAyahAndEditionRequest struct {
+	AyahID    string `uri:"ayahId" binding:"required"`
+	EditionID string `uri:"editionId" binding:"required"`
+}
+
+type GetAyahTranslationsBySurahAndEditionRequest struct {
+	SurahID   string `uri:"surahId" binding:"required"`
+	EditionID string `uri:"editionId" binding:"required"`
+	Limit     int    `form:"limit" binding:"omitempty,min=0,max=100"`
+	Offset    int    `form:"offset" binding:"omitempty,min=0"`
+}
+
+// Reciter Request DTOs
+type CreateReciterRequest struct {
+	Name      string `json:"name" binding:"required,min=1,max=255"`
+	Style     string `json:"style" binding:"required,min=1,max=255"`
+	CreatedBy string `json:"createdBy" binding:"required,min=1,max=255"`
+}
+
+type UpdateReciterRequest struct {
+	ID        string `uri:"id" binding:"required"`
+	Name      string `json:"name" binding:"required,min=1,max=255"`
+	Style     string `json:"style" binding:"required,min=1,max=255"`
+	UpdatedBy string `json:"updatedBy" binding:"required,min=1,max=255"`
+}
+
+type GetReciterByIdRequest struct {
+	ID string `uri:"id" binding:"required"`
+}
+
+type GetReciterByNameRequest struct {
+	Name string `uri:"name" binding:"required"`
+}
+
+type GetAllRecitersRequest struct {
+	Limit  int `form:"limit" binding:"omitempty,min=0,max=100"`
+	Offset int `form:"offset" binding:"omitempty,min=0"`
+}
+
+type DeleteReciterRequest struct {
+	ID string `uri:"id" binding:"required"`
+}
+
+// AyahAudioFile Request DTOs
+type CreateAyahAudioFileRequest struct {
+	ReciterID string  `json:"reciterId" binding:"required"`
+	SurahID   string  `json:"surahId" binding:"required"`
+	AyahID    string  `json:"ayahId" binding:"required"`
+	FilePath  string  `json:"filePath" binding:"required,min=1"`
+	Duration  float64 `json:"duration" binding:"required,min=0"`
+	ByteSize  float64 `json:"byteSize" binding:"required,min=0"`
+	CreatedBy string  `json:"createdBy" binding:"required,min=1,max=255"`
+}
+
+type UpdateAyahAudioFileRequest struct {
+	ID        string  `uri:"id" binding:"required"`
+	FilePath  string  `json:"filePath" binding:"required,min=1"`
+	Duration  float64 `json:"duration" binding:"required,min=0"`
+	ByteSize  float64 `json:"byteSize" binding:"required,min=0"`
+	UpdatedBy string  `json:"updatedBy" binding:"required,min=1,max=255"`
+}
+
+type GetAyahAudioFileByIdRequest struct {
+	ID string `uri:"id" binding:"required"`
+}
+
+type GetAyahAudioFileByAyahAndReciterRequest struct {
+	AyahID    string `uri:"ayahId" binding:"required"`
+	ReciterID string `uri:"reciterId" binding:"required"`
+}
+
+type GetAyahAudioFilesBySurahAndReciterRequest struct {
+	SurahID   string `uri:"surahId" binding:"required"`
+	ReciterID string `uri:"reciterId" binding:"required"`
+	Limit     int    `form:"limit" binding:"omitempty,min=0,max=100"`
+	Offset    int    `form:"offset" binding:"omitempty,min=0"`
+}
+
+type DeleteAyahAudioFileRequest struct {
 	ID string `uri:"id" binding:"required"`
 }

@@ -13,6 +13,7 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+/data/
 
 # Go workspace file
 go.work
@@ -47,6 +48,7 @@ Thumbs.db
 .env.staging
 
 # Config files (keep example configs)
+configs/config.yaml
 configs/config.local.yaml
 configs/config.development.yaml
 configs/config.production.yaml

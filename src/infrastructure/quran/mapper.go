@@ -308,3 +308,193 @@ func (m *Mapper) JuzEntitiesToModels(entities []*quran.Juz) []*JuzModel {
 func (m *Mapper) coreUUIDToGoogleUUID(coreUUID core.UUID) uuid.UUID {
 	return infraCore.ToGoogleUUID(coreUUID)
 }
+
+// TranslationEditionModelToEntity converts TranslationEditionModel to domain entity
+func (m *Mapper) TranslationEditionModelToEntity(model *TranslationEditionModel) *quran.TranslationEdition {
+	if model == nil {
+		return nil
+	}
+	return &quran.TranslationEdition{
+		ID:        model.ID,
+		Name:      model.Name,
+		Author:    model.Author,
+		Language:  model.Language,
+		CreatedBy: model.CreatedBy,
+		UpdatedBy: model.UpdatedBy,
+		CreatedAt: model.CreatedAt,
+		UpdatedAt: model.UpdatedAt,
+	}
+}
+
+// TranslationEditionEntityToModel converts domain entity to TranslationEditionModel
+func (m *Mapper) TranslationEditionEntityToModel(entity *quran.TranslationEdition) *TranslationEditionModel {
+	if entity == nil {
+		return nil
+	}
+	return &TranslationEditionModel{
+		ID:        m.coreUUIDToGoogleUUID(entity.ID),
+		Name:      entity.Name,
+		Author:    entity.Author,
+		Language:  entity.Language,
+		CreatedBy: entity.CreatedBy,
+		UpdatedBy: entity.UpdatedBy,
+		CreatedAt: entity.CreatedAt,
+		UpdatedAt: entity.UpdatedAt,
+	}
+}
+
+// TranslationEditionModelsToEntities converts slice of models to slice of entities
+func (m *Mapper) TranslationEditionModelsToEntities(models []*TranslationEditionModel) []*quran.TranslationEdition {
+	if models == nil {
+		return nil
+	}
+	outs := make([]*quran.TranslationEdition, len(models))
+	for i, model := range models {
+		outs[i] = m.TranslationEditionModelToEntity(model)
+	}
+	return outs
+}
+
+// AyahTranslationModelToEntity converts AyahTranslationModel to domain entity
+func (m *Mapper) AyahTranslationModelToEntity(model *AyahTranslationModel) *quran.AyahTranslation {
+	if model == nil {
+		return nil
+	}
+	return &quran.AyahTranslation{
+		ID:                   model.ID,
+		TranslationEditionID: model.TranslationEditionID,
+		SurahID:              model.SurahID,
+		AyahID:               model.AyahID,
+		Text:                 model.Text,
+		CreatedBy:            model.CreatedBy,
+		UpdatedBy:            model.UpdatedBy,
+		CreatedAt:            model.CreatedAt,
+		UpdatedAt:            model.UpdatedAt,
+	}
+}
+
+// AyahTranslationEntityToModel converts domain entity to AyahTranslationModel
+func (m *Mapper) AyahTranslationEntityToModel(entity *quran.AyahTranslation) *AyahTranslationModel {
+	if entity == nil {
+		return nil
+	}
+	return &AyahTranslationModel{
+		ID:                   m.coreUUIDToGoogleUUID(entity.ID),
+		TranslationEditionID: m.coreUUIDToGoogleUUID(entity.TranslationEditionID),
+		SurahID:              m.coreUUIDToGoogleUUID(entity.SurahID),
+		AyahID:               m.coreUUIDToGoogleUUID(entity.AyahID),
+		Text:                 entity.Text,
+		CreatedBy:            entity.CreatedBy,
+		UpdatedBy:            entity.UpdatedBy,
+		CreatedAt:            entity.CreatedAt,
+		UpdatedAt:            entity.UpdatedAt,
+	}
+}
+
+// AyahTranslationModelsToEntities converts slice of models to slice of entities
+func (m *Mapper) AyahTranslationModelsToEntities(models []*AyahTranslationModel) []*quran.AyahTranslation {
+	if models == nil {
+		return nil
+	}
+	outs := make([]*quran.AyahTranslation, len(models))
+	for i, model := range models {
+		outs[i] = m.AyahTranslationModelToEntity(model)
+	}
+	return outs
+}
+
+// ReciterModelToEntity converts ReciterModel to domain entity
+func (m *Mapper) ReciterModelToEntity(model *ReciterModel) *quran.Reciter {
+	if model == nil {
+		return nil
+	}
+	return &quran.Reciter{
+		ID:        model.ID,
+		Name:      model.Name,
+		Style:     model.Style,
+		CreatedBy: model.CreatedBy,
+		UpdatedBy: model.UpdatedBy,
+		CreatedAt: model.CreatedAt,
+		UpdatedAt: model.UpdatedAt,
+	}
+}
+
+// ReciterEntityToModel converts domain entity to ReciterModel
+func (m *Mapper) ReciterEntityToModel(entity *quran.Reciter) *ReciterModel {
+	if entity == nil {
+		return nil
+	}
+	return &ReciterModel{
+		ID:        m.coreUUIDToGoogleUUID(entity.ID),
+		Name:      entity.Name,
+		Style:     entity.Style,
+		CreatedBy: entity.CreatedBy,
+		UpdatedBy: entity.UpdatedBy,
+		CreatedAt: entity.CreatedAt,
+		UpdatedAt: entity.UpdatedAt,
+	}
+}
+
+// ReciterModelsToEntities converts slice of models to slice of entities
+func (m *Mapper) ReciterModelsToEntities(models []*ReciterModel) []*quran.Reciter {
+	if models == nil {
+		return nil
+	}
+	outs := make([]*quran.Reciter, len(models))
+	for i, model := range models {
+		outs[i] = m.ReciterModelToEntity(model)
+	}
+	return outs
+}
+
+// AyahAudioFileModelToEntity converts AyahAudioFileModel to domain entity
+func (m *Mapper) AyahAudioFileModelToEntity(model *AyahAudioFileModel) *quran.AyahAudioFile {
+	if model == nil {
+		return nil
+	}
+	return &quran.AyahAudioFile{
+		ID:        model.ID,
+		ReciterID: model.ReciterID,
+		SurahID:   model.SurahID,
+		AyahID:    model.AyahID,
+		FilePath:  model.FilePath,
+		Duration:  model.Duration,
+		ByteSize:  model.ByteSize,
+		CreatedBy: model.CreatedBy,
+		UpdatedBy: model.UpdatedBy,
+		CreatedAt: model.CreatedAt,
+		UpdatedAt: model.UpdatedAt,
+	}
+}
+
+// AyahAudioFileEntityToModel converts domain entity to AyahAudioFileModel
+func (m *Mapper) AyahAudioFileEntityToModel(entity *quran.AyahAudioFile) *AyahAudioFileModel {
+	if entity == nil {
+		return nil
+	}
+	return &AyahAudioFileModel{
+		ID:        m.coreUUIDToGoogleUUID(entity.ID),
+		ReciterID: m.coreUUIDToGoogleUUID(entity.ReciterID),
+		SurahID:   m.coreUUIDToGoogleUUID(entity.SurahID),
+		AyahID:    m.coreUUIDToGoogleUUID(entity.AyahID),
+		FilePath:  entity.FilePath,
+		Duration:  entity.Duration,
+		ByteSize:  entity.ByteSize,
+		CreatedBy: entity.CreatedBy,
+		UpdatedBy: entity.UpdatedBy,
+		CreatedAt: entity.CreatedAt,
+		UpdatedAt: entity.UpdatedAt,
+	}
+}
+
+// AyahAudioFileModelsToEntities converts slice of models to slice of entities
+func (m *Mapper) AyahAudioFileModelsToEntities(models []*AyahAudioFileModel) []*quran.AyahAudioFile {
+	if models == nil {
+		return nil
+	}
+	outs := make([]*quran.AyahAudioFile, len(models))
+	for i, model := range models {
+		outs[i] = m.AyahAudioFileModelToEntity(model)
+	}
+	return outs
+}

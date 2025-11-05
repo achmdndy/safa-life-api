@@ -333,3 +333,246 @@ type JuzWithRelationsListResponse struct {
 	Data       []*JuzWithRelationsResponse `json:"data"`
 	Pagination *PaginationResponse         `json:"pagination"`
 }
+
+// Ayah with Translation Response DTO
+type AyahWithTranslationResponse struct {
+	ID           string                   `json:"id"`
+	SurahID      string                   `json:"surahId"`
+	Text         string                   `json:"text"`
+	PageNumber   int                      `json:"pageNumber"`
+	JuzNumber    int                      `json:"juzNumber"`
+	HizbNumber   int                      `json:"hizbNumber"`
+	ManzilNumber int                      `json:"manzilNumber"`
+	CreatedBy    string                   `json:"createdBy"`
+	UpdatedBy    string                   `json:"updatedBy"`
+	CreatedAt    time.Time                `json:"createdAt"`
+	UpdatedAt    time.Time                `json:"updatedAt"`
+	Translation  *AyahTranslationResponse `json:"translation,omitempty"`
+	Audio        *AyahAudioFileResponse   `json:"audio,omitempty"`
+}
+
+// ToAyahWithTranslationResponse builds AyahWithTranslationResponse from domain ayah and translation
+func ToAyahWithTranslationResponse(ayah *quran.Ayah, tr *quran.AyahTranslation) *AyahWithTranslationResponse {
+	if ayah == nil {
+		return nil
+	}
+	resp := &AyahWithTranslationResponse{
+		ID:           ayah.ID.String(),
+		SurahID:      ayah.SurahID.String(),
+		Text:         ayah.Text,
+		PageNumber:   ayah.PageNumber,
+		JuzNumber:    ayah.JuzNumber,
+		HizbNumber:   ayah.HizbNumber,
+		ManzilNumber: ayah.ManzilNumber,
+		CreatedBy:    ayah.CreatedBy,
+		UpdatedBy:    ayah.UpdatedBy,
+		CreatedAt:    ayah.CreatedAt,
+		UpdatedAt:    ayah.UpdatedAt,
+	}
+	if tr != nil {
+		resp.Translation = ToAyahTranslationResponse(tr)
+	}
+	return resp
+}
+
+// Surah + Ayahs with per-ayah Translation Response
+type SurahAyahsWithTranslationsResponse struct {
+	Surah      *SurahResponse                 `json:"surah"`
+	Ayahs      []*AyahWithTranslationResponse `json:"ayahs"`
+	Pagination *PaginationResponse            `json:"pagination"`
+	Reciter    *ReciterResponse               `json:"reciter,omitempty"`
+}
+
+// Translation Edition Response DTOs
+type TranslationEditionResponse struct {
+	ID        string    `json:"id"`
+	Name      string    `json:"name"`
+	Author    string    `json:"author"`
+	Language  string    `json:"language"`
+	CreatedBy string    `json:"createdBy"`
+	UpdatedBy string    `json:"updatedBy"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+// ToTranslationEditionResponse converts a domain TranslationEdition to its DTO.
+func ToTranslationEditionResponse(d *quran.TranslationEdition) *TranslationEditionResponse {
+	if d == nil {
+		return nil
+	}
+	return &TranslationEditionResponse{
+		ID:        d.ID.String(),
+		Name:      d.Name,
+		Author:    d.Author,
+		Language:  d.Language,
+		CreatedBy: d.CreatedBy,
+		UpdatedBy: d.UpdatedBy,
+		CreatedAt: d.CreatedAt,
+		UpdatedAt: d.UpdatedAt,
+	}
+}
+
+// ToTranslationEditionResponseSlice converts a slice of domain TranslationEdition to DTOs.
+func ToTranslationEditionResponseSlice(ds []*quran.TranslationEdition) []*TranslationEditionResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*TranslationEditionResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToTranslationEditionResponse(d)
+	}
+	return outs
+}
+
+// Translation Edition List Response with Pagination
+type TranslationEditionListResponse struct {
+	Data       []*TranslationEditionResponse `json:"data"`
+	Pagination *PaginationResponse           `json:"pagination"`
+}
+
+// Ayah Translation Response DTOs
+type AyahTranslationResponse struct {
+	ID                   string    `json:"id"`
+	TranslationEditionID string    `json:"translationEditionId"`
+	SurahID              string    `json:"surahId"`
+	AyahID               string    `json:"ayahId"`
+	Text                 string    `json:"text"`
+	CreatedBy            string    `json:"createdBy"`
+	UpdatedBy            string    `json:"updatedBy"`
+	CreatedAt            time.Time `json:"createdAt"`
+	UpdatedAt            time.Time `json:"updatedAt"`
+}
+
+// ToAyahTranslationResponse converts a domain AyahTranslation to its DTO.
+func ToAyahTranslationResponse(d *quran.AyahTranslation) *AyahTranslationResponse {
+	if d == nil {
+		return nil
+	}
+	return &AyahTranslationResponse{
+		ID:                   d.ID.String(),
+		TranslationEditionID: d.TranslationEditionID.String(),
+		SurahID:              d.SurahID.String(),
+		AyahID:               d.AyahID.String(),
+		Text:                 d.Text,
+		CreatedBy:            d.CreatedBy,
+		UpdatedBy:            d.UpdatedBy,
+		CreatedAt:            d.CreatedAt,
+		UpdatedAt:            d.UpdatedAt,
+	}
+}
+
+// ToAyahTranslationResponseSlice converts a slice of domain AyahTranslation to DTOs.
+func ToAyahTranslationResponseSlice(ds []*quran.AyahTranslation) []*AyahTranslationResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*AyahTranslationResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToAyahTranslationResponse(d)
+	}
+	return outs
+}
+
+// Ayah Translation List Response with Pagination
+type AyahTranslationListResponse struct {
+	Data       []*AyahTranslationResponse `json:"data"`
+	Pagination *PaginationResponse        `json:"pagination"`
+}
+
+// Reciter Response DTOs
+type ReciterResponse struct {
+	ID        string    `json:"id"`
+	Name      string    `json:"name"`
+	Style     string    `json:"style"`
+	CreatedBy string    `json:"createdBy"`
+	UpdatedBy string    `json:"updatedBy"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+// ToReciterResponse converts a domain Reciter to its DTO.
+func ToReciterResponse(d *quran.Reciter) *ReciterResponse {
+	if d == nil {
+		return nil
+	}
+	return &ReciterResponse{
+		ID:        d.ID.String(),
+		Name:      d.Name,
+		Style:     d.Style,
+		CreatedBy: d.CreatedBy,
+		UpdatedBy: d.UpdatedBy,
+		CreatedAt: d.CreatedAt,
+		UpdatedAt: d.UpdatedAt,
+	}
+}
+
+// ToReciterResponseSlice converts a slice of domain Reciters to a slice of DTOs.
+func ToReciterResponseSlice(ds []*quran.Reciter) []*ReciterResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*ReciterResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToReciterResponse(d)
+	}
+	return outs
+}
+
+// Reciter List Response with Pagination
+type ReciterListResponse struct {
+	Data       []*ReciterResponse  `json:"data"`
+	Pagination *PaginationResponse `json:"pagination"`
+}
+
+// AyahAudioFile Response DTOs
+type AyahAudioFileResponse struct {
+	ID        string    `json:"id"`
+	ReciterID string    `json:"reciterId"`
+	SurahID   string    `json:"surahId"`
+	AyahID    string    `json:"ayahId"`
+	FilePath  string    `json:"filePath"`
+	Duration  float64   `json:"duration"`
+	ByteSize  float64   `json:"byteSize"`
+	CreatedBy string    `json:"createdBy"`
+	UpdatedBy string    `json:"updatedBy"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+// ToAyahAudioFileResponse converts a domain AyahAudioFile to its DTO.
+func ToAyahAudioFileResponse(d *quran.AyahAudioFile) *AyahAudioFileResponse {
+	if d == nil {
+		return nil
+	}
+	return &AyahAudioFileResponse{
+		ID:        d.ID.String(),
+		ReciterID: d.ReciterID.String(),
+		SurahID:   d.SurahID.String(),
+		AyahID:    d.AyahID.String(),
+		FilePath:  d.FilePath,
+		Duration:  d.Duration,
+		ByteSize:  d.ByteSize,
+		CreatedBy: d.CreatedBy,
+		UpdatedBy: d.UpdatedBy,
+		CreatedAt: d.CreatedAt,
+		UpdatedAt: d.UpdatedAt,
+	}
+}
+
+// ToAyahAudioFileResponseSlice converts a slice of domain AyahAudioFiles to a slice of DTOs.
+func ToAyahAudioFileResponseSlice(ds []*quran.AyahAudioFile) []*AyahAudioFileResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*AyahAudioFileResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToAyahAudioFileResponse(d)
+	}
+	return outs
+}
+
+// AyahAudioFile List Response with Pagination
+type AyahAudioFileListResponse struct {
+	Data       []*AyahAudioFileResponse `json:"data"`
+	Pagination *PaginationResponse      `json:"pagination"`
+}

@@ -200,3 +200,175 @@ func (s *JuzService) GetJuzByNumberWithRelations(ctx context.Context, number int
 func (s *JuzService) GetAllJuzWithRelations(ctx context.Context, limit, offset int) ([]*JuzWithRelations, error) {
 	return s.juzRepo.GetAllWithRelations(ctx, limit, offset)
 }
+
+// TranslationEditionService implements TranslationEditionServiceInterface.
+type TranslationEditionService struct {
+	editionRepo TranslationEditionRepositoryInterface
+}
+
+// NewTranslationEditionService creates a new TranslationEditionService instance.
+func NewTranslationEditionService(editionRepo TranslationEditionRepositoryInterface) TranslationEditionServiceInterface {
+	return &TranslationEditionService{
+		editionRepo: editionRepo,
+	}
+}
+
+func (s *TranslationEditionService) GetTranslationEditionById(ctx context.Context, id core.UUID) (*TranslationEdition, error) {
+	return s.editionRepo.GetById(ctx, id)
+}
+
+func (s *TranslationEditionService) GetAllTranslationEditions(ctx context.Context, limit, offset int) ([]*TranslationEdition, error) {
+	return s.editionRepo.GetAll(ctx, limit, offset)
+}
+
+func (s *TranslationEditionService) GetTranslationEditionsByLanguage(ctx context.Context, language string, limit, offset int) ([]*TranslationEdition, error) {
+	return s.editionRepo.GetByLanguage(ctx, language, limit, offset)
+}
+
+func (s *TranslationEditionService) CreateTranslationEdition(ctx context.Context, edition *TranslationEdition) (*TranslationEdition, error) {
+	return s.editionRepo.Create(ctx, edition)
+}
+
+func (s *TranslationEditionService) UpdateTranslationEdition(ctx context.Context, edition *TranslationEdition) (*TranslationEdition, error) {
+	return s.editionRepo.Update(ctx, edition)
+}
+
+func (s *TranslationEditionService) DeleteTranslationEdition(ctx context.Context, id core.UUID) error {
+	return s.editionRepo.Delete(ctx, id)
+}
+
+func (s *TranslationEditionService) CountTranslationEditions(ctx context.Context) (int64, error) {
+	return s.editionRepo.Count(ctx)
+}
+
+func (s *TranslationEditionService) CountTranslationEditionsByLanguage(ctx context.Context, language string) (int64, error) {
+	return s.editionRepo.CountByLanguage(ctx, language)
+}
+
+// AyahTranslationService implements AyahTranslationServiceInterface.
+type AyahTranslationService struct {
+	translationRepo AyahTranslationRepositoryInterface
+}
+
+// NewAyahTranslationService creates a new AyahTranslationService instance.
+func NewAyahTranslationService(translationRepo AyahTranslationRepositoryInterface) AyahTranslationServiceInterface {
+	return &AyahTranslationService{
+		translationRepo: translationRepo,
+	}
+}
+
+func (s *AyahTranslationService) GetAyahTranslationById(ctx context.Context, id core.UUID) (*AyahTranslation, error) {
+	return s.translationRepo.GetById(ctx, id)
+}
+
+func (s *AyahTranslationService) GetAyahTranslationByAyahAndEdition(ctx context.Context, ayahId core.UUID, editionId core.UUID) (*AyahTranslation, error) {
+	return s.translationRepo.GetByAyahAndEdition(ctx, ayahId, editionId)
+}
+
+func (s *AyahTranslationService) GetAyahTranslationsBySurahAndEdition(ctx context.Context, surahId core.UUID, editionId core.UUID, limit, offset int) ([]*AyahTranslation, error) {
+	return s.translationRepo.GetBySurahAndEdition(ctx, surahId, editionId, limit, offset)
+}
+
+func (s *AyahTranslationService) CreateAyahTranslation(ctx context.Context, t *AyahTranslation) (*AyahTranslation, error) {
+	return s.translationRepo.Create(ctx, t)
+}
+
+func (s *AyahTranslationService) UpdateAyahTranslation(ctx context.Context, t *AyahTranslation) (*AyahTranslation, error) {
+	return s.translationRepo.Update(ctx, t)
+}
+
+func (s *AyahTranslationService) DeleteAyahTranslation(ctx context.Context, id core.UUID) error {
+	return s.translationRepo.Delete(ctx, id)
+}
+
+func (s *AyahTranslationService) CountAyahTranslations(ctx context.Context) (int64, error) {
+	return s.translationRepo.Count(ctx)
+}
+
+func (s *AyahTranslationService) CountAyahTranslationsByEdition(ctx context.Context, editionId core.UUID) (int64, error) {
+	return s.translationRepo.CountByEdition(ctx, editionId)
+}
+
+func (s *AyahTranslationService) CountAyahTranslationsBySurahAndEdition(ctx context.Context, surahId core.UUID, editionId core.UUID) (int64, error) {
+	return s.translationRepo.CountBySurahAndEdition(ctx, surahId, editionId)
+}
+
+// ReciterService implements ReciterServiceInterface.
+type ReciterService struct {
+	reciterRepo ReciterRepositoryInterface
+}
+
+// NewReciterService creates a new ReciterService instance.
+func NewReciterService(reciterRepo ReciterRepositoryInterface) ReciterServiceInterface {
+	return &ReciterService{reciterRepo: reciterRepo}
+}
+
+func (s *ReciterService) GetReciterById(ctx context.Context, id core.UUID) (*Reciter, error) {
+	return s.reciterRepo.GetById(ctx, id)
+}
+
+func (s *ReciterService) GetReciterByName(ctx context.Context, name string) (*Reciter, error) {
+	return s.reciterRepo.GetByName(ctx, name)
+}
+
+func (s *ReciterService) GetAllReciters(ctx context.Context, limit, offset int) ([]*Reciter, error) {
+	return s.reciterRepo.GetAll(ctx, limit, offset)
+}
+
+func (s *ReciterService) CreateReciter(ctx context.Context, reciter *Reciter) (*Reciter, error) {
+	return s.reciterRepo.Create(ctx, reciter)
+}
+
+func (s *ReciterService) UpdateReciter(ctx context.Context, reciter *Reciter) (*Reciter, error) {
+	return s.reciterRepo.Update(ctx, reciter)
+}
+
+func (s *ReciterService) DeleteReciter(ctx context.Context, id core.UUID) error {
+	return s.reciterRepo.Delete(ctx, id)
+}
+
+func (s *ReciterService) CountReciters(ctx context.Context) (int64, error) {
+	return s.reciterRepo.Count(ctx)
+}
+
+// AyahAudioFileService implements AyahAudioFileServiceInterface.
+type AyahAudioFileService struct {
+	audioRepo AyahAudioFileRepositoryInterface
+}
+
+// NewAyahAudioFileService creates a new AyahAudioFileService instance.
+func NewAyahAudioFileService(audioRepo AyahAudioFileRepositoryInterface) AyahAudioFileServiceInterface {
+	return &AyahAudioFileService{audioRepo: audioRepo}
+}
+
+func (s *AyahAudioFileService) GetAyahAudioFileById(ctx context.Context, id core.UUID) (*AyahAudioFile, error) {
+	return s.audioRepo.GetById(ctx, id)
+}
+
+func (s *AyahAudioFileService) GetAyahAudioFileByAyahAndReciter(ctx context.Context, ayahId core.UUID, reciterId core.UUID) (*AyahAudioFile, error) {
+	return s.audioRepo.GetByAyahAndReciter(ctx, ayahId, reciterId)
+}
+
+func (s *AyahAudioFileService) GetAyahAudioFilesBySurahAndReciter(ctx context.Context, surahId core.UUID, reciterId core.UUID, limit, offset int) ([]*AyahAudioFile, error) {
+	return s.audioRepo.GetBySurahAndReciter(ctx, surahId, reciterId, limit, offset)
+}
+
+func (s *AyahAudioFileService) CreateAyahAudioFile(ctx context.Context, audio *AyahAudioFile) (*AyahAudioFile, error) {
+	return s.audioRepo.Create(ctx, audio)
+}
+
+func (s *AyahAudioFileService) UpdateAyahAudioFile(ctx context.Context, audio *AyahAudioFile) (*AyahAudioFile, error) {
+	return s.audioRepo.Update(ctx, audio)
+}
+
+func (s *AyahAudioFileService) DeleteAyahAudioFile(ctx context.Context, id core.UUID) error {
+	return s.audioRepo.Delete(ctx, id)
+}
+
+func (s *AyahAudioFileService) CountAyahAudioFiles(ctx context.Context) (int64, error) {
+	return s.audioRepo.Count(ctx)
+}
+
+func (s *AyahAudioFileService) CountAyahAudioFilesBySurahAndReciter(ctx context.Context, surahId core.UUID, reciterId core.UUID) (int64, error) {
+	return s.audioRepo.CountBySurahAndReciter(ctx, surahId, reciterId)
+}
