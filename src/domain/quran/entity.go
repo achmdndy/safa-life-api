@@ -101,6 +101,8 @@ type Reciter struct {
 	ID        core.UUID `json:"id"`
 	Name      string    `json:"name"`
 	Style     string    `json:"style"`
+	Place     string    `json:"place"`
+	Picture   string    `json:"picture"`
 	CreatedBy string    `json:"createdBy"`
 	UpdatedBy string    `json:"updatedBy"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -275,4 +277,175 @@ func (j *Juz) Update(startSurahID, endSurahID, startAyahID, endAyahID core.UUID,
 	j.EndAyahID = endAyahID
 	j.UpdatedBy = updatedBy
 	j.UpdatedAt = time.Now()
+}
+
+// BookmarkAyah represents a user's bookmarked ayah in the domain
+type BookmarkAyah struct {
+	ID        core.UUID `json:"id"`
+	UserID    core.UUID `json:"userId"`
+	AyahID    core.UUID `json:"ayahId"`
+	CreatedBy string    `json:"createdBy"`
+	UpdatedBy string    `json:"updatedBy"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+// BookmarkAyahWithAyah represents a bookmark with its related ayah
+type BookmarkAyahWithAyah struct {
+	ID        core.UUID `json:"id"`
+	UserID    core.UUID `json:"userId"`
+	AyahID    core.UUID `json:"ayahId"`
+	CreatedBy string    `json:"createdBy"`
+	UpdatedBy string    `json:"updatedBy"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	Ayah      *Ayah     `json:"ayah,omitempty"`
+}
+
+// NewBookmarkAyah creates a new BookmarkAyah entity
+func NewBookmarkAyah(id, userID, ayahID core.UUID, createdBy string) *BookmarkAyah {
+	now := time.Now()
+	return &BookmarkAyah{
+		ID:        id,
+		UserID:    userID,
+		AyahID:    ayahID,
+		CreatedBy: createdBy,
+		UpdatedBy: createdBy,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+}
+
+// Update updates fields of a BookmarkAyah
+func (b *BookmarkAyah) Update(ayahID core.UUID, updatedBy string) {
+	b.AyahID = ayahID
+	b.UpdatedBy = updatedBy
+	b.UpdatedAt = time.Now()
+}
+
+// LastRead represents a user's last read progress within a surah
+type LastRead struct {
+	ID          core.UUID `json:"id"`
+	UserID      core.UUID `json:"userId"`
+	SurahID     core.UUID `json:"surahId"`
+	AyahID      core.UUID `json:"ayahId"`
+	AyahNumber  int       `json:"ayahNumber"`
+	ProgressPct float64   `json:"progressPct"`
+	LastReadAt  time.Time `json:"lastReadAt"`
+	CreatedBy   string    `json:"createdBy"`
+	UpdatedBy   string    `json:"updatedBy"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+}
+
+// LastReadWithRelations represents last read with related surah and ayah
+type LastReadWithRelations struct {
+	ID          core.UUID `json:"id"`
+	UserID      core.UUID `json:"userId"`
+	SurahID     core.UUID `json:"surahId"`
+	AyahID      core.UUID `json:"ayahId"`
+	AyahNumber  int       `json:"ayahNumber"`
+	ProgressPct float64   `json:"progressPct"`
+	LastReadAt  time.Time `json:"lastReadAt"`
+	CreatedBy   string    `json:"createdBy"`
+	UpdatedBy   string    `json:"updatedBy"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+	Surah       *Surah    `json:"surah,omitempty"`
+	Ayah        *Ayah     `json:"ayah,omitempty"`
+}
+
+// NewLastRead creates a new LastRead entity
+func NewLastRead(id, userID, surahID, ayahID core.UUID, ayahNumber int, progressPct float64, createdBy string) *LastRead {
+	now := time.Now()
+	return &LastRead{
+		ID:          id,
+		UserID:      userID,
+		SurahID:     surahID,
+		AyahID:      ayahID,
+		AyahNumber:  ayahNumber,
+		ProgressPct: progressPct,
+		LastReadAt:  now,
+		CreatedBy:   createdBy,
+		UpdatedBy:   createdBy,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+}
+
+// Update updates fields of LastRead
+func (l *LastRead) Update(ayahID core.UUID, ayahNumber int, progressPct float64, updatedBy string) {
+	l.AyahID = ayahID
+	l.AyahNumber = ayahNumber
+	l.ProgressPct = progressPct
+	l.LastReadAt = time.Now()
+	l.UpdatedBy = updatedBy
+	l.UpdatedAt = time.Now()
+}
+
+// ProgressHatam represents a user's hatam (completion) progress across a juz
+type ProgressHatam struct {
+	ID          core.UUID  `json:"id"`
+	UserID      core.UUID  `json:"userId"`
+	JuzID       core.UUID  `json:"juzId"`
+	StartAyahID core.UUID  `json:"startAyahId"`
+	LastAyahID  core.UUID  `json:"lastAyahId"`
+	ProgressPct float64    `json:"progressPct"`
+	IsCompleted bool       `json:"isCompleted"`
+	StartedAt   time.Time  `json:"startedAt"`
+	CompletedAt *time.Time `json:"completedAt,omitempty"`
+	CreatedBy   string     `json:"createdBy"`
+	UpdatedBy   string     `json:"updatedBy"`
+	CreatedAt   time.Time  `json:"createdAt"`
+	UpdatedAt   time.Time  `json:"updatedAt"`
+}
+
+// ProgressHatamWithRelations represents progress data with related entities
+type ProgressHatamWithRelations struct {
+	ID          core.UUID  `json:"id"`
+	UserID      core.UUID  `json:"userId"`
+	JuzID       core.UUID  `json:"juzId"`
+	StartAyahID core.UUID  `json:"startAyahId"`
+	LastAyahID  core.UUID  `json:"lastAyahId"`
+	ProgressPct float64    `json:"progressPct"`
+	IsCompleted bool       `json:"isCompleted"`
+	StartedAt   time.Time  `json:"startedAt"`
+	CompletedAt *time.Time `json:"completedAt,omitempty"`
+	CreatedBy   string     `json:"createdBy"`
+	UpdatedBy   string     `json:"updatedBy"`
+	CreatedAt   time.Time  `json:"createdAt"`
+	UpdatedAt   time.Time  `json:"updatedAt"`
+	Juz         *Juz       `json:"juz,omitempty"`
+	StartAyah   *Ayah      `json:"startAyah,omitempty"`
+	LastAyah    *Ayah      `json:"lastAyah,omitempty"`
+}
+
+// NewProgressHatam creates a new ProgressHatam entity
+func NewProgressHatam(id, userID, juzID, startAyahID core.UUID, progressPct float64, createdBy string) *ProgressHatam {
+	now := time.Now()
+	return &ProgressHatam{
+		ID:          id,
+		UserID:      userID,
+		JuzID:       juzID,
+		StartAyahID: startAyahID,
+		LastAyahID:  nil,
+		ProgressPct: progressPct,
+		IsCompleted: false,
+		StartedAt:   now,
+		CompletedAt: nil,
+		CreatedBy:   createdBy,
+		UpdatedBy:   createdBy,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+}
+
+// Update updates fields of ProgressHatam
+func (p *ProgressHatam) Update(lastAyahID core.UUID, progressPct float64, isCompleted bool, completedAt *time.Time, updatedBy string) {
+	p.LastAyahID = lastAyahID
+	p.ProgressPct = progressPct
+	p.IsCompleted = isCompleted
+	p.CompletedAt = completedAt
+	p.UpdatedBy = updatedBy
+	p.UpdatedAt = time.Now()
 }

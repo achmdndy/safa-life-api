@@ -53,6 +53,6 @@ func SetupRoutes(router *gin.Engine, presentationContainer *container.Presentati
 	v1 := router.Group("/v1")
 	{
 		// Quran routes
-		QuranRoutes(v1, presentationContainer.QuranHandler)
+		QuranRoutes(v1, presentationContainer.QuranHandler, presentationContainer.GetAuthMiddleware())
 	}
 }

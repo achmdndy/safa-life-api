@@ -25,6 +25,9 @@ func NewApplicationContainer(domainContainer *domainContainer.DomainContainer) *
 		domainContainer.JuzService,
 		domainContainer.ReciterService,
 		domainContainer.AyahAudioFileService,
+		domainContainer.BookmarkAyahService,
+		domainContainer.LastReadService,
+		domainContainer.ProgressHatamService,
 		domainContainer.IDGenerator,
 		domainContainer.TransactionManager,
 	)
@@ -37,6 +40,9 @@ func NewApplicationContainer(domainContainer *domainContainer.DomainContainer) *
 		domainContainer.AyahAudioFileService,
 		domainContainer.TranslationEditionService,
 		domainContainer.AyahTranslationService,
+		domainContainer.BookmarkAyahService,
+		domainContainer.LastReadService,
+		domainContainer.ProgressHatamService,
 		domainContainer.IDGenerator,
 	)
 

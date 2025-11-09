@@ -318,3 +318,87 @@ type DeleteAyahAudioFileSuccessResponse struct {
 	ResponseTime string    `json:"responseTime" example:"15.234ms"`
 	Data         *string   `json:"data" swaggertype:"string" example:"null"`
 }
+
+// BookmarkAyah Response Types
+type BookmarkAyahSuccessResponse struct {
+	Success      bool                     `json:"success" example:"true"`
+	StatusCode   int                      `json:"status_code" example:"200"`
+	Message      string                   `json:"message" example:"Bookmark retrieved successfully"`
+	Timestamp    time.Time                `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string                   `json:"responseTime" example:"15.234ms"`
+	Data         dto.BookmarkAyahResponse `json:"data"`
+}
+
+type BookmarkAyahListSuccessResponse struct {
+	Success      bool                         `json:"success" example:"true"`
+	StatusCode   int                          `json:"status_code" example:"200"`
+	Message      string                       `json:"message" example:"Bookmarks retrieved successfully"`
+	Timestamp    time.Time                    `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string                       `json:"responseTime" example:"15.234ms"`
+	Data         dto.BookmarkAyahListResponse `json:"data"`
+}
+
+type DeleteBookmarkAyahSuccessResponse struct {
+	Success      bool      `json:"success" example:"true"`
+	StatusCode   int       `json:"status_code" example:"200"`
+	Message      string    `json:"message" example:"Bookmark deleted successfully"`
+	Timestamp    time.Time `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string    `json:"responseTime" example:"15.234ms"`
+	Data         *string   `json:"data" swaggertype:"string" example:"null"`
+}
+
+// LastRead Response Types
+type LastReadSuccessResponse struct {
+	Success      bool                 `json:"success" example:"true"`
+	StatusCode   int                  `json:"status_code" example:"200"`
+	Message      string               `json:"message" example:"Last read retrieved successfully"`
+	Timestamp    time.Time            `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string               `json:"responseTime" example:"15.234ms"`
+	Data         dto.LastReadResponse `json:"data"`
+}
+
+type LastReadListSuccessResponse struct {
+	Success      bool                     `json:"success" example:"true"`
+	StatusCode   int                      `json:"status_code" example:"200"`
+	Message      string                   `json:"message" example:"Last reads retrieved successfully"`
+	Timestamp    time.Time                `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string                   `json:"responseTime" example:"15.234ms"`
+	Data         dto.LastReadListResponse `json:"data"`
+}
+
+type DeleteLastReadSuccessResponse struct {
+	Success      bool      `json:"success" example:"true"`
+	StatusCode   int       `json:"status_code" example:"200"`
+	Message      string    `json:"message" example:"Last read deleted successfully"`
+	Timestamp    time.Time `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string    `json:"responseTime" example:"15.234ms"`
+	Data         *string   `json:"data" swaggertype:"string" example:"null"`
+}
+
+// ProgressHatam Response Types
+type ProgressHatamSuccessResponse struct {
+	Success      bool                      `json:"success" example:"true"`
+	StatusCode   int                       `json:"status_code" example:"200"`
+	Message      string                    `json:"message" example:"Progress hatam retrieved successfully"`
+	Timestamp    time.Time                 `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string                    `json:"responseTime" example:"15.234ms"`
+	Data         dto.ProgressHatamResponse `json:"data"`
+}
+
+type ProgressHatamListSuccessResponse struct {
+	Success      bool                          `json:"success" example:"true"`
+	StatusCode   int                           `json:"status_code" example:"200"`
+	Message      string                        `json:"message" example:"Progress hatam list retrieved successfully"`
+	Timestamp    time.Time                     `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string                        `json:"responseTime" example:"15.234ms"`
+	Data         dto.ProgressHatamListResponse `json:"data"`
+}
+
+type DeleteProgressHatamSuccessResponse struct {
+	Success      bool      `json:"success" example:"true"`
+	StatusCode   int       `json:"status_code" example:"200"`
+	Message      string    `json:"message" example:"Progress hatam deleted successfully"`
+	Timestamp    time.Time `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string    `json:"responseTime" example:"15.234ms"`
+	Data         *string   `json:"data" swaggertype:"string" example:"null"`
+}

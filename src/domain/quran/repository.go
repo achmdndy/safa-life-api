@@ -111,6 +111,49 @@ type AyahAudioFileRepositoryInterface interface {
 	CountBySurahAndReciter(ctx context.Context, surahId core.UUID, reciterId core.UUID) (int64, error)
 }
 
+// BookmarkAyahRepositoryInterface defines the data access layer for ayah bookmarks.
+type BookmarkAyahRepositoryInterface interface {
+	GetById(ctx context.Context, id core.UUID) (*BookmarkAyah, error)
+	GetByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*BookmarkAyah, error)
+	GetByUserAndAyah(ctx context.Context, userId core.UUID, ayahId core.UUID) (*BookmarkAyah, error)
+	Create(ctx context.Context, bookmark *BookmarkAyah) (*BookmarkAyah, error)
+	Delete(ctx context.Context, id core.UUID) error
+	CountByUser(ctx context.Context, userId core.UUID) (int64, error)
+
+	// Eager loading
+	GetByIdWithAyah(ctx context.Context, id core.UUID) (*BookmarkAyahWithAyah, error)
+}
+
+// LastReadRepositoryInterface defines the data access layer for tracking last read per user.
+type LastReadRepositoryInterface interface {
+	GetById(ctx context.Context, id core.UUID) (*LastRead, error)
+	GetByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*LastRead, error)
+	GetByUserAndSurah(ctx context.Context, userId core.UUID, surahId core.UUID) (*LastRead, error)
+	Create(ctx context.Context, lr *LastRead) (*LastRead, error)
+	Update(ctx context.Context, lr *LastRead) (*LastRead, error)
+	Delete(ctx context.Context, id core.UUID) error
+	CountByUser(ctx context.Context, userId core.UUID) (int64, error)
+
+	// Eager loading
+	GetByIdWithRelations(ctx context.Context, id core.UUID) (*LastReadWithRelations, error)
+	GetByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*LastReadWithRelations, error)
+}
+
+// ProgressHatamRepositoryInterface defines the data access layer for hatam progress.
+type ProgressHatamRepositoryInterface interface {
+	GetById(ctx context.Context, id core.UUID) (*ProgressHatam, error)
+	GetByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*ProgressHatam, error)
+	GetByUserAndJuz(ctx context.Context, userId core.UUID, juzId core.UUID) (*ProgressHatam, error)
+	Create(ctx context.Context, p *ProgressHatam) (*ProgressHatam, error)
+	Update(ctx context.Context, p *ProgressHatam) (*ProgressHatam, error)
+	Delete(ctx context.Context, id core.UUID) error
+	CountByUser(ctx context.Context, userId core.UUID) (int64, error)
+
+	// Eager loading
+	GetByIdWithRelations(ctx context.Context, id core.UUID) (*ProgressHatamWithRelations, error)
+	GetByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*ProgressHatamWithRelations, error)
+}
+
 // QuranRepositoryInterface defines the aggregate repository interface for all Quran entities.
 type QuranRepositoryInterface interface {
 	SurahRepository() SurahRepositoryInterface

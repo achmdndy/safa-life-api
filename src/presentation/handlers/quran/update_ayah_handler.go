@@ -9,6 +9,7 @@ import (
 	"github.com/safalife/core-api/src/application/quran/command"
 	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/presentation/core"
+	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
 // UpdateAyahHandler handles the update ayah request
@@ -64,7 +65,7 @@ func (h *UpdateAyahHandler) Handle(c *gin.Context) {
 		JuzNumber:    req.JuzNumber,
 		HizbNumber:   req.HizbNumber,
 		ManzilNumber: req.ManzilNumber,
-		UpdatedBy:    req.UpdatedBy,
+		UpdatedBy:    middlewares.GetUserID(c),
 	}
 
 	result, err := h.commandHandler.UpdateAyah(ctx, cmd)

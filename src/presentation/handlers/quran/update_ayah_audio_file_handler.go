@@ -9,6 +9,7 @@ import (
 	"github.com/safalife/core-api/src/application/quran/command"
 	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/presentation/core"
+	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
 // UpdateAyahAudioFileHandler handles the update ayah audio file request
@@ -56,7 +57,7 @@ func (h *UpdateAyahAudioFileHandler) Handle(c *gin.Context) {
 		FilePath:  body.FilePath,
 		Duration:  body.Duration,
 		ByteSize:  body.ByteSize,
-		UpdatedBy: body.UpdatedBy,
+		UpdatedBy: middlewares.GetUserID(c),
 	}
 
 	result, err := h.commandHandler.UpdateAyahAudioFile(ctx, cmd)

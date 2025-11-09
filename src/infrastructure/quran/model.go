@@ -74,6 +74,8 @@ type ReciterModel struct {
 	ID        uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
 	Name      string         `gorm:"column:name;not null;unique;size:255"`
 	Style     string         `gorm:"column:style;not null;size:100"`
+	Place     string         `gorm:"column:place;not null;size:20"`
+	Picture   string         `gorm:"column:picture;not null;size:255"`
 	CreatedBy string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
 	UpdatedBy string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
 	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
@@ -143,6 +145,68 @@ type AyahTranslationModel struct {
 
 func (AyahTranslationModel) TableName() string {
 	return "ayah_translations"
+}
+
+type BookmarkAyahModel struct {
+	ID        uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	UserID    uuid.UUID      `gorm:"column:user_id;type:varchar(36);not null;index;" json:"user_id"`
+	AyahID    uuid.UUID      `gorm:"column:ayah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"ayah_id"`
+	CreatedBy string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
+	UpdatedBy string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
+	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
+
+	Ayah AyahModel `gorm:"foreignKey:ayah_id;references:id" json:"ayah,omitempty"`
+}
+
+func (BookmarkAyahModel) TableName() string {
+	return "bookmark_ayahs"
+}
+
+type LastReadModel struct {
+	ID          uuid.UUID `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	UserID      uuid.UUID `gorm:"column:user_id;type:uuid;not null;index" json:"user_id"`
+	SurahID     uuid.UUID `gorm:"column:surah_id;type:uuid;not null;index:idx_user_surah" json:"surah_id"`
+	AyahID      uuid.UUID `gorm:"column:ayah_id;type:uuid;not null;index" json:"ayah_id"`
+	AyahNumber  int       `gorm:"column:ayah_number;type:int;not null" json:"ayah_number"`
+	ProgressPct float64   `gorm:"column:progress_pct;type:decimal(5,2);default:0" json:"progress_pct"`
+	LastReadAt  time.Time `gorm:"column:last_read_at;autoUpdateTime" json:"last_read_at"`
+
+	CreatedBy string         `gorm:"column:created_by;type:varchar(255);not null" json:"created_by"`
+	UpdatedBy string         `gorm:"column:updated_by;type:varchar(255);not null" json:"updated_by"`
+	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
+
+	Surah SurahModel `gorm:"foreignKey:surah_id;references:id" json:"surah,omitempty"`
+	Ayah  AyahModel  `gorm:"foreignKey:ayah_id;references:id" json:"ayah,omitempty"`
+}
+
+type ProgressHatamModel struct {
+	ID          uuid.UUID  `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	UserID      uuid.UUID  `gorm:"column:user_id;type:varchar(36);not null;index;" json:"user_id"`
+	JuzID       uuid.UUID  `gorm:"column:juz_id;type:uuid;not null;index:idx_user_juz;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"juz_id"`
+	StartAyahID uuid.UUID  `gorm:"column:start_ayah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"start_ayah_id"`
+	LastAyahID  uuid.UUID  `gorm:"column:last_ayah_id;type:uuid;index;constraint:OnUpdate:CASCADE,OnDelete:SET NULL" json:"last_ayah_id"`
+	ProgressPct float64    `gorm:"column:progress_pct;type:decimal(5,2);default:0" json:"progress_pct"`
+	IsCompleted bool       `gorm:"column:is_completed;default:false" json:"is_completed"`
+	StartedAt   time.Time  `gorm:"column:started_at;type:timestamp with time zone" json:"started_at"`
+	CompletedAt *time.Time `gorm:"column:completed_at;type:timestamp with time zone" json:"completed_at,omitempty"`
+
+	CreatedBy string         `gorm:"column:created_by;type:varchar(255);not null" json:"created_by"`
+	UpdatedBy string         `gorm:"column:updated_by;type:varchar(255);not null" json:"updated_by"`
+	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
+
+	Juz       JuzModel   `gorm:"foreignKey:juz_id;references:id" json:"juz,omitempty"`
+	StartAyah AyahModel  `gorm:"foreignKey:start_ayah_id;references:id" json:"start_ayah,omitempty"`
+	LastAyah  *AyahModel `gorm:"foreignKey:last_ayah_id;references:id" json:"last_ayah,omitempty"`
+}
+
+func (ProgressHatamModel) TableName() string {
+	return "progress_hatam"
 }
 
 // type TopicModel struct {

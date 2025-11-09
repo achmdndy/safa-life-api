@@ -181,9 +181,12 @@ func RunServer() {
 		infraCont.AyahTranslationRepository,
 		infraCont.ReciterRepository,
 		infraCont.AyahAudioFileRepository,
+		infraCont.BookmarkAyahRepository,
+		infraCont.LastReadRepository,
+		infraCont.ProgressHatamRepository,
 	)
 	appCont := appContainer.NewApplicationContainer(domainCont)
-	presentationCont := presentationContainer.NewPresentationContainer(appCont)
+	presentationCont := presentationContainer.NewPresentationContainer(appCont, core.Config.Auth)
 	fmt.Println("SUCCESS")
 
 	// Setup Gin router

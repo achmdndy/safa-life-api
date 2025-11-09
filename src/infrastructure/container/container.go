@@ -35,6 +35,9 @@ type InfrastructureContainer struct {
 	AyahTranslationRepository    quran.AyahTranslationRepositoryInterface
 	ReciterRepository            quran.ReciterRepositoryInterface
 	AyahAudioFileRepository      quran.AyahAudioFileRepositoryInterface
+	BookmarkAyahRepository       quran.BookmarkAyahRepositoryInterface
+	LastReadRepository           quran.LastReadRepositoryInterface
+	ProgressHatamRepository      quran.ProgressHatamRepositoryInterface
 	QuranRepository              quran.QuranRepositoryInterface
 }
 
@@ -62,6 +65,9 @@ func NewInfrastructureContainer(ctx context.Context, db *sql.DB, gormDB *gorm.DB
 	ayahTranslationRepo := infraQuran.NewAyahTranslationRepository(gormDB, quranMapper)
 	reciterRepo := infraQuran.NewReciterRepository(gormDB, quranMapper)
 	ayahAudioFileRepo := infraQuran.NewAyahAudioFileRepository(gormDB, quranMapper)
+	bookmarkAyahRepo := infraQuran.NewBookmarkAyahRepository(gormDB, quranMapper)
+	lastReadRepo := infraQuran.NewLastReadRepository(gormDB, quranMapper)
+	progressHatamRepo := infraQuran.NewProgressHatamRepository(gormDB, quranMapper)
 	quranRepo := quran.NewQuranRepository(surahRepo, ayahRepo, juzRepo, transactionManager)
 
 	return &InfrastructureContainer{
@@ -82,6 +88,9 @@ func NewInfrastructureContainer(ctx context.Context, db *sql.DB, gormDB *gorm.DB
 		AyahTranslationRepository:    ayahTranslationRepo,
 		ReciterRepository:            reciterRepo,
 		AyahAudioFileRepository:      ayahAudioFileRepo,
+		BookmarkAyahRepository:       bookmarkAyahRepo,
+		LastReadRepository:           lastReadRepo,
+		ProgressHatamRepository:      progressHatamRepo,
 		QuranRepository:              quranRepo,
 	}
 }

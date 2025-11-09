@@ -9,6 +9,7 @@ import (
 	"github.com/safalife/core-api/src/application/quran/command"
 	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/presentation/core"
+	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
 // UpdateReciterHandler handles the update reciter request
@@ -55,7 +56,7 @@ func (h *UpdateReciterHandler) Handle(c *gin.Context) {
 		ID:        uri.ID,
 		Name:      body.Name,
 		Style:     body.Style,
-		UpdatedBy: body.UpdatedBy,
+		UpdatedBy: middlewares.GetUserID(c),
 	}
 
 	result, err := h.commandHandler.UpdateReciter(ctx, cmd)

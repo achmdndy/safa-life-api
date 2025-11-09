@@ -412,6 +412,8 @@ func (m *Mapper) ReciterModelToEntity(model *ReciterModel) *quran.Reciter {
 		ID:        model.ID,
 		Name:      model.Name,
 		Style:     model.Style,
+		Place:     model.Place,
+		Picture:   model.Picture,
 		CreatedBy: model.CreatedBy,
 		UpdatedBy: model.UpdatedBy,
 		CreatedAt: model.CreatedAt,
@@ -428,6 +430,8 @@ func (m *Mapper) ReciterEntityToModel(entity *quran.Reciter) *ReciterModel {
 		ID:        m.coreUUIDToGoogleUUID(entity.ID),
 		Name:      entity.Name,
 		Style:     entity.Style,
+		Place:     entity.Place,
+		Picture:   entity.Picture,
 		CreatedBy: entity.CreatedBy,
 		UpdatedBy: entity.UpdatedBy,
 		CreatedAt: entity.CreatedAt,
@@ -495,6 +499,273 @@ func (m *Mapper) AyahAudioFileModelsToEntities(models []*AyahAudioFileModel) []*
 	outs := make([]*quran.AyahAudioFile, len(models))
 	for i, model := range models {
 		outs[i] = m.AyahAudioFileModelToEntity(model)
+	}
+	return outs
+}
+
+// BookmarkAyahModelToEntity converts BookmarkAyahModel to domain entity
+func (m *Mapper) BookmarkAyahModelToEntity(model *BookmarkAyahModel) *quran.BookmarkAyah {
+	if model == nil {
+		return nil
+	}
+	return &quran.BookmarkAyah{
+		ID:        model.ID,
+		UserID:    model.UserID,
+		AyahID:    model.AyahID,
+		CreatedBy: model.CreatedBy,
+		UpdatedBy: model.UpdatedBy,
+		CreatedAt: model.CreatedAt,
+		UpdatedAt: model.UpdatedAt,
+	}
+}
+
+// BookmarkAyahModelToEntityWithAyah converts model with Ayah relation to BookmarkAyahWithAyah
+func (m *Mapper) BookmarkAyahModelToEntityWithAyah(model *BookmarkAyahModel) *quran.BookmarkAyahWithAyah {
+	if model == nil {
+		return nil
+	}
+	out := &quran.BookmarkAyahWithAyah{
+		ID:        model.ID,
+		UserID:    model.UserID,
+		AyahID:    model.AyahID,
+		CreatedBy: model.CreatedBy,
+		UpdatedBy: model.UpdatedBy,
+		CreatedAt: model.CreatedAt,
+		UpdatedAt: model.UpdatedAt,
+	}
+	if model.Ayah.ID != uuid.Nil {
+		out.Ayah = m.AyahModelToEntity(&model.Ayah)
+	}
+	return out
+}
+
+// BookmarkAyahEntityToModel converts domain entity to BookmarkAyahModel
+func (m *Mapper) BookmarkAyahEntityToModel(entity *quran.BookmarkAyah) *BookmarkAyahModel {
+	if entity == nil {
+		return nil
+	}
+	return &BookmarkAyahModel{
+		ID:        m.coreUUIDToGoogleUUID(entity.ID),
+		UserID:    m.coreUUIDToGoogleUUID(entity.UserID),
+		AyahID:    m.coreUUIDToGoogleUUID(entity.AyahID),
+		CreatedBy: entity.CreatedBy,
+		UpdatedBy: entity.UpdatedBy,
+		CreatedAt: entity.CreatedAt,
+		UpdatedAt: entity.UpdatedAt,
+	}
+}
+
+// BookmarkAyahModelsToEntities converts slice of models to slice of entities
+func (m *Mapper) BookmarkAyahModelsToEntities(models []*BookmarkAyahModel) []*quran.BookmarkAyah {
+	if models == nil {
+		return nil
+	}
+	outs := make([]*quran.BookmarkAyah, len(models))
+	for i, model := range models {
+		outs[i] = m.BookmarkAyahModelToEntity(model)
+	}
+	return outs
+}
+
+// BookmarkAyahEntitiesToModels converts slice of entities to slice of models
+func (m *Mapper) BookmarkAyahEntitiesToModels(entities []*quran.BookmarkAyah) []*BookmarkAyahModel {
+	if entities == nil {
+		return nil
+	}
+	outs := make([]*BookmarkAyahModel, len(entities))
+	for i, entity := range entities {
+		outs[i] = m.BookmarkAyahEntityToModel(entity)
+	}
+	return outs
+}
+
+// LastReadModelToEntity converts LastReadModel to domain entity
+func (m *Mapper) LastReadModelToEntity(model *LastReadModel) *quran.LastRead {
+	if model == nil {
+		return nil
+	}
+	return &quran.LastRead{
+		ID:          model.ID,
+		UserID:      model.UserID,
+		SurahID:     model.SurahID,
+		AyahID:      model.AyahID,
+		AyahNumber:  model.AyahNumber,
+		ProgressPct: model.ProgressPct,
+		LastReadAt:  model.LastReadAt,
+		CreatedBy:   model.CreatedBy,
+		UpdatedBy:   model.UpdatedBy,
+		CreatedAt:   model.CreatedAt,
+		UpdatedAt:   model.UpdatedAt,
+	}
+}
+
+// LastReadModelToEntityWithRelations converts model with relations to LastReadWithRelations
+func (m *Mapper) LastReadModelToEntityWithRelations(model *LastReadModel) *quran.LastReadWithRelations {
+	if model == nil {
+		return nil
+	}
+	out := &quran.LastReadWithRelations{
+		ID:          model.ID,
+		UserID:      model.UserID,
+		SurahID:     model.SurahID,
+		AyahID:      model.AyahID,
+		AyahNumber:  model.AyahNumber,
+		ProgressPct: model.ProgressPct,
+		LastReadAt:  model.LastReadAt,
+		CreatedBy:   model.CreatedBy,
+		UpdatedBy:   model.UpdatedBy,
+		CreatedAt:   model.CreatedAt,
+		UpdatedAt:   model.UpdatedAt,
+	}
+	if model.Surah.ID != uuid.Nil {
+		out.Surah = m.SurahModelToEntity(&model.Surah)
+	}
+	if model.Ayah.ID != uuid.Nil {
+		out.Ayah = m.AyahModelToEntity(&model.Ayah)
+	}
+	return out
+}
+
+// LastReadEntityToModel converts domain entity to LastReadModel
+func (m *Mapper) LastReadEntityToModel(entity *quran.LastRead) *LastReadModel {
+	if entity == nil {
+		return nil
+	}
+	return &LastReadModel{
+		ID:          m.coreUUIDToGoogleUUID(entity.ID),
+		UserID:      m.coreUUIDToGoogleUUID(entity.UserID),
+		SurahID:     m.coreUUIDToGoogleUUID(entity.SurahID),
+		AyahID:      m.coreUUIDToGoogleUUID(entity.AyahID),
+		AyahNumber:  entity.AyahNumber,
+		ProgressPct: entity.ProgressPct,
+		LastReadAt:  entity.LastReadAt,
+		CreatedBy:   entity.CreatedBy,
+		UpdatedBy:   entity.UpdatedBy,
+		CreatedAt:   entity.CreatedAt,
+		UpdatedAt:   entity.UpdatedAt,
+	}
+}
+
+// LastReadModelsToEntities converts slice of models to slice of entities
+func (m *Mapper) LastReadModelsToEntities(models []*LastReadModel) []*quran.LastRead {
+	if models == nil {
+		return nil
+	}
+	outs := make([]*quran.LastRead, len(models))
+	for i, model := range models {
+		outs[i] = m.LastReadModelToEntity(model)
+	}
+	return outs
+}
+
+// LastReadEntitiesToModels converts slice of entities to slice of models
+func (m *Mapper) LastReadEntitiesToModels(entities []*quran.LastRead) []*LastReadModel {
+	if entities == nil {
+		return nil
+	}
+	outs := make([]*LastReadModel, len(entities))
+	for i, entity := range entities {
+		outs[i] = m.LastReadEntityToModel(entity)
+	}
+	return outs
+}
+
+// ProgressHatamModelToEntity converts ProgressHatamModel to domain entity
+func (m *Mapper) ProgressHatamModelToEntity(model *ProgressHatamModel) *quran.ProgressHatam {
+	if model == nil {
+		return nil
+	}
+	return &quran.ProgressHatam{
+		ID:          model.ID,
+		UserID:      model.UserID,
+		JuzID:       model.JuzID,
+		StartAyahID: model.StartAyahID,
+		LastAyahID:  model.LastAyahID,
+		ProgressPct: model.ProgressPct,
+		IsCompleted: model.IsCompleted,
+		StartedAt:   model.StartedAt,
+		CompletedAt: model.CompletedAt,
+		CreatedBy:   model.CreatedBy,
+		UpdatedBy:   model.UpdatedBy,
+		CreatedAt:   model.CreatedAt,
+		UpdatedAt:   model.UpdatedAt,
+	}
+}
+
+// ProgressHatamModelToEntityWithRelations converts model with relations to ProgressHatamWithRelations
+func (m *Mapper) ProgressHatamModelToEntityWithRelations(model *ProgressHatamModel) *quran.ProgressHatamWithRelations {
+	if model == nil {
+		return nil
+	}
+	out := &quran.ProgressHatamWithRelations{
+		ID:          model.ID,
+		UserID:      model.UserID,
+		JuzID:       model.JuzID,
+		StartAyahID: model.StartAyahID,
+		LastAyahID:  model.LastAyahID,
+		ProgressPct: model.ProgressPct,
+		IsCompleted: model.IsCompleted,
+		StartedAt:   model.StartedAt,
+		CompletedAt: model.CompletedAt,
+		CreatedBy:   model.CreatedBy,
+		UpdatedBy:   model.UpdatedBy,
+		CreatedAt:   model.CreatedAt,
+		UpdatedAt:   model.UpdatedAt,
+	}
+	if model.Juz.ID != uuid.Nil {
+		out.Juz = m.JuzModelToEntity(&model.Juz)
+	}
+	if model.StartAyah.ID != uuid.Nil {
+		out.StartAyah = m.AyahModelToEntity(&model.StartAyah)
+	}
+	if model.LastAyah != nil && model.LastAyah.ID != uuid.Nil {
+		out.LastAyah = m.AyahModelToEntity(model.LastAyah)
+	}
+	return out
+}
+
+// ProgressHatamEntityToModel converts domain entity to ProgressHatamModel
+func (m *Mapper) ProgressHatamEntityToModel(entity *quran.ProgressHatam) *ProgressHatamModel {
+	if entity == nil {
+		return nil
+	}
+	return &ProgressHatamModel{
+		ID:          m.coreUUIDToGoogleUUID(entity.ID),
+		UserID:      m.coreUUIDToGoogleUUID(entity.UserID),
+		JuzID:       m.coreUUIDToGoogleUUID(entity.JuzID),
+		StartAyahID: m.coreUUIDToGoogleUUID(entity.StartAyahID),
+		LastAyahID:  m.coreUUIDToGoogleUUID(entity.LastAyahID),
+		ProgressPct: entity.ProgressPct,
+		IsCompleted: entity.IsCompleted,
+		StartedAt:   entity.StartedAt,
+		CompletedAt: entity.CompletedAt,
+		CreatedBy:   entity.CreatedBy,
+		UpdatedBy:   entity.UpdatedBy,
+		CreatedAt:   entity.CreatedAt,
+		UpdatedAt:   entity.UpdatedAt,
+	}
+}
+
+// ProgressHatamModelsToEntities converts slice of models to slice of entities
+func (m *Mapper) ProgressHatamModelsToEntities(models []*ProgressHatamModel) []*quran.ProgressHatam {
+	if models == nil {
+		return nil
+	}
+	outs := make([]*quran.ProgressHatam, len(models))
+	for i, model := range models {
+		outs[i] = m.ProgressHatamModelToEntity(model)
+	}
+	return outs
+}
+
+// ProgressHatamEntitiesToModels converts slice of entities to slice of models
+func (m *Mapper) ProgressHatamEntitiesToModels(entities []*quran.ProgressHatam) []*ProgressHatamModel {
+	if entities == nil {
+		return nil
+	}
+	outs := make([]*ProgressHatamModel, len(entities))
+	for i, entity := range entities {
+		outs[i] = m.ProgressHatamEntityToModel(entity)
 	}
 	return outs
 }

@@ -484,6 +484,8 @@ type ReciterResponse struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	Style     string    `json:"style"`
+	Place     string    `json:"place"`
+	Picture   string    `json:"picture"`
 	CreatedBy string    `json:"createdBy"`
 	UpdatedBy string    `json:"updatedBy"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -499,6 +501,8 @@ func ToReciterResponse(d *quran.Reciter) *ReciterResponse {
 		ID:        d.ID.String(),
 		Name:      d.Name,
 		Style:     d.Style,
+		Place:     d.Place,
+		Picture:   d.Picture,
 		CreatedBy: d.CreatedBy,
 		UpdatedBy: d.UpdatedBy,
 		CreatedAt: d.CreatedAt,
@@ -575,4 +579,297 @@ func ToAyahAudioFileResponseSlice(ds []*quran.AyahAudioFile) []*AyahAudioFileRes
 type AyahAudioFileListResponse struct {
 	Data       []*AyahAudioFileResponse `json:"data"`
 	Pagination *PaginationResponse      `json:"pagination"`
+}
+
+// BookmarkAyah Response DTOs
+type BookmarkAyahResponse struct {
+	ID        string    `json:"id"`
+	UserID    string    `json:"userId"`
+	AyahID    string    `json:"ayahId"`
+	CreatedBy string    `json:"createdBy"`
+	UpdatedBy string    `json:"updatedBy"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+func ToBookmarkAyahResponse(d *quran.BookmarkAyah) *BookmarkAyahResponse {
+	if d == nil {
+		return nil
+	}
+	return &BookmarkAyahResponse{
+		ID:        d.ID.String(),
+		UserID:    d.UserID.String(),
+		AyahID:    d.AyahID.String(),
+		CreatedBy: d.CreatedBy,
+		UpdatedBy: d.UpdatedBy,
+		CreatedAt: d.CreatedAt,
+		UpdatedAt: d.UpdatedAt,
+	}
+}
+
+func ToBookmarkAyahResponseSlice(ds []*quran.BookmarkAyah) []*BookmarkAyahResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*BookmarkAyahResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToBookmarkAyahResponse(d)
+	}
+	return outs
+}
+
+type BookmarkAyahListResponse struct {
+	Data       []*BookmarkAyahResponse `json:"data"`
+	Pagination *PaginationResponse     `json:"pagination"`
+}
+
+type BookmarkAyahWithAyahResponse struct {
+	ID        string        `json:"id"`
+	UserID    string        `json:"userId"`
+	AyahID    string        `json:"ayahId"`
+	CreatedBy string        `json:"createdBy"`
+	UpdatedBy string        `json:"updatedBy"`
+	CreatedAt time.Time     `json:"createdAt"`
+	UpdatedAt time.Time     `json:"updatedAt"`
+	Ayah      *AyahResponse `json:"ayah,omitempty"`
+}
+
+func ToBookmarkAyahWithAyahResponse(d *quran.BookmarkAyahWithAyah) *BookmarkAyahWithAyahResponse {
+	if d == nil {
+		return nil
+	}
+	return &BookmarkAyahWithAyahResponse{
+		ID:        d.ID.String(),
+		UserID:    d.UserID.String(),
+		AyahID:    d.AyahID.String(),
+		CreatedBy: d.CreatedBy,
+		UpdatedBy: d.UpdatedBy,
+		CreatedAt: d.CreatedAt,
+		UpdatedAt: d.UpdatedAt,
+		Ayah:      ToAyahResponse(d.Ayah),
+	}
+}
+
+// LastRead Response DTOs
+type LastReadResponse struct {
+	ID          string    `json:"id"`
+	UserID      string    `json:"userId"`
+	SurahID     string    `json:"surahId"`
+	AyahID      string    `json:"ayahId"`
+	AyahNumber  int       `json:"ayahNumber"`
+	ProgressPct float64   `json:"progressPct"`
+	LastReadAt  time.Time `json:"lastReadAt"`
+	CreatedBy   string    `json:"createdBy"`
+	UpdatedBy   string    `json:"updatedBy"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+}
+
+func ToLastReadResponse(d *quran.LastRead) *LastReadResponse {
+	if d == nil {
+		return nil
+	}
+	return &LastReadResponse{
+		ID:          d.ID.String(),
+		UserID:      d.UserID.String(),
+		SurahID:     d.SurahID.String(),
+		AyahID:      d.AyahID.String(),
+		AyahNumber:  d.AyahNumber,
+		ProgressPct: d.ProgressPct,
+		LastReadAt:  d.LastReadAt,
+		CreatedBy:   d.CreatedBy,
+		UpdatedBy:   d.UpdatedBy,
+		CreatedAt:   d.CreatedAt,
+		UpdatedAt:   d.UpdatedAt,
+	}
+}
+
+func ToLastReadResponseSlice(ds []*quran.LastRead) []*LastReadResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*LastReadResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToLastReadResponse(d)
+	}
+	return outs
+}
+
+type LastReadListResponse struct {
+	Data       []*LastReadResponse `json:"data"`
+	Pagination *PaginationResponse `json:"pagination"`
+}
+
+type LastReadWithRelationsResponse struct {
+	ID          string         `json:"id"`
+	UserID      string         `json:"userId"`
+	SurahID     string         `json:"surahId"`
+	AyahID      string         `json:"ayahId"`
+	AyahNumber  int            `json:"ayahNumber"`
+	ProgressPct float64        `json:"progressPct"`
+	LastReadAt  time.Time      `json:"lastReadAt"`
+	CreatedBy   string         `json:"createdBy"`
+	UpdatedBy   string         `json:"updatedBy"`
+	CreatedAt   time.Time      `json:"createdAt"`
+	UpdatedAt   time.Time      `json:"updatedAt"`
+	Surah       *SurahResponse `json:"surah,omitempty"`
+	Ayah        *AyahResponse  `json:"ayah,omitempty"`
+}
+
+func ToLastReadWithRelationsResponse(d *quran.LastReadWithRelations) *LastReadWithRelationsResponse {
+	if d == nil {
+		return nil
+	}
+	return &LastReadWithRelationsResponse{
+		ID:          d.ID.String(),
+		UserID:      d.UserID.String(),
+		SurahID:     d.SurahID.String(),
+		AyahID:      d.AyahID.String(),
+		AyahNumber:  d.AyahNumber,
+		ProgressPct: d.ProgressPct,
+		LastReadAt:  d.LastReadAt,
+		CreatedBy:   d.CreatedBy,
+		UpdatedBy:   d.UpdatedBy,
+		CreatedAt:   d.CreatedAt,
+		UpdatedAt:   d.UpdatedAt,
+		Surah:       ToSurahResponse(d.Surah),
+		Ayah:        ToAyahResponse(d.Ayah),
+	}
+}
+
+func ToLastReadWithRelationsResponseSlice(ds []*quran.LastReadWithRelations) []*LastReadWithRelationsResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*LastReadWithRelationsResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToLastReadWithRelationsResponse(d)
+	}
+	return outs
+}
+
+type LastReadWithRelationsListResponse struct {
+	Data       []*LastReadWithRelationsResponse `json:"data"`
+	Pagination *PaginationResponse              `json:"pagination"`
+}
+
+// ProgressHatam Response DTOs
+type ProgressHatamResponse struct {
+	ID          string     `json:"id"`
+	UserID      string     `json:"userId"`
+	JuzID       string     `json:"juzId"`
+	StartAyahID string     `json:"startAyahId"`
+	LastAyahID  string     `json:"lastAyahId"`
+	ProgressPct float64    `json:"progressPct"`
+	IsCompleted bool       `json:"isCompleted"`
+	StartedAt   time.Time  `json:"startedAt"`
+	CompletedAt *time.Time `json:"completedAt,omitempty"`
+	CreatedBy   string     `json:"createdBy"`
+	UpdatedBy   string     `json:"updatedBy"`
+	CreatedAt   time.Time  `json:"createdAt"`
+	UpdatedAt   time.Time  `json:"updatedAt"`
+}
+
+func ToProgressHatamResponse(d *quran.ProgressHatam) *ProgressHatamResponse {
+	if d == nil {
+		return nil
+	}
+	var lastAyahID string
+	if d.LastAyahID != nil {
+		lastAyahID = d.LastAyahID.String()
+	}
+	return &ProgressHatamResponse{
+		ID:          d.ID.String(),
+		UserID:      d.UserID.String(),
+		JuzID:       d.JuzID.String(),
+		StartAyahID: d.StartAyahID.String(),
+		LastAyahID:  lastAyahID,
+		ProgressPct: d.ProgressPct,
+		IsCompleted: d.IsCompleted,
+		StartedAt:   d.StartedAt,
+		CompletedAt: d.CompletedAt,
+		CreatedBy:   d.CreatedBy,
+		UpdatedBy:   d.UpdatedBy,
+		CreatedAt:   d.CreatedAt,
+		UpdatedAt:   d.UpdatedAt,
+	}
+}
+
+func ToProgressHatamResponseSlice(ds []*quran.ProgressHatam) []*ProgressHatamResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*ProgressHatamResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToProgressHatamResponse(d)
+	}
+	return outs
+}
+
+type ProgressHatamListResponse struct {
+	Data       []*ProgressHatamResponse `json:"data"`
+	Pagination *PaginationResponse      `json:"pagination"`
+}
+
+type ProgressHatamWithRelationsResponse struct {
+	ID          string        `json:"id"`
+	UserID      string        `json:"userId"`
+	JuzID       string        `json:"juzId"`
+	StartAyahID string        `json:"startAyahId"`
+	LastAyahID  string        `json:"lastAyahId"`
+	ProgressPct float64       `json:"progressPct"`
+	IsCompleted bool          `json:"isCompleted"`
+	StartedAt   time.Time     `json:"startedAt"`
+	CompletedAt *time.Time    `json:"completedAt,omitempty"`
+	CreatedBy   string        `json:"createdBy"`
+	UpdatedBy   string        `json:"updatedBy"`
+	CreatedAt   time.Time     `json:"createdAt"`
+	UpdatedAt   time.Time     `json:"updatedAt"`
+	Juz         *JuzResponse  `json:"juz,omitempty"`
+	StartAyah   *AyahResponse `json:"startAyah,omitempty"`
+	LastAyah    *AyahResponse `json:"lastAyah,omitempty"`
+}
+
+func ToProgressHatamWithRelationsResponse(d *quran.ProgressHatamWithRelations) *ProgressHatamWithRelationsResponse {
+	if d == nil {
+		return nil
+	}
+	var lastAyahID string
+	if d.LastAyahID != nil {
+		lastAyahID = d.LastAyahID.String()
+	}
+	return &ProgressHatamWithRelationsResponse{
+		ID:          d.ID.String(),
+		UserID:      d.UserID.String(),
+		JuzID:       d.JuzID.String(),
+		StartAyahID: d.StartAyahID.String(),
+		LastAyahID:  lastAyahID,
+		ProgressPct: d.ProgressPct,
+		IsCompleted: d.IsCompleted,
+		StartedAt:   d.StartedAt,
+		CompletedAt: d.CompletedAt,
+		CreatedBy:   d.CreatedBy,
+		UpdatedBy:   d.UpdatedBy,
+		CreatedAt:   d.CreatedAt,
+		UpdatedAt:   d.UpdatedAt,
+		Juz:         ToJuzResponse(d.Juz),
+		StartAyah:   ToAyahResponse(d.StartAyah),
+		LastAyah:    ToAyahResponse(d.LastAyah),
+	}
+}
+
+func ToProgressHatamWithRelationsResponseSlice(ds []*quran.ProgressHatamWithRelations) []*ProgressHatamWithRelationsResponse {
+	if ds == nil {
+		return nil
+	}
+	outs := make([]*ProgressHatamWithRelationsResponse, len(ds))
+	for i, d := range ds {
+		outs[i] = ToProgressHatamWithRelationsResponse(d)
+	}
+	return outs
+}
+
+type ProgressHatamWithRelationsListResponse struct {
+	Data       []*ProgressHatamWithRelationsResponse `json:"data"`
+	Pagination *PaginationResponse                   `json:"pagination"`
 }

@@ -15,6 +15,7 @@ type AppConfig struct {
 	Monitoring MonitoringConfig `mapstructure:"monitoring"`
 	JWT        JWTConfig        `mapstructure:"jwt"`
 	Storage    StorageConfig    `mapstructure:"storage"`
+	Auth       AuthConfig       `mapstructure:"auth"`
 }
 
 type AppInfo struct {
@@ -81,6 +82,13 @@ type S3Config struct {
 }
 
 var Config AppConfig
+
+// AuthConfig holds external authentication service configuration
+type AuthConfig struct {
+	BaseURL        string `mapstructure:"base_url"`
+	VerifyPath     string `mapstructure:"verify_path"`
+	TimeoutSeconds int    `mapstructure:"timeout_seconds"`
+}
 
 func InitConfig(configFlag string) {
 	var configPath string
@@ -203,6 +211,11 @@ func InitConfig(configFlag string) {
 	if err := viper.BindEnv("storage.s3.public_url_base", "SAFALIFE_STORAGE_S3_PUBLIC_URL_BASE"); err != nil {
 		panic(fmt.Errorf("failed to bind env SAFALIFE_STORAGE_S3_PUBLIC_URL_BASE: %w", err))
 	}
+
+	// Auth service bindings (optional, primarily configured via YAML)
+	_ = viper.BindEnv("auth.base_url", "SAFALIFE_AUTH_BASE_URL")
+	_ = viper.BindEnv("auth.verify_path", "SAFALIFE_AUTH_VERIFY_PATH")
+	_ = viper.BindEnv("auth.timeout_seconds", "SAFALIFE_AUTH_TIMEOUT_SECONDS")
 
 	viper.SetConfigFile(fullConfigPath)
 	if err := viper.ReadInConfig(); err != nil {

@@ -1082,3 +1082,356 @@ func (r *AyahAudioFileRepositoryImpl) CountBySurahAndReciter(ctx context.Context
 	}
 	return count, nil
 }
+
+// BookmarkAyahRepositoryImpl implements BookmarkAyahRepositoryInterface using GORM
+type BookmarkAyahRepositoryImpl struct {
+	db     *gorm.DB
+	mapper *Mapper
+}
+
+// NewBookmarkAyahRepository creates a new instance of BookmarkAyahRepositoryImpl
+func NewBookmarkAyahRepository(db *gorm.DB, mapper *Mapper) quran.BookmarkAyahRepositoryInterface {
+	return &BookmarkAyahRepositoryImpl{db: db, mapper: mapper}
+}
+
+// GetById retrieves a BookmarkAyah by its ID
+func (r *BookmarkAyahRepositoryImpl) GetById(ctx context.Context, id core.UUID) (*quran.BookmarkAyah, error) {
+	var model BookmarkAyahModel
+	if err := r.db.WithContext(ctx).Where("id = ?", infraCore.ToGoogleUUID(id)).First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrBookmarkAyahNotFound
+		}
+		return nil, fmt.Errorf("failed to get bookmark ayah by id: %w", err)
+	}
+	return r.mapper.BookmarkAyahModelToEntity(&model), nil
+}
+
+// GetByUser retrieves BookmarkAyahs by user with pagination
+func (r *BookmarkAyahRepositoryImpl) GetByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*quran.BookmarkAyah, error) {
+	var models []BookmarkAyahModel
+	query := r.db.WithContext(ctx).Where("user_id = ?", infraCore.ToGoogleUUID(userId)).Order("created_at ASC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
+		return nil, fmt.Errorf("failed to get bookmark ayahs by user: %w", err)
+	}
+	outs := make([]*quran.BookmarkAyah, len(models))
+	for i := range models {
+		outs[i] = r.mapper.BookmarkAyahModelToEntity(&models[i])
+	}
+	return outs, nil
+}
+
+// GetByUserAndAyah retrieves a BookmarkAyah by user and ayah
+func (r *BookmarkAyahRepositoryImpl) GetByUserAndAyah(ctx context.Context, userId core.UUID, ayahId core.UUID) (*quran.BookmarkAyah, error) {
+	var model BookmarkAyahModel
+	if err := r.db.WithContext(ctx).
+		Where("user_id = ? AND ayah_id = ?", infraCore.ToGoogleUUID(userId), infraCore.ToGoogleUUID(ayahId)).
+		First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrBookmarkAyahNotFound
+		}
+		return nil, fmt.Errorf("failed to get bookmark ayah by user and ayah: %w", err)
+	}
+	return r.mapper.BookmarkAyahModelToEntity(&model), nil
+}
+
+// Create creates a new BookmarkAyah
+func (r *BookmarkAyahRepositoryImpl) Create(ctx context.Context, bookmark *quran.BookmarkAyah) (*quran.BookmarkAyah, error) {
+	model := r.mapper.BookmarkAyahEntityToModel(bookmark)
+	if err := r.db.WithContext(ctx).Create(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to create bookmark ayah: %w", err)
+	}
+	return r.mapper.BookmarkAyahModelToEntity(model), nil
+}
+
+// Delete soft deletes a BookmarkAyah
+func (r *BookmarkAyahRepositoryImpl) Delete(ctx context.Context, id core.UUID) error {
+	if err := r.db.WithContext(ctx).Delete(&BookmarkAyahModel{}, infraCore.ToGoogleUUID(id)).Error; err != nil {
+		return fmt.Errorf("failed to delete bookmark ayah: %w", err)
+	}
+	return nil
+}
+
+// CountByUser returns the count of BookmarkAyahs for a user
+func (r *BookmarkAyahRepositoryImpl) CountByUser(ctx context.Context, userId core.UUID) (int64, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&BookmarkAyahModel{}).
+		Where("user_id = ?", infraCore.ToGoogleUUID(userId)).
+		Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count bookmark ayahs by user: %w", err)
+	}
+	return count, nil
+}
+
+// GetByIdWithAyah retrieves a BookmarkAyah with Ayah relation by ID
+func (r *BookmarkAyahRepositoryImpl) GetByIdWithAyah(ctx context.Context, id core.UUID) (*quran.BookmarkAyahWithAyah, error) {
+	var model BookmarkAyahModel
+	if err := r.db.WithContext(ctx).Preload("Ayah").Where("id = ?", infraCore.ToGoogleUUID(id)).First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrBookmarkAyahNotFound
+		}
+		return nil, fmt.Errorf("failed to get bookmark ayah by id with ayah: %w", err)
+	}
+	return r.mapper.BookmarkAyahModelToEntityWithAyah(&model), nil
+}
+
+// LastReadRepositoryImpl implements LastReadRepositoryInterface using GORM
+type LastReadRepositoryImpl struct {
+	db     *gorm.DB
+	mapper *Mapper
+}
+
+// NewLastReadRepository creates a new instance of LastReadRepositoryImpl
+func NewLastReadRepository(db *gorm.DB, mapper *Mapper) quran.LastReadRepositoryInterface {
+	return &LastReadRepositoryImpl{db: db, mapper: mapper}
+}
+
+// GetById retrieves a LastRead by its ID
+func (r *LastReadRepositoryImpl) GetById(ctx context.Context, id core.UUID) (*quran.LastRead, error) {
+	var model LastReadModel
+	if err := r.db.WithContext(ctx).Where("id = ?", infraCore.ToGoogleUUID(id)).First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrLastReadNotFound
+		}
+		return nil, fmt.Errorf("failed to get last read by id: %w", err)
+	}
+	return r.mapper.LastReadModelToEntity(&model), nil
+}
+
+// GetByUser retrieves LastRead records by user with pagination
+func (r *LastReadRepositoryImpl) GetByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*quran.LastRead, error) {
+	var models []LastReadModel
+	query := r.db.WithContext(ctx).Where("user_id = ?", infraCore.ToGoogleUUID(userId)).Order("last_read_at DESC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
+		return nil, fmt.Errorf("failed to get last reads by user: %w", err)
+	}
+	outs := make([]*quran.LastRead, len(models))
+	for i := range models {
+		outs[i] = r.mapper.LastReadModelToEntity(&models[i])
+	}
+	return outs, nil
+}
+
+// GetByUserAndSurah retrieves a LastRead by user and surah
+func (r *LastReadRepositoryImpl) GetByUserAndSurah(ctx context.Context, userId core.UUID, surahId core.UUID) (*quran.LastRead, error) {
+	var model LastReadModel
+	if err := r.db.WithContext(ctx).
+		Where("user_id = ? AND surah_id = ?", infraCore.ToGoogleUUID(userId), infraCore.ToGoogleUUID(surahId)).
+		First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrLastReadNotFound
+		}
+		return nil, fmt.Errorf("failed to get last read by user and surah: %w", err)
+	}
+	return r.mapper.LastReadModelToEntity(&model), nil
+}
+
+// Create creates a new LastRead
+func (r *LastReadRepositoryImpl) Create(ctx context.Context, lr *quran.LastRead) (*quran.LastRead, error) {
+	model := r.mapper.LastReadEntityToModel(lr)
+	if err := r.db.WithContext(ctx).Create(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to create last read: %w", err)
+	}
+	return r.mapper.LastReadModelToEntity(model), nil
+}
+
+// Update updates an existing LastRead
+func (r *LastReadRepositoryImpl) Update(ctx context.Context, lr *quran.LastRead) (*quran.LastRead, error) {
+	model := r.mapper.LastReadEntityToModel(lr)
+	if err := r.db.WithContext(ctx).Where("id = ?", infraCore.ToGoogleUUID(lr.ID)).Updates(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to update last read: %w", err)
+	}
+	return r.mapper.LastReadModelToEntity(model), nil
+}
+
+// Delete soft deletes a LastRead
+func (r *LastReadRepositoryImpl) Delete(ctx context.Context, id core.UUID) error {
+	if err := r.db.WithContext(ctx).Delete(&LastReadModel{}, infraCore.ToGoogleUUID(id)).Error; err != nil {
+		return fmt.Errorf("failed to delete last read: %w", err)
+	}
+	return nil
+}
+
+// CountByUser returns the count of LastRead records for a user
+func (r *LastReadRepositoryImpl) CountByUser(ctx context.Context, userId core.UUID) (int64, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&LastReadModel{}).
+		Where("user_id = ?", infraCore.ToGoogleUUID(userId)).
+		Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count last reads by user: %w", err)
+	}
+	return count, nil
+}
+
+// GetByIdWithRelations retrieves a LastRead with Surah and Ayah relations by ID
+func (r *LastReadRepositoryImpl) GetByIdWithRelations(ctx context.Context, id core.UUID) (*quran.LastReadWithRelations, error) {
+	var model LastReadModel
+	if err := r.db.WithContext(ctx).Preload("Surah").Preload("Ayah").Where("id = ?", infraCore.ToGoogleUUID(id)).First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrLastReadNotFound
+		}
+		return nil, fmt.Errorf("failed to get last read by id with relations: %w", err)
+	}
+	return r.mapper.LastReadModelToEntityWithRelations(&model), nil
+}
+
+// GetByUserWithRelations retrieves LastRead records by user with relations and pagination
+func (r *LastReadRepositoryImpl) GetByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*quran.LastReadWithRelations, error) {
+	var models []LastReadModel
+	query := r.db.WithContext(ctx).Preload("Surah").Preload("Ayah").Where("user_id = ?", infraCore.ToGoogleUUID(userId)).Order("last_read_at DESC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
+		return nil, fmt.Errorf("failed to get last reads by user with relations: %w", err)
+	}
+	outs := make([]*quran.LastReadWithRelations, len(models))
+	for i := range models {
+		outs[i] = r.mapper.LastReadModelToEntityWithRelations(&models[i])
+	}
+	return outs, nil
+}
+
+// ProgressHatamRepositoryImpl implements ProgressHatamRepositoryInterface using GORM
+type ProgressHatamRepositoryImpl struct {
+	db     *gorm.DB
+	mapper *Mapper
+}
+
+// NewProgressHatamRepository creates a new instance of ProgressHatamRepositoryImpl
+func NewProgressHatamRepository(db *gorm.DB, mapper *Mapper) quran.ProgressHatamRepositoryInterface {
+	return &ProgressHatamRepositoryImpl{db: db, mapper: mapper}
+}
+
+// GetById retrieves a ProgressHatam by its ID
+func (r *ProgressHatamRepositoryImpl) GetById(ctx context.Context, id core.UUID) (*quran.ProgressHatam, error) {
+	var model ProgressHatamModel
+	if err := r.db.WithContext(ctx).Where("id = ?", infraCore.ToGoogleUUID(id)).First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrProgressHatamNotFound
+		}
+		return nil, fmt.Errorf("failed to get progress hatam by id: %w", err)
+	}
+	return r.mapper.ProgressHatamModelToEntity(&model), nil
+}
+
+// GetByUser retrieves ProgressHatam records by user with pagination
+func (r *ProgressHatamRepositoryImpl) GetByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*quran.ProgressHatam, error) {
+	var models []ProgressHatamModel
+	query := r.db.WithContext(ctx).Where("user_id = ?", infraCore.ToGoogleUUID(userId)).Order("started_at DESC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
+		return nil, fmt.Errorf("failed to get progress hatam by user: %w", err)
+	}
+	outs := make([]*quran.ProgressHatam, len(models))
+	for i := range models {
+		outs[i] = r.mapper.ProgressHatamModelToEntity(&models[i])
+	}
+	return outs, nil
+}
+
+// GetByUserAndJuz retrieves a ProgressHatam by user and juz
+func (r *ProgressHatamRepositoryImpl) GetByUserAndJuz(ctx context.Context, userId core.UUID, juzId core.UUID) (*quran.ProgressHatam, error) {
+	var model ProgressHatamModel
+	if err := r.db.WithContext(ctx).
+		Where("user_id = ? AND juz_id = ?", infraCore.ToGoogleUUID(userId), infraCore.ToGoogleUUID(juzId)).
+		First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrProgressHatamNotFound
+		}
+		return nil, fmt.Errorf("failed to get progress hatam by user and juz: %w", err)
+	}
+	return r.mapper.ProgressHatamModelToEntity(&model), nil
+}
+
+// Create creates a new ProgressHatam
+func (r *ProgressHatamRepositoryImpl) Create(ctx context.Context, p *quran.ProgressHatam) (*quran.ProgressHatam, error) {
+	model := r.mapper.ProgressHatamEntityToModel(p)
+	if err := r.db.WithContext(ctx).Create(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to create progress hatam: %w", err)
+	}
+	return r.mapper.ProgressHatamModelToEntity(model), nil
+}
+
+// Update updates an existing ProgressHatam
+func (r *ProgressHatamRepositoryImpl) Update(ctx context.Context, p *quran.ProgressHatam) (*quran.ProgressHatam, error) {
+	model := r.mapper.ProgressHatamEntityToModel(p)
+	if err := r.db.WithContext(ctx).Where("id = ?", infraCore.ToGoogleUUID(p.ID)).Updates(model).Error; err != nil {
+		return nil, fmt.Errorf("failed to update progress hatam: %w", err)
+	}
+	return r.mapper.ProgressHatamModelToEntity(model), nil
+}
+
+// Delete soft deletes a ProgressHatam
+func (r *ProgressHatamRepositoryImpl) Delete(ctx context.Context, id core.UUID) error {
+	if err := r.db.WithContext(ctx).Delete(&ProgressHatamModel{}, infraCore.ToGoogleUUID(id)).Error; err != nil {
+		return fmt.Errorf("failed to delete progress hatam: %w", err)
+	}
+	return nil
+}
+
+// CountByUser returns the count of ProgressHatam records for a user
+func (r *ProgressHatamRepositoryImpl) CountByUser(ctx context.Context, userId core.UUID) (int64, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&ProgressHatamModel{}).
+		Where("user_id = ?", infraCore.ToGoogleUUID(userId)).
+		Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count progress hatam by user: %w", err)
+	}
+	return count, nil
+}
+
+// GetByIdWithRelations retrieves a ProgressHatam with relations by ID
+func (r *ProgressHatamRepositoryImpl) GetByIdWithRelations(ctx context.Context, id core.UUID) (*quran.ProgressHatamWithRelations, error) {
+	var model ProgressHatamModel
+	if err := r.db.WithContext(ctx).
+		Preload("Juz").Preload("StartAyah").Preload("LastAyah").
+		Where("id = ?", infraCore.ToGoogleUUID(id)).First(&model).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, quran.ErrProgressHatamNotFound
+		}
+		return nil, fmt.Errorf("failed to get progress hatam by id with relations: %w", err)
+	}
+	return r.mapper.ProgressHatamModelToEntityWithRelations(&model), nil
+}
+
+// GetByUserWithRelations retrieves ProgressHatam records by user with relations and pagination
+func (r *ProgressHatamRepositoryImpl) GetByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*quran.ProgressHatamWithRelations, error) {
+	var models []ProgressHatamModel
+	query := r.db.WithContext(ctx).
+		Preload("Juz").Preload("StartAyah").Preload("LastAyah").
+		Where("user_id = ?", infraCore.ToGoogleUUID(userId)).Order("started_at DESC")
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	if err := query.Find(&models).Error; err != nil {
+		return nil, fmt.Errorf("failed to get progress hatam by user with relations: %w", err)
+	}
+	outs := make([]*quran.ProgressHatamWithRelations, len(models))
+	for i := range models {
+		outs[i] = r.mapper.ProgressHatamModelToEntityWithRelations(&models[i])
+	}
+	return outs, nil
+}

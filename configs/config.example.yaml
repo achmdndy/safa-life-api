@@ -47,3 +47,9 @@ storage:
     endpoint: ""           # optional custom endpoint (leave empty for AWS)
     use_path_style: false   # set true for MinIO/compat providers
     public_url_base: ""    # optional CDN or bucket public base URL
+
+# Better Auth service configuration (JWKS for JWT verification)
+auth:
+  base_url: "http://localhost:3001"
+  verify_path: "/auth/v1/jwt/jwks"
+  timeout_seconds: 3

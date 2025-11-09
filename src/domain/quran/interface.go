@@ -110,3 +110,46 @@ type AyahAudioFileServiceInterface interface {
 	CountAyahAudioFiles(ctx context.Context) (int64, error)
 	CountAyahAudioFilesBySurahAndReciter(ctx context.Context, surahId core.UUID, reciterId core.UUID) (int64, error)
 }
+
+// BookmarkAyahServiceInterface defines business logic for ayah bookmarks.
+type BookmarkAyahServiceInterface interface {
+	GetBookmarkAyahById(ctx context.Context, id core.UUID) (*BookmarkAyah, error)
+	GetBookmarkAyahsByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*BookmarkAyah, error)
+	GetBookmarkAyahByUserAndAyah(ctx context.Context, userId core.UUID, ayahId core.UUID) (*BookmarkAyah, error)
+	CreateBookmarkAyah(ctx context.Context, bookmark *BookmarkAyah) (*BookmarkAyah, error)
+	DeleteBookmarkAyah(ctx context.Context, id core.UUID) error
+	CountBookmarkAyahsByUser(ctx context.Context, userId core.UUID) (int64, error)
+
+	// Eager loading
+	GetBookmarkAyahByIdWithAyah(ctx context.Context, id core.UUID) (*BookmarkAyahWithAyah, error)
+}
+
+// LastReadServiceInterface defines business logic for tracking last read progress per user.
+type LastReadServiceInterface interface {
+	GetLastReadById(ctx context.Context, id core.UUID) (*LastRead, error)
+	GetLastReadsByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*LastRead, error)
+	GetLastReadByUserAndSurah(ctx context.Context, userId core.UUID, surahId core.UUID) (*LastRead, error)
+	CreateLastRead(ctx context.Context, lr *LastRead) (*LastRead, error)
+	UpdateLastRead(ctx context.Context, lr *LastRead) (*LastRead, error)
+	DeleteLastRead(ctx context.Context, id core.UUID) error
+	CountLastReadsByUser(ctx context.Context, userId core.UUID) (int64, error)
+
+	// Eager loading
+	GetLastReadByIdWithRelations(ctx context.Context, id core.UUID) (*LastReadWithRelations, error)
+	GetLastReadsByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*LastReadWithRelations, error)
+}
+
+// ProgressHatamServiceInterface defines business logic for hatam progress tracking.
+type ProgressHatamServiceInterface interface {
+	GetProgressHatamById(ctx context.Context, id core.UUID) (*ProgressHatam, error)
+	GetProgressHatamByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*ProgressHatam, error)
+	GetProgressHatamByUserAndJuz(ctx context.Context, userId core.UUID, juzId core.UUID) (*ProgressHatam, error)
+	CreateProgressHatam(ctx context.Context, p *ProgressHatam) (*ProgressHatam, error)
+	UpdateProgressHatam(ctx context.Context, p *ProgressHatam) (*ProgressHatam, error)
+	DeleteProgressHatam(ctx context.Context, id core.UUID) error
+	CountProgressHatamByUser(ctx context.Context, userId core.UUID) (int64, error)
+
+	// Eager loading
+	GetProgressHatamByIdWithRelations(ctx context.Context, id core.UUID) (*ProgressHatamWithRelations, error)
+	GetProgressHatamByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*ProgressHatamWithRelations, error)
+}

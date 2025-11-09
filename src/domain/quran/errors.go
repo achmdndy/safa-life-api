@@ -45,10 +45,23 @@ var (
 	ErrAyahAudioFileNotFound      = errors.New("ayah audio file not found")
 	ErrAyahAudioFileAlreadyExists = errors.New("ayah audio file already exists")
 
+	// Bookmark ayah errors
+	ErrBookmarkAyahNotFound      = errors.New("bookmark ayah not found")
+	ErrBookmarkAyahAlreadyExists = errors.New("bookmark ayah already exists")
+
+	// Last read errors
+	ErrLastReadNotFound      = errors.New("last read not found")
+	ErrLastReadAlreadyExists = errors.New("last read already exists")
+
+	// Progress hatam errors
+	ErrProgressHatamNotFound      = errors.New("progress hatam not found")
+	ErrProgressHatamAlreadyExists = errors.New("progress hatam already exists")
+
 	// Validation errors
-	ErrInvalidInput     = errors.New("invalid input provided")
-	ErrInvalidUUID      = errors.New("invalid UUID format")
-	ErrEmptyText        = errors.New("text cannot be empty")
-	ErrEmptyName        = errors.New("name cannot be empty")
-	ErrInvalidCreatedBy = errors.New("created by cannot be empty")
+	ErrInvalidInput              = errors.New("invalid input provided")
+	ErrInvalidUUID               = errors.New("invalid UUID format")
+	ErrEmptyText                 = errors.New("text cannot be empty")
+	ErrEmptyName                 = errors.New("name cannot be empty")
+	ErrInvalidCreatedBy          = errors.New("created by cannot be empty")
+	ErrInvalidProgressPercentage = errors.New("invalid progress percentage")
 )

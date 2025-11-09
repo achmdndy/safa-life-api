@@ -177,6 +177,8 @@ type GetAyahTranslationsBySurahAndEditionRequest struct {
 type CreateReciterRequest struct {
 	Name      string `json:"name" binding:"required,min=1,max=255"`
 	Style     string `json:"style" binding:"required,min=1,max=255"`
+	Place     string `json:"place" binding:"omitempty,max=20"`
+	Picture   string `json:"picture" binding:"omitempty,max=255"`
 	CreatedBy string `json:"createdBy" binding:"required,min=1,max=255"`
 }
 
@@ -184,6 +186,8 @@ type UpdateReciterRequest struct {
 	ID        string `uri:"id" binding:"required"`
 	Name      string `json:"name" binding:"required,min=1,max=255"`
 	Style     string `json:"style" binding:"required,min=1,max=255"`
+	Place     string `json:"place" binding:"omitempty,max=20"`
+	Picture   string `json:"picture" binding:"omitempty,max=255"`
 	UpdatedBy string `json:"updatedBy" binding:"required,min=1,max=255"`
 }
 
@@ -240,5 +244,114 @@ type GetAyahAudioFilesBySurahAndReciterRequest struct {
 }
 
 type DeleteAyahAudioFileRequest struct {
+	ID string `uri:"id" binding:"required"`
+}
+
+// BookmarkAyah Request DTOs
+type CreateBookmarkAyahRequest struct {
+	UserID    string `json:"userId" binding:"required"`
+	AyahID    string `json:"ayahId" binding:"required"`
+	CreatedBy string `json:"createdBy" binding:"required,min=1,max=255"`
+}
+
+type GetBookmarkAyahByIdRequest struct {
+	ID      string `uri:"id" binding:"required"`
+	Include string `form:"include" binding:"omitempty" example:"ayah" enums:"ayah" doc:"Include related data (ayah)"`
+}
+
+type GetBookmarkAyahByUserAndAyahRequest struct {
+	UserID  string `uri:"userId" binding:"required"`
+	AyahID  string `uri:"ayahId" binding:"required"`
+	Include string `form:"include" binding:"omitempty" example:"ayah" enums:"ayah" doc:"Include related data (ayah)"`
+}
+
+type GetBookmarkAyahsByUserRequest struct {
+	UserID  string `uri:"userId" binding:"required"`
+	Limit   int    `form:"limit" binding:"omitempty,min=0,max=100"`
+	Offset  int    `form:"offset" binding:"omitempty,min=0"`
+	Include string `form:"include" binding:"omitempty" example:"ayah" enums:"ayah" doc:"Include related data (ayah)"`
+}
+
+type DeleteBookmarkAyahRequest struct {
+	ID string `uri:"id" binding:"required"`
+}
+
+// LastRead Request DTOs
+type CreateLastReadRequest struct {
+	UserID      string  `json:"userId" binding:"required"`
+	SurahID     string  `json:"surahId" binding:"required"`
+	AyahID      string  `json:"ayahId" binding:"required"`
+	AyahNumber  int     `json:"ayahNumber" binding:"required,min=1"`
+	ProgressPct float64 `json:"progressPct" binding:"required,min=0,max=100"`
+	CreatedBy   string  `json:"createdBy" binding:"required,min=1,max=255"`
+}
+
+type UpdateLastReadRequest struct {
+	ID          string  `uri:"id" binding:"required"`
+	AyahID      string  `json:"ayahId" binding:"required"`
+	AyahNumber  int     `json:"ayahNumber" binding:"required,min=1"`
+	ProgressPct float64 `json:"progressPct" binding:"required,min=0,max=100"`
+	UpdatedBy   string  `json:"updatedBy" binding:"required,min=1,max=255"`
+}
+
+type GetLastReadByIdRequest struct {
+	ID      string `uri:"id" binding:"required"`
+	Include string `form:"include" binding:"omitempty" example:"relations" enums:"relations" doc:"Include related data (relations - includes surah and ayah)"`
+}
+
+type GetLastReadsByUserRequest struct {
+	UserID  string `uri:"userId" binding:"required"`
+	Limit   int    `form:"limit" binding:"omitempty,min=0,max=100"`
+	Offset  int    `form:"offset" binding:"omitempty,min=0"`
+	Include string `form:"include" binding:"omitempty" example:"relations" enums:"relations" doc:"Include related data (relations - includes surah and ayah)"`
+}
+
+type GetLastReadByUserAndSurahRequest struct {
+	UserID  string `uri:"userId" binding:"required"`
+	SurahID string `uri:"surahId" binding:"required"`
+	Include string `form:"include" binding:"omitempty" example:"relations" enums:"relations" doc:"Include related data (relations - includes surah and ayah)"`
+}
+
+type DeleteLastReadRequest struct {
+	ID string `uri:"id" binding:"required"`
+}
+
+// ProgressHatam Request DTOs
+type CreateProgressHatamRequest struct {
+	UserID      string  `json:"userId" binding:"required"`
+	JuzID       string  `json:"juzId" binding:"required"`
+	StartAyahID string  `json:"startAyahId" binding:"required"`
+	ProgressPct float64 `json:"progressPct" binding:"required,min=0,max=100"`
+	CreatedBy   string  `json:"createdBy" binding:"required,min=1,max=255"`
+}
+
+type UpdateProgressHatamRequest struct {
+	ID          string  `uri:"id" binding:"required"`
+	LastAyahID  string  `json:"lastAyahId" binding:"required"`
+	ProgressPct float64 `json:"progressPct" binding:"required,min=0,max=100"`
+	IsCompleted bool    `json:"isCompleted" binding:"required"`
+	CompletedAt string  `json:"completedAt" binding:"omitempty"`
+	UpdatedBy   string  `json:"updatedBy" binding:"required,min=1,max=255"`
+}
+
+type GetProgressHatamByIdRequest struct {
+	ID      string `uri:"id" binding:"required"`
+	Include string `form:"include" binding:"omitempty" example:"relations" enums:"relations" doc:"Include related data (relations - includes juz and ayahs)"`
+}
+
+type GetProgressHatamByUserRequest struct {
+	UserID  string `uri:"userId" binding:"required"`
+	Limit   int    `form:"limit" binding:"omitempty,min=0,max=100"`
+	Offset  int    `form:"offset" binding:"omitempty,min=0"`
+	Include string `form:"include" binding:"omitempty" example:"relations" enums:"relations" doc:"Include related data (relations - includes juz and ayahs)"`
+}
+
+type GetProgressHatamByUserAndJuzRequest struct {
+	UserID  string `uri:"userId" binding:"required"`
+	JuzID   string `uri:"juzId" binding:"required"`
+	Include string `form:"include" binding:"omitempty" example:"relations" enums:"relations" doc:"Include related data (relations - includes juz and ayahs)"`
+}
+
+type DeleteProgressHatamRequest struct {
 	ID string `uri:"id" binding:"required"`
 }

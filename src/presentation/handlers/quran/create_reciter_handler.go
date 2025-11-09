@@ -9,6 +9,7 @@ import (
 	"github.com/safalife/core-api/src/application/quran/command"
 	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/presentation/core"
+	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
 // CreateReciterHandler handles the create reciter request
@@ -48,7 +49,7 @@ func (h *CreateReciterHandler) Handle(c *gin.Context) {
 	cmd := command.CreateReciterCommand{
 		Name:      req.Name,
 		Style:     req.Style,
-		CreatedBy: req.CreatedBy,
+		CreatedBy: middlewares.GetUserID(c),
 	}
 
 	result, err := h.commandHandler.CreateReciter(ctx, cmd)

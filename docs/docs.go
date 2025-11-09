@@ -614,6 +614,283 @@ const docTemplate = `{
                 }
             }
         },
+        "/quran/bookmarks/ayahs": {
+            "post": {
+                "description": "Bookmark an ayah for the current user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookmarks"
+                ],
+                "summary": "Create ayah bookmark",
+                "parameters": [
+                    {
+                        "description": "Create bookmark request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateBookmarkAyahRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Bookmark created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.BookmarkAyahSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/bookmarks/ayahs/user/{userId}": {
+            "get": {
+                "description": "Get a paginated list of ayah bookmarks for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookmarks"
+                ],
+                "summary": "List bookmark ayahs by user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bookmarks retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.BookmarkAyahListSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/bookmarks/ayahs/user/{userId}/ayah/{ayahId}": {
+            "get": {
+                "description": "Get a bookmark for a specific user and ayah",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookmarks"
+                ],
+                "summary": "Get bookmark ayah by user and ayah",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Ayah ID",
+                        "name": "ayahId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "ayah"
+                        ],
+                        "type": "string",
+                        "example": "ayah",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bookmark retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.BookmarkAyahSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Bookmark not found",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/bookmarks/ayahs/{id}": {
+            "get": {
+                "description": "Get a specific bookmark by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookmarks"
+                ],
+                "summary": "Get bookmark ayah by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bookmark ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "ayah"
+                        ],
+                        "type": "string",
+                        "example": "ayah",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bookmark retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.BookmarkAyahSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Bookmark not found",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a bookmark by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookmarks"
+                ],
+                "summary": "Delete bookmark ayah",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bookmark ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bookmark deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.DeleteBookmarkAyahSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Bookmark not found",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/quran/juz": {
             "get": {
                 "description": "Get all juz with pagination",
@@ -989,6 +1266,694 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/last-reads": {
+            "post": {
+                "description": "Create a new last read entry for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "LastRead"
+                ],
+                "summary": "Create last read",
+                "parameters": [
+                    {
+                        "description": "LastRead information",
+                        "name": "lastRead",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateLastReadRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Last read created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.LastReadSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/last-reads/user/{userId}": {
+            "get": {
+                "description": "Get a paginated list of last read entries for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "LastRead"
+                ],
+                "summary": "List last reads by user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "relations"
+                        ],
+                        "type": "string",
+                        "example": "relations",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Last reads retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.LastReadListSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/last-reads/user/{userId}/surah/{surahId}": {
+            "get": {
+                "description": "Get the last read entry for a specific user and surah",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "LastRead"
+                ],
+                "summary": "Get last read by user and surah",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Surah ID",
+                        "name": "surahId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "relations"
+                        ],
+                        "type": "string",
+                        "example": "relations",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Last read retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.LastReadSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Last read not found",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/last-reads/{id}": {
+            "get": {
+                "description": "Get a specific last read entry by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "LastRead"
+                ],
+                "summary": "Get last read by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "LastRead ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "relations"
+                        ],
+                        "type": "string",
+                        "example": "relations",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Last read retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.LastReadSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Last read not found",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update fields of an existing last read entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "LastRead"
+                ],
+                "summary": "Update last read",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "LastRead ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "LastRead update information",
+                        "name": "lastRead",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateLastReadRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Last read updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.LastReadSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Last read not found",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a last read entry by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "LastRead"
+                ],
+                "summary": "Delete last read",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "LastRead ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Last read deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.DeleteLastReadSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Last read not found",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/progress-hatam": {
+            "post": {
+                "description": "Create a new progress hatam entry for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ProgressHatam"
+                ],
+                "summary": "Create progress hatam",
+                "parameters": [
+                    {
+                        "description": "ProgressHatam information",
+                        "name": "progressHatam",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateProgressHatamRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Progress hatam created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.ProgressHatamSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/progress-hatam/user/{userId}": {
+            "get": {
+                "description": "Get a paginated list of progress hatam entries for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ProgressHatam"
+                ],
+                "summary": "List progress hatam by user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "relations"
+                        ],
+                        "type": "string",
+                        "example": "relations",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Progress hatam list retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.ProgressHatamListSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/progress-hatam/user/{userId}/juz/{juzId}": {
+            "get": {
+                "description": "Get a progress hatam entry for a specific user and juz",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ProgressHatam"
+                ],
+                "summary": "Get progress hatam by user and juz",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Juz ID",
+                        "name": "juzId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "relations"
+                        ],
+                        "type": "string",
+                        "example": "relations",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Progress hatam retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.ProgressHatamSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Progress hatam not found",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quran/progress-hatam/{id}": {
+            "get": {
+                "description": "Get a specific progress hatam entry by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ProgressHatam"
+                ],
+                "summary": "Get progress hatam by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ProgressHatam ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "relations"
+                        ],
+                        "type": "string",
+                        "example": "relations",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Progress hatam retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.ProgressHatamSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Progress hatam not found",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update fields of an existing progress hatam entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ProgressHatam"
+                ],
+                "summary": "Update progress hatam",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ProgressHatam ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ProgressHatam update information",
+                        "name": "progressHatam",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateProgressHatamRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Progress hatam updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.ProgressHatamSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Progress hatam not found",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a progress hatam entry by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ProgressHatam"
+                ],
+                "summary": "Delete progress hatam",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ProgressHatam ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Progress hatam deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.DeleteProgressHatamSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Progress hatam not found",
                         "schema": {
                             "$ref": "#/definitions/quran.QuranErrorResponse"
                         }
@@ -1994,6 +2959,46 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.BookmarkAyahListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.BookmarkAyahResponse"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationResponse"
+                }
+            }
+        },
+        "dto.BookmarkAyahResponse": {
+            "type": "object",
+            "properties": {
+                "ayahId": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CreateAyahAudioFileRequest": {
             "type": "object",
             "required": [
@@ -2080,6 +3085,27 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CreateBookmarkAyahRequest": {
+            "type": "object",
+            "required": [
+                "ayahId",
+                "createdBy",
+                "userId"
+            ],
+            "properties": {
+                "ayahId": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CreateJuzRequest": {
             "type": "object",
             "required": [
@@ -2109,6 +3135,73 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CreateLastReadRequest": {
+            "type": "object",
+            "required": [
+                "ayahId",
+                "ayahNumber",
+                "createdBy",
+                "progressPct",
+                "surahId",
+                "userId"
+            ],
+            "properties": {
+                "ayahId": {
+                    "type": "string"
+                },
+                "ayahNumber": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "createdBy": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "progressPct": {
+                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "surahId": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateProgressHatamRequest": {
+            "type": "object",
+            "required": [
+                "createdBy",
+                "juzId",
+                "progressPct",
+                "startAyahId",
+                "userId"
+            ],
+            "properties": {
+                "createdBy": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "juzId": {
+                    "type": "string"
+                },
+                "progressPct": {
+                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "startAyahId": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CreateReciterRequest": {
             "type": "object",
             "required": [
@@ -2126,6 +3219,14 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                },
+                "picture": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "place": {
+                    "type": "string",
+                    "maxLength": 20
                 },
                 "style": {
                     "type": "string",
@@ -2222,6 +3323,58 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.LastReadListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.LastReadResponse"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationResponse"
+                }
+            }
+        },
+        "dto.LastReadResponse": {
+            "type": "object",
+            "properties": {
+                "ayahId": {
+                    "type": "string"
+                },
+                "ayahNumber": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lastReadAt": {
+                    "type": "string"
+                },
+                "progressPct": {
+                    "type": "number"
+                },
+                "surahId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.PaginationResponse": {
             "type": "object",
             "properties": {
@@ -2233,6 +3386,64 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.ProgressHatamListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ProgressHatamResponse"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationResponse"
+                }
+            }
+        },
+        "dto.ProgressHatamResponse": {
+            "type": "object",
+            "properties": {
+                "completedAt": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isCompleted": {
+                    "type": "boolean"
+                },
+                "juzId": {
+                    "type": "string"
+                },
+                "lastAyahId": {
+                    "type": "string"
+                },
+                "progressPct": {
+                    "type": "number"
+                },
+                "startAyahId": {
+                    "type": "string"
+                },
+                "startedAt": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
                 }
             }
         },
@@ -2263,6 +3474,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "picture": {
+                    "type": "string"
+                },
+                "place": {
                     "type": "string"
                 },
                 "style": {
@@ -2499,6 +3716,72 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.UpdateLastReadRequest": {
+            "type": "object",
+            "required": [
+                "ayahId",
+                "ayahNumber",
+                "id",
+                "progressPct",
+                "updatedBy"
+            ],
+            "properties": {
+                "ayahId": {
+                    "type": "string"
+                },
+                "ayahNumber": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "id": {
+                    "type": "string"
+                },
+                "progressPct": {
+                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "updatedBy": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                }
+            }
+        },
+        "dto.UpdateProgressHatamRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "isCompleted",
+                "lastAyahId",
+                "progressPct",
+                "updatedBy"
+            ],
+            "properties": {
+                "completedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isCompleted": {
+                    "type": "boolean"
+                },
+                "lastAyahId": {
+                    "type": "string"
+                },
+                "progressPct": {
+                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "updatedBy": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                }
+            }
+        },
         "dto.UpdateReciterRequest": {
             "type": "object",
             "required": [
@@ -2515,6 +3798,14 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                },
+                "picture": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "place": {
+                    "type": "string",
+                    "maxLength": 20
                 },
                 "style": {
                     "type": "string",
@@ -2611,6 +3902,62 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Ayah audio file retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.BookmarkAyahListSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.BookmarkAyahListResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Bookmarks retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.BookmarkAyahSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.BookmarkAyahResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Bookmark retrieved successfully"
                 },
                 "responseTime": {
                     "type": "string",
@@ -2781,6 +4128,93 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Ayah deleted successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.DeleteBookmarkAyahSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Bookmark deleted successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.DeleteLastReadSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Last read deleted successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.DeleteProgressHatamSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Progress hatam deleted successfully"
                 },
                 "responseTime": {
                     "type": "string",
@@ -3175,6 +4609,118 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Juz retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.LastReadListSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.LastReadListResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Last reads retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.LastReadSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.LastReadResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Last read retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.ProgressHatamListSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.ProgressHatamListResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Progress hatam list retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.ProgressHatamSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.ProgressHatamResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Progress hatam retrieved successfully"
                 },
                 "responseTime": {
                     "type": "string",

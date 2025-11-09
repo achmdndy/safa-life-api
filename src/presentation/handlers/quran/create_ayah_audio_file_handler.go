@@ -9,6 +9,7 @@ import (
 	"github.com/safalife/core-api/src/application/quran/command"
 	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/presentation/core"
+	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
 // CreateAyahAudioFileHandler handles the create ayah audio file request
@@ -50,7 +51,7 @@ func (h *CreateAyahAudioFileHandler) Handle(c *gin.Context) {
 		FilePath:  req.FilePath,
 		Duration:  req.Duration,
 		ByteSize:  req.ByteSize,
-		CreatedBy: req.CreatedBy,
+		CreatedBy: middlewares.GetUserID(c),
 	}
 
 	result, err := h.commandHandler.CreateAyahAudioFile(ctx, cmd)

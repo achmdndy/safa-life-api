@@ -9,6 +9,7 @@ import (
 	"github.com/safalife/core-api/src/application/quran/command"
 	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/presentation/core"
+	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
 // CreateSurahHandler handles the create surah request
@@ -53,7 +54,7 @@ func (h *CreateSurahHandler) Handle(c *gin.Context) {
 		RevelationPlace: req.RevelationPlace,
 		RevelationOrder: req.RevelationOrder,
 		AyahCount:       req.AyahCount,
-		CreatedBy:       req.CreatedBy,
+		CreatedBy:       middlewares.GetUserID(c),
 	}
 
 	result, err := h.commandHandler.CreateSurah(ctx, cmd)

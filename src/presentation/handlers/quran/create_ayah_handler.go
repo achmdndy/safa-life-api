@@ -9,6 +9,7 @@ import (
 	"github.com/safalife/core-api/src/application/quran/command"
 	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/presentation/core"
+	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
 // CreateAyahHandler handles the create ayah request
@@ -54,7 +55,7 @@ func (h *CreateAyahHandler) Handle(c *gin.Context) {
 		JuzNumber:    req.JuzNumber,
 		HizbNumber:   req.HizbNumber,
 		ManzilNumber: req.ManzilNumber,
-		CreatedBy:    req.CreatedBy,
+		CreatedBy:    middlewares.GetUserID(c),
 	}
 
 	result, err := h.commandHandler.CreateAyah(ctx, cmd)

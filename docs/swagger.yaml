@@ -134,6 +134,32 @@ definitions:
       updatedBy:
         type: string
     type: object
+  dto.BookmarkAyahListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.BookmarkAyahResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationResponse'
+    type: object
+  dto.BookmarkAyahResponse:
+    properties:
+      ayahId:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      id:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        type: string
+      userId:
+        type: string
+    type: object
   dto.CreateAyahAudioFileRequest:
     properties:
       ayahId:
@@ -200,6 +226,21 @@ definitions:
     - surahId
     - text
     type: object
+  dto.CreateBookmarkAyahRequest:
+    properties:
+      ayahId:
+        type: string
+      createdBy:
+        maxLength: 255
+        minLength: 1
+        type: string
+      userId:
+        type: string
+    required:
+    - ayahId
+    - createdBy
+    - userId
+    type: object
   dto.CreateJuzRequest:
     properties:
       createdBy:
@@ -221,6 +262,56 @@ definitions:
     - startAyahId
     - startSurahId
     type: object
+  dto.CreateLastReadRequest:
+    properties:
+      ayahId:
+        type: string
+      ayahNumber:
+        minimum: 1
+        type: integer
+      createdBy:
+        maxLength: 255
+        minLength: 1
+        type: string
+      progressPct:
+        maximum: 100
+        minimum: 0
+        type: number
+      surahId:
+        type: string
+      userId:
+        type: string
+    required:
+    - ayahId
+    - ayahNumber
+    - createdBy
+    - progressPct
+    - surahId
+    - userId
+    type: object
+  dto.CreateProgressHatamRequest:
+    properties:
+      createdBy:
+        maxLength: 255
+        minLength: 1
+        type: string
+      juzId:
+        type: string
+      progressPct:
+        maximum: 100
+        minimum: 0
+        type: number
+      startAyahId:
+        type: string
+      userId:
+        type: string
+    required:
+    - createdBy
+    - juzId
+    - progressPct
+    - startAyahId
+    - userId
+    type: object
   dto.CreateReciterRequest:
     properties:
       createdBy:
@@ -230,6 +321,12 @@ definitions:
       name:
         maxLength: 255
         minLength: 1
+        type: string
+      picture:
+        maxLength: 255
+        type: string
+      place:
+        maxLength: 20
         type: string
       style:
         maxLength: 255
@@ -303,6 +400,40 @@ definitions:
       updatedBy:
         type: string
     type: object
+  dto.LastReadListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.LastReadResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationResponse'
+    type: object
+  dto.LastReadResponse:
+    properties:
+      ayahId:
+        type: string
+      ayahNumber:
+        type: integer
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      id:
+        type: string
+      lastReadAt:
+        type: string
+      progressPct:
+        type: number
+      surahId:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        type: string
+      userId:
+        type: string
+    type: object
   dto.PaginationResponse:
     properties:
       limit:
@@ -311,6 +442,44 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  dto.ProgressHatamListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.ProgressHatamResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationResponse'
+    type: object
+  dto.ProgressHatamResponse:
+    properties:
+      completedAt:
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      id:
+        type: string
+      isCompleted:
+        type: boolean
+      juzId:
+        type: string
+      lastAyahId:
+        type: string
+      progressPct:
+        type: number
+      startAyahId:
+        type: string
+      startedAt:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        type: string
+      userId:
+        type: string
     type: object
   dto.ReciterListResponse:
     properties:
@@ -330,6 +499,10 @@ definitions:
       id:
         type: string
       name:
+        type: string
+      picture:
+        type: string
+      place:
         type: string
       style:
         type: string
@@ -495,6 +668,55 @@ definitions:
     - startSurahId
     - updatedBy
     type: object
+  dto.UpdateLastReadRequest:
+    properties:
+      ayahId:
+        type: string
+      ayahNumber:
+        minimum: 1
+        type: integer
+      id:
+        type: string
+      progressPct:
+        maximum: 100
+        minimum: 0
+        type: number
+      updatedBy:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - ayahId
+    - ayahNumber
+    - id
+    - progressPct
+    - updatedBy
+    type: object
+  dto.UpdateProgressHatamRequest:
+    properties:
+      completedAt:
+        type: string
+      id:
+        type: string
+      isCompleted:
+        type: boolean
+      lastAyahId:
+        type: string
+      progressPct:
+        maximum: 100
+        minimum: 0
+        type: number
+      updatedBy:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - id
+    - isCompleted
+    - lastAyahId
+    - progressPct
+    - updatedBy
+    type: object
   dto.UpdateReciterRequest:
     properties:
       id:
@@ -502,6 +724,12 @@ definitions:
       name:
         maxLength: 255
         minLength: 1
+        type: string
+      picture:
+        maxLength: 255
+        type: string
+      place:
+        maxLength: 20
         type: string
       style:
         maxLength: 255
@@ -579,6 +807,46 @@ definitions:
         $ref: '#/definitions/dto.AyahAudioFileResponse'
       message:
         example: Ayah audio file retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.BookmarkAyahListSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.BookmarkAyahListResponse'
+      message:
+        example: Bookmarks retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.BookmarkAyahSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.BookmarkAyahResponse'
+      message:
+        example: Bookmark retrieved successfully
         type: string
       responseTime:
         example: 15.234ms
@@ -701,6 +969,69 @@ definitions:
         type: string
       message:
         example: Ayah deleted successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.DeleteBookmarkAyahSuccessResponse:
+    properties:
+      data:
+        example: "null"
+        type: string
+      message:
+        example: Bookmark deleted successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.DeleteLastReadSuccessResponse:
+    properties:
+      data:
+        example: "null"
+        type: string
+      message:
+        example: Last read deleted successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.DeleteProgressHatamSuccessResponse:
+    properties:
+      data:
+        example: "null"
+        type: string
+      message:
+        example: Progress hatam deleted successfully
         type: string
       responseTime:
         example: 15.234ms
@@ -983,6 +1314,86 @@ definitions:
         $ref: '#/definitions/dto.JuzResponse'
       message:
         example: Juz retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.LastReadListSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.LastReadListResponse'
+      message:
+        example: Last reads retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.LastReadSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.LastReadResponse'
+      message:
+        example: Last read retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.ProgressHatamListSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.ProgressHatamListResponse'
+      message:
+        example: Progress hatam list retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.ProgressHatamSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.ProgressHatamResponse'
+      message:
+        example: Progress hatam retrieved successfully
         type: string
       responseTime:
         example: 15.234ms
@@ -1551,6 +1962,190 @@ paths:
       summary: Get ayahs by surah
       tags:
       - Ayahs
+  /quran/bookmarks/ayahs:
+    post:
+      consumes:
+      - application/json
+      description: Bookmark an ayah for the current user
+      parameters:
+      - description: Create bookmark request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateBookmarkAyahRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Bookmark created successfully
+          schema:
+            $ref: '#/definitions/quran.BookmarkAyahSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Create ayah bookmark
+      tags:
+      - Bookmarks
+  /quran/bookmarks/ayahs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a bookmark by its ID
+      parameters:
+      - description: Bookmark ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bookmark deleted successfully
+          schema:
+            $ref: '#/definitions/quran.DeleteBookmarkAyahSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Bookmark not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Delete bookmark ayah
+      tags:
+      - Bookmarks
+    get:
+      consumes:
+      - application/json
+      description: Get a specific bookmark by its ID
+      parameters:
+      - description: Bookmark ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Include related data
+        enum:
+        - ayah
+        example: ayah
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bookmark retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.BookmarkAyahSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Bookmark not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get bookmark ayah by ID
+      tags:
+      - Bookmarks
+  /quran/bookmarks/ayahs/user/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of ayah bookmarks for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bookmarks retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.BookmarkAyahListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: List bookmark ayahs by user
+      tags:
+      - Bookmarks
+  /quran/bookmarks/ayahs/user/{userId}/ayah/{ayahId}:
+    get:
+      consumes:
+      - application/json
+      description: Get a bookmark for a specific user and ayah
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Ayah ID
+        in: path
+        name: ayahId
+        required: true
+        type: string
+      - description: Include related data
+        enum:
+        - ayah
+        example: ayah
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bookmark retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.BookmarkAyahSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Bookmark not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get bookmark ayah by user and ayah
+      tags:
+      - Bookmarks
   /quran/juz:
     get:
       consumes:
@@ -1810,6 +2405,464 @@ paths:
       summary: Get juz by number
       tags:
       - Juz
+  /quran/last-reads:
+    post:
+      consumes:
+      - application/json
+      description: Create a new last read entry for a user
+      parameters:
+      - description: LastRead information
+        in: body
+        name: lastRead
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateLastReadRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Last read created successfully
+          schema:
+            $ref: '#/definitions/quran.LastReadSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Create last read
+      tags:
+      - LastRead
+  /quran/last-reads/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a last read entry by its ID
+      parameters:
+      - description: LastRead ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Last read deleted successfully
+          schema:
+            $ref: '#/definitions/quran.DeleteLastReadSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Last read not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Delete last read
+      tags:
+      - LastRead
+    get:
+      consumes:
+      - application/json
+      description: Get a specific last read entry by its ID
+      parameters:
+      - description: LastRead ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Include related data
+        enum:
+        - relations
+        example: relations
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Last read retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.LastReadSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Last read not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get last read by ID
+      tags:
+      - LastRead
+    put:
+      consumes:
+      - application/json
+      description: Update fields of an existing last read entry
+      parameters:
+      - description: LastRead ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: LastRead update information
+        in: body
+        name: lastRead
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateLastReadRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Last read updated successfully
+          schema:
+            $ref: '#/definitions/quran.LastReadSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Last read not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Update last read
+      tags:
+      - LastRead
+  /quran/last-reads/user/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of last read entries for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: Include related data
+        enum:
+        - relations
+        example: relations
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Last reads retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.LastReadListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: List last reads by user
+      tags:
+      - LastRead
+  /quran/last-reads/user/{userId}/surah/{surahId}:
+    get:
+      consumes:
+      - application/json
+      description: Get the last read entry for a specific user and surah
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Surah ID
+        in: path
+        name: surahId
+        required: true
+        type: string
+      - description: Include related data
+        enum:
+        - relations
+        example: relations
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Last read retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.LastReadSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Last read not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get last read by user and surah
+      tags:
+      - LastRead
+  /quran/progress-hatam:
+    post:
+      consumes:
+      - application/json
+      description: Create a new progress hatam entry for a user
+      parameters:
+      - description: ProgressHatam information
+        in: body
+        name: progressHatam
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateProgressHatamRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Progress hatam created successfully
+          schema:
+            $ref: '#/definitions/quran.ProgressHatamSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Create progress hatam
+      tags:
+      - ProgressHatam
+  /quran/progress-hatam/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a progress hatam entry by its ID
+      parameters:
+      - description: ProgressHatam ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Progress hatam deleted successfully
+          schema:
+            $ref: '#/definitions/quran.DeleteProgressHatamSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Progress hatam not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Delete progress hatam
+      tags:
+      - ProgressHatam
+    get:
+      consumes:
+      - application/json
+      description: Get a specific progress hatam entry by its ID
+      parameters:
+      - description: ProgressHatam ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Include related data
+        enum:
+        - relations
+        example: relations
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Progress hatam retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.ProgressHatamSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Progress hatam not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get progress hatam by ID
+      tags:
+      - ProgressHatam
+    put:
+      consumes:
+      - application/json
+      description: Update fields of an existing progress hatam entry
+      parameters:
+      - description: ProgressHatam ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ProgressHatam update information
+        in: body
+        name: progressHatam
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateProgressHatamRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Progress hatam updated successfully
+          schema:
+            $ref: '#/definitions/quran.ProgressHatamSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Progress hatam not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Update progress hatam
+      tags:
+      - ProgressHatam
+  /quran/progress-hatam/user/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of progress hatam entries for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: Include related data
+        enum:
+        - relations
+        example: relations
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Progress hatam list retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.ProgressHatamListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: List progress hatam by user
+      tags:
+      - ProgressHatam
+  /quran/progress-hatam/user/{userId}/juz/{juzId}:
+    get:
+      consumes:
+      - application/json
+      description: Get a progress hatam entry for a specific user and juz
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Juz ID
+        in: path
+        name: juzId
+        required: true
+        type: string
+      - description: Include related data
+        enum:
+        - relations
+        example: relations
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Progress hatam retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.ProgressHatamSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "404":
+          description: Progress hatam not found
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: Get progress hatam by user and juz
+      tags:
+      - ProgressHatam
   /quran/reciters:
     get:
       consumes:

@@ -7,7 +7,7 @@ import (
 )
 
 // QuranRoutes sets up Quran-related routes
-func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler) {
+func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler, authMW gin.HandlerFunc) {
 	quranGroup := router.Group("/quran")
 	{
 		// Surah routes
@@ -16,9 +16,12 @@ func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler) {
 			surahGroup.GET("", quranHandler.GetAllSurahsHandler().Handle)
 			surahGroup.GET("/:id", quranHandler.GetSurahByIdHandler().Handle)
 			surahGroup.GET("/number/:number", quranHandler.GetSurahByNumberHandler().Handle)
-			surahGroup.POST("", quranHandler.CreateSurahHandler().Handle)
-			surahGroup.PUT("/:id", quranHandler.UpdateSurahHandler().Handle)
-			surahGroup.DELETE("/:id", quranHandler.DeleteSurahHandler().Handle)
+
+			surahProtected := surahGroup.Group("")
+			surahProtected.Use(authMW)
+			surahProtected.POST("", quranHandler.CreateSurahHandler().Handle)
+			surahProtected.PUT("/:id", quranHandler.UpdateSurahHandler().Handle)
+			surahProtected.DELETE("/:id", quranHandler.DeleteSurahHandler().Handle)
 		}
 
 		// Ayah routes
@@ -27,9 +30,12 @@ func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler) {
 			ayahGroup.GET("/:id", quranHandler.GetAyahByIdHandler().Handle)
 			ayahGroup.GET("/surah/:surahId", quranHandler.GetAyahsBySurahHandler().Handle)
 			ayahGroup.GET("/juz/:juzNumber", quranHandler.GetAyahsByJuzHandler().Handle)
-			ayahGroup.POST("", quranHandler.CreateAyahHandler().Handle)
-			ayahGroup.PUT("/:id", quranHandler.UpdateAyahHandler().Handle)
-			ayahGroup.DELETE("/:id", quranHandler.DeleteAyahHandler().Handle)
+
+			ayahProtected := ayahGroup.Group("")
+			ayahProtected.Use(authMW)
+			ayahProtected.POST("", quranHandler.CreateAyahHandler().Handle)
+			ayahProtected.PUT("/:id", quranHandler.UpdateAyahHandler().Handle)
+			ayahProtected.DELETE("/:id", quranHandler.DeleteAyahHandler().Handle)
 		}
 
 		// Juz routes
@@ -38,9 +44,12 @@ func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler) {
 			juzGroup.GET("", quranHandler.GetAllJuzHandler().Handle)
 			juzGroup.GET("/:id", quranHandler.GetJuzByIdHandler().Handle)
 			juzGroup.GET("/number/:number", quranHandler.GetJuzByNumberHandler().Handle)
-			juzGroup.POST("", quranHandler.CreateJuzHandler().Handle)
-			juzGroup.PUT("/:id", quranHandler.UpdateJuzHandler().Handle)
-			juzGroup.DELETE("/:id", quranHandler.DeleteJuzHandler().Handle)
+
+			juzProtected := juzGroup.Group("")
+			juzProtected.Use(authMW)
+			juzProtected.POST("", quranHandler.CreateJuzHandler().Handle)
+			juzProtected.PUT("/:id", quranHandler.UpdateJuzHandler().Handle)
+			juzProtected.DELETE("/:id", quranHandler.DeleteJuzHandler().Handle)
 		}
 
 		// Translation routes
@@ -64,9 +73,12 @@ func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler) {
 			reciterGroup.GET("", quranHandler.GetAllRecitersHandler().Handle)
 			reciterGroup.GET("/:id", quranHandler.GetReciterByIdHandler().Handle)
 			reciterGroup.GET("/name/:name", quranHandler.GetReciterByNameHandler().Handle)
-			reciterGroup.POST("", quranHandler.CreateReciterHandler().Handle)
-			reciterGroup.PUT("/:id", quranHandler.UpdateReciterHandler().Handle)
-			reciterGroup.DELETE("/:id", quranHandler.DeleteReciterHandler().Handle)
+
+			reciterProtected := reciterGroup.Group("")
+			reciterProtected.Use(authMW)
+			reciterProtected.POST("", quranHandler.CreateReciterHandler().Handle)
+			reciterProtected.PUT("/:id", quranHandler.UpdateReciterHandler().Handle)
+			reciterProtected.DELETE("/:id", quranHandler.DeleteReciterHandler().Handle)
 		}
 
 		// Ayah Audio routes
@@ -77,9 +89,53 @@ func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler) {
 				ayahAudioGroup.GET("/:id", quranHandler.GetAyahAudioFileByIdHandler().Handle)
 				ayahAudioGroup.GET("/ayah/:ayahId/reciter/:reciterId", quranHandler.GetAyahAudioFileByAyahAndReciterHandler().Handle)
 				ayahAudioGroup.GET("/surah/:surahId/reciter/:reciterId", quranHandler.GetAyahAudioFilesBySurahAndReciterHandler().Handle)
-				ayahAudioGroup.POST("", quranHandler.CreateAyahAudioFileHandler().Handle)
-				ayahAudioGroup.PUT("/:id", quranHandler.UpdateAyahAudioFileHandler().Handle)
-				ayahAudioGroup.DELETE("/:id", quranHandler.DeleteAyahAudioFileHandler().Handle)
+
+				ayahAudioProtected := ayahAudioGroup.Group("")
+				ayahAudioProtected.Use(authMW)
+				ayahAudioProtected.POST("", quranHandler.CreateAyahAudioFileHandler().Handle)
+				ayahAudioProtected.PUT("/:id", quranHandler.UpdateAyahAudioFileHandler().Handle)
+				ayahAudioProtected.DELETE("/:id", quranHandler.DeleteAyahAudioFileHandler().Handle)
+			}
+
+			// Bookmark Ayah routes
+			bookmarkAyahGroup := quranGroup.Group("/bookmarks/ayahs")
+			{
+				bookmarkAyahGroup.GET("/:id", quranHandler.GetBookmarkAyahByIdHandler().Handle)
+				bookmarkAyahGroup.GET("/user/:userId", quranHandler.GetBookmarkAyahsByUserHandler().Handle)
+				bookmarkAyahGroup.GET("/user/:userId/ayah/:ayahId", quranHandler.GetBookmarkAyahByUserAndAyahHandler().Handle)
+
+				bookmarkAyahProtected := bookmarkAyahGroup.Group("")
+				bookmarkAyahProtected.Use(authMW)
+				bookmarkAyahProtected.POST("", quranHandler.CreateBookmarkAyahHandler().Handle)
+				bookmarkAyahProtected.DELETE("/:id", quranHandler.DeleteBookmarkAyahHandler().Handle)
+			}
+
+			// LastRead routes
+			lastReadGroup := quranGroup.Group("/last-reads")
+			{
+				lastReadGroup.GET("/:id", quranHandler.GetLastReadByIdHandler().Handle)
+				lastReadGroup.GET("/user/:userId", quranHandler.GetLastReadsByUserHandler().Handle)
+				lastReadGroup.GET("/user/:userId/surah/:surahId", quranHandler.GetLastReadByUserAndSurahHandler().Handle)
+
+				lastReadProtected := lastReadGroup.Group("")
+				lastReadProtected.Use(authMW)
+				lastReadProtected.POST("", quranHandler.CreateLastReadHandler().Handle)
+				lastReadProtected.PUT("/:id", quranHandler.UpdateLastReadHandler().Handle)
+				lastReadProtected.DELETE("/:id", quranHandler.DeleteLastReadHandler().Handle)
+			}
+
+			// Progress Hatam routes
+			progressHatamGroup := quranGroup.Group("/progress-hatam")
+			{
+				progressHatamGroup.GET("/:id", quranHandler.GetProgressHatamByIdHandler().Handle)
+				progressHatamGroup.GET("/user/:userId", quranHandler.GetProgressHatamByUserHandler().Handle)
+				progressHatamGroup.GET("/user/:userId/juz/:juzId", quranHandler.GetProgressHatamByUserAndJuzHandler().Handle)
+
+				progressHatamProtected := progressHatamGroup.Group("")
+				progressHatamProtected.Use(authMW)
+				progressHatamProtected.POST("", quranHandler.CreateProgressHatamHandler().Handle)
+				progressHatamProtected.PUT("/:id", quranHandler.UpdateProgressHatamHandler().Handle)
+				progressHatamProtected.DELETE("/:id", quranHandler.DeleteProgressHatamHandler().Handle)
 			}
 		}
 	}

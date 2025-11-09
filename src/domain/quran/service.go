@@ -372,3 +372,136 @@ func (s *AyahAudioFileService) CountAyahAudioFiles(ctx context.Context) (int64, 
 func (s *AyahAudioFileService) CountAyahAudioFilesBySurahAndReciter(ctx context.Context, surahId core.UUID, reciterId core.UUID) (int64, error) {
 	return s.audioRepo.CountBySurahAndReciter(ctx, surahId, reciterId)
 }
+
+// BookmarkAyahService implements BookmarkAyahServiceInterface.
+type BookmarkAyahService struct {
+	bookmarkRepo BookmarkAyahRepositoryInterface
+}
+
+// NewBookmarkAyahService creates a new BookmarkAyahService instance.
+func NewBookmarkAyahService(bookmarkRepo BookmarkAyahRepositoryInterface) BookmarkAyahServiceInterface {
+	return &BookmarkAyahService{bookmarkRepo: bookmarkRepo}
+}
+
+func (s *BookmarkAyahService) GetBookmarkAyahById(ctx context.Context, id core.UUID) (*BookmarkAyah, error) {
+	return s.bookmarkRepo.GetById(ctx, id)
+}
+
+func (s *BookmarkAyahService) GetBookmarkAyahsByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*BookmarkAyah, error) {
+	return s.bookmarkRepo.GetByUser(ctx, userId, limit, offset)
+}
+
+func (s *BookmarkAyahService) GetBookmarkAyahByUserAndAyah(ctx context.Context, userId core.UUID, ayahId core.UUID) (*BookmarkAyah, error) {
+	return s.bookmarkRepo.GetByUserAndAyah(ctx, userId, ayahId)
+}
+
+func (s *BookmarkAyahService) CreateBookmarkAyah(ctx context.Context, bookmark *BookmarkAyah) (*BookmarkAyah, error) {
+	return s.bookmarkRepo.Create(ctx, bookmark)
+}
+
+func (s *BookmarkAyahService) DeleteBookmarkAyah(ctx context.Context, id core.UUID) error {
+	return s.bookmarkRepo.Delete(ctx, id)
+}
+
+func (s *BookmarkAyahService) CountBookmarkAyahsByUser(ctx context.Context, userId core.UUID) (int64, error) {
+	return s.bookmarkRepo.CountByUser(ctx, userId)
+}
+
+// Eager loading
+func (s *BookmarkAyahService) GetBookmarkAyahByIdWithAyah(ctx context.Context, id core.UUID) (*BookmarkAyahWithAyah, error) {
+	return s.bookmarkRepo.GetByIdWithAyah(ctx, id)
+}
+
+// LastReadService implements LastReadServiceInterface.
+type LastReadService struct {
+	lastReadRepo LastReadRepositoryInterface
+}
+
+// NewLastReadService creates a new LastReadService instance.
+func NewLastReadService(lastReadRepo LastReadRepositoryInterface) LastReadServiceInterface {
+	return &LastReadService{lastReadRepo: lastReadRepo}
+}
+
+func (s *LastReadService) GetLastReadById(ctx context.Context, id core.UUID) (*LastRead, error) {
+	return s.lastReadRepo.GetById(ctx, id)
+}
+
+func (s *LastReadService) GetLastReadsByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*LastRead, error) {
+	return s.lastReadRepo.GetByUser(ctx, userId, limit, offset)
+}
+
+func (s *LastReadService) GetLastReadByUserAndSurah(ctx context.Context, userId core.UUID, surahId core.UUID) (*LastRead, error) {
+	return s.lastReadRepo.GetByUserAndSurah(ctx, userId, surahId)
+}
+
+func (s *LastReadService) CreateLastRead(ctx context.Context, lr *LastRead) (*LastRead, error) {
+	return s.lastReadRepo.Create(ctx, lr)
+}
+
+func (s *LastReadService) UpdateLastRead(ctx context.Context, lr *LastRead) (*LastRead, error) {
+	return s.lastReadRepo.Update(ctx, lr)
+}
+
+func (s *LastReadService) DeleteLastRead(ctx context.Context, id core.UUID) error {
+	return s.lastReadRepo.Delete(ctx, id)
+}
+
+func (s *LastReadService) CountLastReadsByUser(ctx context.Context, userId core.UUID) (int64, error) {
+	return s.lastReadRepo.CountByUser(ctx, userId)
+}
+
+// Eager loading
+func (s *LastReadService) GetLastReadByIdWithRelations(ctx context.Context, id core.UUID) (*LastReadWithRelations, error) {
+	return s.lastReadRepo.GetByIdWithRelations(ctx, id)
+}
+
+func (s *LastReadService) GetLastReadsByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*LastReadWithRelations, error) {
+	return s.lastReadRepo.GetByUserWithRelations(ctx, userId, limit, offset)
+}
+
+// ProgressHatamService implements ProgressHatamServiceInterface.
+type ProgressHatamService struct {
+	progressRepo ProgressHatamRepositoryInterface
+}
+
+// NewProgressHatamService creates a new ProgressHatamService instance.
+func NewProgressHatamService(progressRepo ProgressHatamRepositoryInterface) ProgressHatamServiceInterface {
+	return &ProgressHatamService{progressRepo: progressRepo}
+}
+
+func (s *ProgressHatamService) GetProgressHatamById(ctx context.Context, id core.UUID) (*ProgressHatam, error) {
+	return s.progressRepo.GetById(ctx, id)
+}
+
+func (s *ProgressHatamService) GetProgressHatamByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*ProgressHatam, error) {
+	return s.progressRepo.GetByUser(ctx, userId, limit, offset)
+}
+
+func (s *ProgressHatamService) GetProgressHatamByUserAndJuz(ctx context.Context, userId core.UUID, juzId core.UUID) (*ProgressHatam, error) {
+	return s.progressRepo.GetByUserAndJuz(ctx, userId, juzId)
+}
+
+func (s *ProgressHatamService) CreateProgressHatam(ctx context.Context, p *ProgressHatam) (*ProgressHatam, error) {
+	return s.progressRepo.Create(ctx, p)
+}
+
+func (s *ProgressHatamService) UpdateProgressHatam(ctx context.Context, p *ProgressHatam) (*ProgressHatam, error) {
+	return s.progressRepo.Update(ctx, p)
+}
+
+func (s *ProgressHatamService) DeleteProgressHatam(ctx context.Context, id core.UUID) error {
+	return s.progressRepo.Delete(ctx, id)
+}
+
+func (s *ProgressHatamService) CountProgressHatamByUser(ctx context.Context, userId core.UUID) (int64, error) {
+	return s.progressRepo.CountByUser(ctx, userId)
+}
+
+// Eager loading
+func (s *ProgressHatamService) GetProgressHatamByIdWithRelations(ctx context.Context, id core.UUID) (*ProgressHatamWithRelations, error) {
+	return s.progressRepo.GetByIdWithRelations(ctx, id)
+}
+
+func (s *ProgressHatamService) GetProgressHatamByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*ProgressHatamWithRelations, error) {
+	return s.progressRepo.GetByUserWithRelations(ctx, userId, limit, offset)
+}

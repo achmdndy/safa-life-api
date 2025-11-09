@@ -27,6 +27,9 @@ type DomainContainer struct {
 	AyahTranslationService    quran.AyahTranslationServiceInterface
 	ReciterService            quran.ReciterServiceInterface
 	AyahAudioFileService      quran.AyahAudioFileServiceInterface
+	BookmarkAyahService       quran.BookmarkAyahServiceInterface
+	LastReadService           quran.LastReadServiceInterface
+	ProgressHatamService      quran.ProgressHatamServiceInterface
 }
 
 // NewDomainContainer creates a new domain container with dependency injection
@@ -42,6 +45,9 @@ func NewDomainContainer(
 	ayahTranslationRepo quran.AyahTranslationRepositoryInterface,
 	reciterRepo quran.ReciterRepositoryInterface,
 	ayahAudioFileRepo quran.AyahAudioFileRepositoryInterface,
+	bookmarkAyahRepo quran.BookmarkAyahRepositoryInterface,
+	lastReadRepo quran.LastReadRepositoryInterface,
+	progressHatamRepo quran.ProgressHatamRepositoryInterface,
 ) *DomainContainer {
 	// Create Quran services
 	surahService := quran.NewSurahService(surahRepo)
@@ -51,6 +57,9 @@ func NewDomainContainer(
 	ayahTranslationService := quran.NewAyahTranslationService(ayahTranslationRepo)
 	reciterService := quran.NewReciterService(reciterRepo)
 	ayahAudioFileService := quran.NewAyahAudioFileService(ayahAudioFileRepo)
+	bookmarkAyahService := quran.NewBookmarkAyahService(bookmarkAyahRepo)
+	lastReadService := quran.NewLastReadService(lastReadRepo)
+	progressHatamService := quran.NewProgressHatamService(progressHatamRepo)
 
 	return &DomainContainer{
 		MonitoringService:  monitoringService.(monitoring.MonitoringService),
@@ -71,5 +80,8 @@ func NewDomainContainer(
 		AyahTranslationService:    ayahTranslationService,
 		ReciterService:            reciterService,
 		AyahAudioFileService:      ayahAudioFileService,
+		BookmarkAyahService:       bookmarkAyahService,
+		LastReadService:           lastReadService,
+		ProgressHatamService:      progressHatamService,
 	}
 }

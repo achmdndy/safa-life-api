@@ -9,6 +9,7 @@ import (
 	"github.com/safalife/core-api/src/application/quran/command"
 	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/presentation/core"
+	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
 // UpdateSurahHandler handles the update surah request
@@ -64,7 +65,7 @@ func (h *UpdateSurahHandler) Handle(c *gin.Context) {
 		RevelationPlace: req.RevelationPlace,
 		RevelationOrder: req.RevelationOrder,
 		AyahCount:       req.AyahCount,
-		UpdatedBy:       req.UpdatedBy,
+		UpdatedBy:       middlewares.GetUserID(c),
 	}
 
 	result, err := h.commandHandler.UpdateSurah(ctx, cmd)

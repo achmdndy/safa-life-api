@@ -9,6 +9,7 @@ import (
 	"github.com/safalife/core-api/src/application/quran/command"
 	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/presentation/core"
+	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
 // UpdateJuzHandler handles the update juz request
@@ -63,7 +64,7 @@ func (h *UpdateJuzHandler) Handle(c *gin.Context) {
 		EndSurahID:   req.EndSurahID,
 		StartAyahID:  req.StartAyahID,
 		EndAyahID:    req.EndAyahID,
-		UpdatedBy:    req.UpdatedBy,
+		UpdatedBy:    middlewares.GetUserID(c),
 	}
 
 	result, err := h.commandHandler.UpdateJuz(ctx, cmd)

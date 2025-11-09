@@ -6,13 +6,16 @@ import (
 )
 
 type CommandHandler struct {
-	surahService   quran.SurahServiceInterface
-	ayahService    quran.AyahServiceInterface
-	juzService     quran.JuzServiceInterface
-	reciterService quran.ReciterServiceInterface
-	audioService   quran.AyahAudioFileServiceInterface
-	uuidGenerator  core.UUIDGenerator
-	transactionMgr core.ContextTransactionManager
+	surahService    quran.SurahServiceInterface
+	ayahService     quran.AyahServiceInterface
+	juzService      quran.JuzServiceInterface
+	reciterService  quran.ReciterServiceInterface
+	audioService    quran.AyahAudioFileServiceInterface
+	bookmarkService quran.BookmarkAyahServiceInterface
+	lastReadService quran.LastReadServiceInterface
+	progressService quran.ProgressHatamServiceInterface
+	uuidGenerator   core.UUIDGenerator
+	transactionMgr  core.ContextTransactionManager
 }
 
 func NewCommandHandler(
@@ -21,16 +24,22 @@ func NewCommandHandler(
 	juzService quran.JuzServiceInterface,
 	reciterService quran.ReciterServiceInterface,
 	audioService quran.AyahAudioFileServiceInterface,
+	bookmarkService quran.BookmarkAyahServiceInterface,
+	lastReadService quran.LastReadServiceInterface,
+	progressService quran.ProgressHatamServiceInterface,
 	uuidGenerator core.UUIDGenerator,
 	transactionMgr core.ContextTransactionManager,
 ) *CommandHandler {
 	return &CommandHandler{
-		surahService:   surahService,
-		ayahService:    ayahService,
-		juzService:     juzService,
-		reciterService: reciterService,
-		audioService:   audioService,
-		uuidGenerator:  uuidGenerator,
-		transactionMgr: transactionMgr,
+		surahService:    surahService,
+		ayahService:     ayahService,
+		juzService:      juzService,
+		reciterService:  reciterService,
+		audioService:    audioService,
+		bookmarkService: bookmarkService,
+		lastReadService: lastReadService,
+		progressService: progressService,
+		uuidGenerator:   uuidGenerator,
+		transactionMgr:  transactionMgr,
 	}
 }

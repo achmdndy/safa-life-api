@@ -9,6 +9,7 @@ import (
 	"github.com/safalife/core-api/src/application/quran/command"
 	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/presentation/core"
+	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
 // CreateJuzHandler handles the create juz request
@@ -52,7 +53,7 @@ func (h *CreateJuzHandler) Handle(c *gin.Context) {
 		EndSurahID:   req.EndSurahID,
 		StartAyahID:  req.StartAyahID,
 		EndAyahID:    req.EndAyahID,
-		CreatedBy:    req.CreatedBy,
+		CreatedBy:    middlewares.GetUserID(c),
 	}
 
 	result, err := h.commandHandler.CreateJuz(ctx, cmd)
