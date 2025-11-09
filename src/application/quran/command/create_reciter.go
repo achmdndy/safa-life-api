@@ -10,6 +10,8 @@ import (
 type CreateReciterCommand struct {
 	Name      string
 	Style     string
+	Place     string
+	Picture   string
 	CreatedBy string
 }
 

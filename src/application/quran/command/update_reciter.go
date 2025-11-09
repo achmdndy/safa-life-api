@@ -11,6 +11,8 @@ type UpdateReciterCommand struct {
 	ID        string
 	Name      string
 	Style     string
+	Place     string
+	Picture   string
 	UpdatedBy string
 }
 

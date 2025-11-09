@@ -32,8 +32,9 @@ func registerModels() []interface{} {
 		&quran.AyahAudioFileModel{},
 		&quran.TranslationEditionModel{},
 		&quran.AyahTranslationModel{},
-		&quran.ReciterModel{},
-		&quran.AyahAudioFileModel{},
+		&quran.BookmarkAyahModel{},
+		&quran.LastReadModel{},
+		&quran.ProgressHatamModel{},
 	}
 }
 

@@ -56,6 +56,8 @@ func (h *UpdateReciterHandler) Handle(c *gin.Context) {
 		ID:        uri.ID,
 		Name:      body.Name,
 		Style:     body.Style,
+		Place:     body.Place,
+		Picture:   body.Picture,
 		UpdatedBy: middlewares.GetUserID(c),
 	}
 

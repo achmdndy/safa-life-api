@@ -49,6 +49,8 @@ func (h *CreateReciterHandler) Handle(c *gin.Context) {
 	cmd := command.CreateReciterCommand{
 		Name:      req.Name,
 		Style:     req.Style,
+		Place:     req.Place,
+		Picture:   req.Picture,
 		CreatedBy: middlewares.GetUserID(c),
 	}
 

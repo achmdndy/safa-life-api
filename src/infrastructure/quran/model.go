@@ -74,8 +74,8 @@ type ReciterModel struct {
 	ID        uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
 	Name      string         `gorm:"column:name;not null;unique;size:255"`
 	Style     string         `gorm:"column:style;not null;size:100"`
-	Place     string         `gorm:"column:place;not null;size:20"`
-	Picture   string         `gorm:"column:picture;not null;size:255"`
+	Place     string         `gorm:"column:place;not null;size:20;default:Unknown"`
+	Picture   string         `gorm:"column:picture;not null;size:255;default:Unknown"`
 	CreatedBy string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
 	UpdatedBy string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
 	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"created_at"`
@@ -181,6 +181,10 @@ type LastReadModel struct {
 
 	Surah SurahModel `gorm:"foreignKey:surah_id;references:id" json:"surah,omitempty"`
 	Ayah  AyahModel  `gorm:"foreignKey:ayah_id;references:id" json:"ayah,omitempty"`
+}
+
+func (LastReadModel) TableName() string {
+	return "last_reads"
 }
 
 type ProgressHatamModel struct {
