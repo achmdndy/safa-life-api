@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"crypto/ed25519"
 	"crypto/rsa"
 	"encoding/base64"
 	"encoding/json"
@@ -35,6 +36,8 @@ type jwk struct {
 	Use string   `json:"use"`
 	N   string   `json:"n"`
 	E   string   `json:"e"`
+	Crv string   `json:"crv"`
+	X   string   `json:"x"`
 	X5c []string `json:"x5c"`
 }
 
@@ -87,12 +90,22 @@ func fetchJWKS(client *http.Client, url string) (map[string]interface{}, error) 
 	}
 	out := make(map[string]interface{}, len(set.Keys))
 	for _, k := range set.Keys {
-		// only support RSA keys for now
+		// Support RSA keys
 		if strings.EqualFold(k.Kty, "RSA") && k.N != "" && k.E != "" {
 			pk, err := rsaPublicKeyFromJWK(k.N, k.E)
 			if err == nil {
 				out[k.Kid] = pk
 			}
+			continue
+		}
+		// Support OKP/Ed25519 keys
+		if strings.EqualFold(k.Kty, "OKP") && strings.EqualFold(k.Crv, "Ed25519") && k.X != "" {
+			b, err := base64.RawURLEncoding.DecodeString(k.X)
+			if err == nil && len(b) == ed25519.PublicKeySize {
+				pk := ed25519.PublicKey(b)
+				out[k.Kid] = pk
+			}
+			continue
 		}
 	}
 	return out, nil
@@ -148,9 +161,11 @@ func AuthMiddleware(cfg appcore.AuthConfig) gin.HandlerFunc {
 		tokenStr := strings.TrimSpace(authHeader[len("Bearer "):])
 
 		token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
-			// only accept RSA methods
+			// accept RSA (RS256, etc.) and EdDSA (Ed25519)
 			if _, ok := t.Method.(*jwt.SigningMethodRSA); !ok {
-				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+				if _, ok := t.Method.(*jwt.SigningMethodEd25519); !ok {
+					return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+				}
 			}
 			kid, _ := t.Header["kid"].(string)
 			if kid == "" {
