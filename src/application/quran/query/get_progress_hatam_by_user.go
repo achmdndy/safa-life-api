@@ -15,19 +15,16 @@ type GetProgressHatamByUserQuery struct {
 }
 
 func (h *QueryHandler) GetProgressHatamByUser(ctx context.Context, query GetProgressHatamByUserQuery) (interface{}, error) {
-	userID, err := h.uuidGenerator.Parse(query.UserID)
-	if err != nil {
-		return nil, err
-	}
+	var err error
 
 	if query.Include == "relations" {
 		var listWith []*quran.ProgressHatamWithRelations
 		var count int64
-		listWith, err = h.progressService.GetProgressHatamByUserWithRelations(ctx, userID, query.Limit, query.Offset)
+		listWith, err = h.progressService.GetProgressHatamByUserWithRelations(ctx, query.UserID, query.Limit, query.Offset)
 		if err != nil {
 			return nil, err
 		}
-		count, err = h.progressService.CountProgressHatamByUser(ctx, userID)
+		count, err = h.progressService.CountProgressHatamByUser(ctx, query.UserID)
 		if err != nil {
 			return nil, err
 		}
@@ -43,11 +40,11 @@ func (h *QueryHandler) GetProgressHatamByUser(ctx context.Context, query GetProg
 
 	var list []*quran.ProgressHatam
 	var count int64
-	list, err = h.progressService.GetProgressHatamByUser(ctx, userID, query.Limit, query.Offset)
+	list, err = h.progressService.GetProgressHatamByUser(ctx, query.UserID, query.Limit, query.Offset)
 	if err != nil {
 		return nil, err
 	}
-	count, err = h.progressService.CountProgressHatamByUser(ctx, userID)
+	count, err = h.progressService.CountProgressHatamByUser(ctx, query.UserID)
 	if err != nil {
 		return nil, err
 	}

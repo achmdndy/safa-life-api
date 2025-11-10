@@ -598,7 +598,7 @@ func ToBookmarkAyahResponse(d *quran.BookmarkAyah) *BookmarkAyahResponse {
 	}
 	return &BookmarkAyahResponse{
 		ID:        d.ID.String(),
-		UserID:    d.UserID.String(),
+		UserID:    d.UserID,
 		AyahID:    d.AyahID.String(),
 		CreatedBy: d.CreatedBy,
 		UpdatedBy: d.UpdatedBy,
@@ -640,7 +640,7 @@ func ToBookmarkAyahWithAyahResponse(d *quran.BookmarkAyahWithAyah) *BookmarkAyah
 	}
 	return &BookmarkAyahWithAyahResponse{
 		ID:        d.ID.String(),
-		UserID:    d.UserID.String(),
+		UserID:    d.UserID,
 		AyahID:    d.AyahID.String(),
 		CreatedBy: d.CreatedBy,
 		UpdatedBy: d.UpdatedBy,
@@ -671,7 +671,7 @@ func ToLastReadResponse(d *quran.LastRead) *LastReadResponse {
 	}
 	return &LastReadResponse{
 		ID:          d.ID.String(),
-		UserID:      d.UserID.String(),
+		UserID:      d.UserID,
 		SurahID:     d.SurahID.String(),
 		AyahID:      d.AyahID.String(),
 		AyahNumber:  d.AyahNumber,
@@ -722,7 +722,7 @@ func ToLastReadWithRelationsResponse(d *quran.LastReadWithRelations) *LastReadWi
 	}
 	return &LastReadWithRelationsResponse{
 		ID:          d.ID.String(),
-		UserID:      d.UserID.String(),
+		UserID:      d.UserID,
 		SurahID:     d.SurahID.String(),
 		AyahID:      d.AyahID.String(),
 		AyahNumber:  d.AyahNumber,
@@ -780,7 +780,7 @@ func ToProgressHatamResponse(d *quran.ProgressHatam) *ProgressHatamResponse {
 	}
 	return &ProgressHatamResponse{
 		ID:          d.ID.String(),
-		UserID:      d.UserID.String(),
+		UserID:      d.UserID,
 		JuzID:       d.JuzID.String(),
 		StartAyahID: d.StartAyahID.String(),
 		LastAyahID:  lastAyahID,
@@ -840,7 +840,7 @@ func ToProgressHatamWithRelationsResponse(d *quran.ProgressHatamWithRelations) *
 	}
 	return &ProgressHatamWithRelationsResponse{
 		ID:          d.ID.String(),
-		UserID:      d.UserID.String(),
+		UserID:      d.UserID,
 		JuzID:       d.JuzID.String(),
 		StartAyahID: d.StartAyahID.String(),
 		LastAyahID:  lastAyahID,

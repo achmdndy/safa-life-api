@@ -387,11 +387,11 @@ func (s *BookmarkAyahService) GetBookmarkAyahById(ctx context.Context, id core.U
 	return s.bookmarkRepo.GetById(ctx, id)
 }
 
-func (s *BookmarkAyahService) GetBookmarkAyahsByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*BookmarkAyah, error) {
+func (s *BookmarkAyahService) GetBookmarkAyahsByUser(ctx context.Context, userId string, limit, offset int) ([]*BookmarkAyah, error) {
 	return s.bookmarkRepo.GetByUser(ctx, userId, limit, offset)
 }
 
-func (s *BookmarkAyahService) GetBookmarkAyahByUserAndAyah(ctx context.Context, userId core.UUID, ayahId core.UUID) (*BookmarkAyah, error) {
+func (s *BookmarkAyahService) GetBookmarkAyahByUserAndAyah(ctx context.Context, userId string, ayahId core.UUID) (*BookmarkAyah, error) {
 	return s.bookmarkRepo.GetByUserAndAyah(ctx, userId, ayahId)
 }
 
@@ -403,7 +403,7 @@ func (s *BookmarkAyahService) DeleteBookmarkAyah(ctx context.Context, id core.UU
 	return s.bookmarkRepo.Delete(ctx, id)
 }
 
-func (s *BookmarkAyahService) CountBookmarkAyahsByUser(ctx context.Context, userId core.UUID) (int64, error) {
+func (s *BookmarkAyahService) CountBookmarkAyahsByUser(ctx context.Context, userId string) (int64, error) {
 	return s.bookmarkRepo.CountByUser(ctx, userId)
 }
 
@@ -426,11 +426,11 @@ func (s *LastReadService) GetLastReadById(ctx context.Context, id core.UUID) (*L
 	return s.lastReadRepo.GetById(ctx, id)
 }
 
-func (s *LastReadService) GetLastReadsByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*LastRead, error) {
+func (s *LastReadService) GetLastReadsByUser(ctx context.Context, userId string, limit, offset int) ([]*LastRead, error) {
 	return s.lastReadRepo.GetByUser(ctx, userId, limit, offset)
 }
 
-func (s *LastReadService) GetLastReadByUserAndSurah(ctx context.Context, userId core.UUID, surahId core.UUID) (*LastRead, error) {
+func (s *LastReadService) GetLastReadByUserAndSurah(ctx context.Context, userId string, surahId core.UUID) (*LastRead, error) {
 	return s.lastReadRepo.GetByUserAndSurah(ctx, userId, surahId)
 }
 
@@ -446,7 +446,7 @@ func (s *LastReadService) DeleteLastRead(ctx context.Context, id core.UUID) erro
 	return s.lastReadRepo.Delete(ctx, id)
 }
 
-func (s *LastReadService) CountLastReadsByUser(ctx context.Context, userId core.UUID) (int64, error) {
+func (s *LastReadService) CountLastReadsByUser(ctx context.Context, userId string) (int64, error) {
 	return s.lastReadRepo.CountByUser(ctx, userId)
 }
 
@@ -455,7 +455,7 @@ func (s *LastReadService) GetLastReadByIdWithRelations(ctx context.Context, id c
 	return s.lastReadRepo.GetByIdWithRelations(ctx, id)
 }
 
-func (s *LastReadService) GetLastReadsByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*LastReadWithRelations, error) {
+func (s *LastReadService) GetLastReadsByUserWithRelations(ctx context.Context, userId string, limit, offset int) ([]*LastReadWithRelations, error) {
 	return s.lastReadRepo.GetByUserWithRelations(ctx, userId, limit, offset)
 }
 
@@ -473,11 +473,11 @@ func (s *ProgressHatamService) GetProgressHatamById(ctx context.Context, id core
 	return s.progressRepo.GetById(ctx, id)
 }
 
-func (s *ProgressHatamService) GetProgressHatamByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*ProgressHatam, error) {
+func (s *ProgressHatamService) GetProgressHatamByUser(ctx context.Context, userId string, limit, offset int) ([]*ProgressHatam, error) {
 	return s.progressRepo.GetByUser(ctx, userId, limit, offset)
 }
 
-func (s *ProgressHatamService) GetProgressHatamByUserAndJuz(ctx context.Context, userId core.UUID, juzId core.UUID) (*ProgressHatam, error) {
+func (s *ProgressHatamService) GetProgressHatamByUserAndJuz(ctx context.Context, userId string, juzId core.UUID) (*ProgressHatam, error) {
 	return s.progressRepo.GetByUserAndJuz(ctx, userId, juzId)
 }
 
@@ -493,7 +493,7 @@ func (s *ProgressHatamService) DeleteProgressHatam(ctx context.Context, id core.
 	return s.progressRepo.Delete(ctx, id)
 }
 
-func (s *ProgressHatamService) CountProgressHatamByUser(ctx context.Context, userId core.UUID) (int64, error) {
+func (s *ProgressHatamService) CountProgressHatamByUser(ctx context.Context, userId string) (int64, error) {
 	return s.progressRepo.CountByUser(ctx, userId)
 }
 
@@ -502,6 +502,6 @@ func (s *ProgressHatamService) GetProgressHatamByIdWithRelations(ctx context.Con
 	return s.progressRepo.GetByIdWithRelations(ctx, id)
 }
 
-func (s *ProgressHatamService) GetProgressHatamByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*ProgressHatamWithRelations, error) {
+func (s *ProgressHatamService) GetProgressHatamByUserWithRelations(ctx context.Context, userId string, limit, offset int) ([]*ProgressHatamWithRelations, error) {
 	return s.progressRepo.GetByUserWithRelations(ctx, userId, limit, offset)
 }

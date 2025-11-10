@@ -546,7 +546,7 @@ func (m *Mapper) BookmarkAyahEntityToModel(entity *quran.BookmarkAyah) *Bookmark
 	}
 	return &BookmarkAyahModel{
 		ID:        m.coreUUIDToGoogleUUID(entity.ID),
-		UserID:    m.coreUUIDToGoogleUUID(entity.UserID),
+		UserID:    entity.UserID,
 		AyahID:    m.coreUUIDToGoogleUUID(entity.AyahID),
 		CreatedBy: entity.CreatedBy,
 		UpdatedBy: entity.UpdatedBy,
@@ -633,7 +633,7 @@ func (m *Mapper) LastReadEntityToModel(entity *quran.LastRead) *LastReadModel {
 	}
 	return &LastReadModel{
 		ID:          m.coreUUIDToGoogleUUID(entity.ID),
-		UserID:      m.coreUUIDToGoogleUUID(entity.UserID),
+		UserID:      entity.UserID,
 		SurahID:     m.coreUUIDToGoogleUUID(entity.SurahID),
 		AyahID:      m.coreUUIDToGoogleUUID(entity.AyahID),
 		AyahNumber:  entity.AyahNumber,
@@ -731,7 +731,7 @@ func (m *Mapper) ProgressHatamEntityToModel(entity *quran.ProgressHatam) *Progre
 	}
 	return &ProgressHatamModel{
 		ID:          m.coreUUIDToGoogleUUID(entity.ID),
-		UserID:      m.coreUUIDToGoogleUUID(entity.UserID),
+		UserID:      entity.UserID,
 		JuzID:       m.coreUUIDToGoogleUUID(entity.JuzID),
 		StartAyahID: m.coreUUIDToGoogleUUID(entity.StartAyahID),
 		LastAyahID:  m.coreUUIDToGoogleUUID(entity.LastAyahID),

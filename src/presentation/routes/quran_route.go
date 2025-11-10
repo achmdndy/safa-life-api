@@ -101,11 +101,12 @@ func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler, authMW gi
 			bookmarkAyahGroup := quranGroup.Group("/bookmarks/ayahs")
 			{
 				bookmarkAyahGroup.GET("/:id", quranHandler.GetBookmarkAyahByIdHandler().Handle)
-				bookmarkAyahGroup.GET("/user/:userId", quranHandler.GetBookmarkAyahsByUserHandler().Handle)
-				bookmarkAyahGroup.GET("/user/:userId/ayah/:ayahId", quranHandler.GetBookmarkAyahByUserAndAyahHandler().Handle)
 
 				bookmarkAyahProtected := bookmarkAyahGroup.Group("")
 				bookmarkAyahProtected.Use(authMW)
+				// List dan ambil bookmark berdasarkan user dari middleware
+				bookmarkAyahProtected.GET("", quranHandler.GetBookmarkAyahsByUserHandler().Handle)
+				bookmarkAyahProtected.GET("/ayah/:ayahId", quranHandler.GetBookmarkAyahByUserAndAyahHandler().Handle)
 				bookmarkAyahProtected.POST("", quranHandler.CreateBookmarkAyahHandler().Handle)
 				bookmarkAyahProtected.DELETE("/:id", quranHandler.DeleteBookmarkAyahHandler().Handle)
 			}

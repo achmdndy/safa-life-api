@@ -1107,9 +1107,9 @@ func (r *BookmarkAyahRepositoryImpl) GetById(ctx context.Context, id core.UUID) 
 }
 
 // GetByUser retrieves BookmarkAyahs by user with pagination
-func (r *BookmarkAyahRepositoryImpl) GetByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*quran.BookmarkAyah, error) {
+func (r *BookmarkAyahRepositoryImpl) GetByUser(ctx context.Context, userId string, limit, offset int) ([]*quran.BookmarkAyah, error) {
 	var models []BookmarkAyahModel
-	query := r.db.WithContext(ctx).Where("user_id = ?", infraCore.ToGoogleUUID(userId)).Order("created_at ASC")
+	query := r.db.WithContext(ctx).Where("user_id = ?", userId).Order("created_at ASC")
 	if limit > 0 {
 		query = query.Limit(limit)
 	}
@@ -1127,10 +1127,10 @@ func (r *BookmarkAyahRepositoryImpl) GetByUser(ctx context.Context, userId core.
 }
 
 // GetByUserAndAyah retrieves a BookmarkAyah by user and ayah
-func (r *BookmarkAyahRepositoryImpl) GetByUserAndAyah(ctx context.Context, userId core.UUID, ayahId core.UUID) (*quran.BookmarkAyah, error) {
+func (r *BookmarkAyahRepositoryImpl) GetByUserAndAyah(ctx context.Context, userId string, ayahId core.UUID) (*quran.BookmarkAyah, error) {
 	var model BookmarkAyahModel
 	if err := r.db.WithContext(ctx).
-		Where("user_id = ? AND ayah_id = ?", infraCore.ToGoogleUUID(userId), infraCore.ToGoogleUUID(ayahId)).
+		Where("user_id = ? AND ayah_id = ?", userId, infraCore.ToGoogleUUID(ayahId)).
 		First(&model).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, quran.ErrBookmarkAyahNotFound
@@ -1158,10 +1158,10 @@ func (r *BookmarkAyahRepositoryImpl) Delete(ctx context.Context, id core.UUID) e
 }
 
 // CountByUser returns the count of BookmarkAyahs for a user
-func (r *BookmarkAyahRepositoryImpl) CountByUser(ctx context.Context, userId core.UUID) (int64, error) {
+func (r *BookmarkAyahRepositoryImpl) CountByUser(ctx context.Context, userId string) (int64, error) {
 	var count int64
 	if err := r.db.WithContext(ctx).Model(&BookmarkAyahModel{}).
-		Where("user_id = ?", infraCore.ToGoogleUUID(userId)).
+		Where("user_id = ?", userId).
 		Count(&count).Error; err != nil {
 		return 0, fmt.Errorf("failed to count bookmark ayahs by user: %w", err)
 	}
@@ -1204,9 +1204,9 @@ func (r *LastReadRepositoryImpl) GetById(ctx context.Context, id core.UUID) (*qu
 }
 
 // GetByUser retrieves LastRead records by user with pagination
-func (r *LastReadRepositoryImpl) GetByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*quran.LastRead, error) {
+func (r *LastReadRepositoryImpl) GetByUser(ctx context.Context, userId string, limit, offset int) ([]*quran.LastRead, error) {
 	var models []LastReadModel
-	query := r.db.WithContext(ctx).Where("user_id = ?", infraCore.ToGoogleUUID(userId)).Order("last_read_at DESC")
+	query := r.db.WithContext(ctx).Where("user_id = ?", userId).Order("last_read_at DESC")
 	if limit > 0 {
 		query = query.Limit(limit)
 	}
@@ -1224,10 +1224,10 @@ func (r *LastReadRepositoryImpl) GetByUser(ctx context.Context, userId core.UUID
 }
 
 // GetByUserAndSurah retrieves a LastRead by user and surah
-func (r *LastReadRepositoryImpl) GetByUserAndSurah(ctx context.Context, userId core.UUID, surahId core.UUID) (*quran.LastRead, error) {
+func (r *LastReadRepositoryImpl) GetByUserAndSurah(ctx context.Context, userId string, surahId core.UUID) (*quran.LastRead, error) {
 	var model LastReadModel
 	if err := r.db.WithContext(ctx).
-		Where("user_id = ? AND surah_id = ?", infraCore.ToGoogleUUID(userId), infraCore.ToGoogleUUID(surahId)).
+		Where("user_id = ? AND surah_id = ?", userId, infraCore.ToGoogleUUID(surahId)).
 		First(&model).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, quran.ErrLastReadNotFound
@@ -1264,10 +1264,10 @@ func (r *LastReadRepositoryImpl) Delete(ctx context.Context, id core.UUID) error
 }
 
 // CountByUser returns the count of LastRead records for a user
-func (r *LastReadRepositoryImpl) CountByUser(ctx context.Context, userId core.UUID) (int64, error) {
+func (r *LastReadRepositoryImpl) CountByUser(ctx context.Context, userId string) (int64, error) {
 	var count int64
 	if err := r.db.WithContext(ctx).Model(&LastReadModel{}).
-		Where("user_id = ?", infraCore.ToGoogleUUID(userId)).
+		Where("user_id = ?", userId).
 		Count(&count).Error; err != nil {
 		return 0, fmt.Errorf("failed to count last reads by user: %w", err)
 	}
@@ -1287,9 +1287,9 @@ func (r *LastReadRepositoryImpl) GetByIdWithRelations(ctx context.Context, id co
 }
 
 // GetByUserWithRelations retrieves LastRead records by user with relations and pagination
-func (r *LastReadRepositoryImpl) GetByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*quran.LastReadWithRelations, error) {
+func (r *LastReadRepositoryImpl) GetByUserWithRelations(ctx context.Context, userId string, limit, offset int) ([]*quran.LastReadWithRelations, error) {
 	var models []LastReadModel
-	query := r.db.WithContext(ctx).Preload("Surah").Preload("Ayah").Where("user_id = ?", infraCore.ToGoogleUUID(userId)).Order("last_read_at DESC")
+	query := r.db.WithContext(ctx).Preload("Surah").Preload("Ayah").Where("user_id = ?", userId).Order("last_read_at DESC")
 	if limit > 0 {
 		query = query.Limit(limit)
 	}
@@ -1330,9 +1330,9 @@ func (r *ProgressHatamRepositoryImpl) GetById(ctx context.Context, id core.UUID)
 }
 
 // GetByUser retrieves ProgressHatam records by user with pagination
-func (r *ProgressHatamRepositoryImpl) GetByUser(ctx context.Context, userId core.UUID, limit, offset int) ([]*quran.ProgressHatam, error) {
+func (r *ProgressHatamRepositoryImpl) GetByUser(ctx context.Context, userId string, limit, offset int) ([]*quran.ProgressHatam, error) {
 	var models []ProgressHatamModel
-	query := r.db.WithContext(ctx).Where("user_id = ?", infraCore.ToGoogleUUID(userId)).Order("started_at DESC")
+	query := r.db.WithContext(ctx).Where("user_id = ?", userId).Order("started_at DESC")
 	if limit > 0 {
 		query = query.Limit(limit)
 	}
@@ -1350,10 +1350,10 @@ func (r *ProgressHatamRepositoryImpl) GetByUser(ctx context.Context, userId core
 }
 
 // GetByUserAndJuz retrieves a ProgressHatam by user and juz
-func (r *ProgressHatamRepositoryImpl) GetByUserAndJuz(ctx context.Context, userId core.UUID, juzId core.UUID) (*quran.ProgressHatam, error) {
+func (r *ProgressHatamRepositoryImpl) GetByUserAndJuz(ctx context.Context, userId string, juzId core.UUID) (*quran.ProgressHatam, error) {
 	var model ProgressHatamModel
 	if err := r.db.WithContext(ctx).
-		Where("user_id = ? AND juz_id = ?", infraCore.ToGoogleUUID(userId), infraCore.ToGoogleUUID(juzId)).
+		Where("user_id = ? AND juz_id = ?", userId, infraCore.ToGoogleUUID(juzId)).
 		First(&model).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, quran.ErrProgressHatamNotFound
@@ -1390,10 +1390,10 @@ func (r *ProgressHatamRepositoryImpl) Delete(ctx context.Context, id core.UUID) 
 }
 
 // CountByUser returns the count of ProgressHatam records for a user
-func (r *ProgressHatamRepositoryImpl) CountByUser(ctx context.Context, userId core.UUID) (int64, error) {
+func (r *ProgressHatamRepositoryImpl) CountByUser(ctx context.Context, userId string) (int64, error) {
 	var count int64
 	if err := r.db.WithContext(ctx).Model(&ProgressHatamModel{}).
-		Where("user_id = ?", infraCore.ToGoogleUUID(userId)).
+		Where("user_id = ?", userId).
 		Count(&count).Error; err != nil {
 		return 0, fmt.Errorf("failed to count progress hatam by user: %w", err)
 	}
@@ -1415,11 +1415,11 @@ func (r *ProgressHatamRepositoryImpl) GetByIdWithRelations(ctx context.Context, 
 }
 
 // GetByUserWithRelations retrieves ProgressHatam records by user with relations and pagination
-func (r *ProgressHatamRepositoryImpl) GetByUserWithRelations(ctx context.Context, userId core.UUID, limit, offset int) ([]*quran.ProgressHatamWithRelations, error) {
+func (r *ProgressHatamRepositoryImpl) GetByUserWithRelations(ctx context.Context, userId string, limit, offset int) ([]*quran.ProgressHatamWithRelations, error) {
 	var models []ProgressHatamModel
 	query := r.db.WithContext(ctx).
 		Preload("Juz").Preload("StartAyah").Preload("LastAyah").
-		Where("user_id = ?", infraCore.ToGoogleUUID(userId)).Order("started_at DESC")
+		Where("user_id = ?", userId).Order("started_at DESC")
 	if limit > 0 {
 		query = query.Limit(limit)
 	}

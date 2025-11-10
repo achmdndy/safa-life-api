@@ -230,16 +230,8 @@ definitions:
     properties:
       ayahId:
         type: string
-      createdBy:
-        maxLength: 255
-        minLength: 1
-        type: string
-      userId:
-        type: string
     required:
     - ayahId
-    - createdBy
-    - userId
     type: object
   dto.CreateJuzRequest:
     properties:
@@ -269,32 +261,20 @@ definitions:
       ayahNumber:
         minimum: 1
         type: integer
-      createdBy:
-        maxLength: 255
-        minLength: 1
-        type: string
       progressPct:
         maximum: 100
         minimum: 0
         type: number
       surahId:
         type: string
-      userId:
-        type: string
     required:
     - ayahId
     - ayahNumber
-    - createdBy
     - progressPct
     - surahId
-    - userId
     type: object
   dto.CreateProgressHatamRequest:
     properties:
-      createdBy:
-        maxLength: 255
-        minLength: 1
-        type: string
       juzId:
         type: string
       progressPct:
@@ -303,14 +283,10 @@ definitions:
         type: number
       startAyahId:
         type: string
-      userId:
-        type: string
     required:
-    - createdBy
     - juzId
     - progressPct
     - startAyahId
-    - userId
     type: object
   dto.CreateReciterRequest:
     properties:
@@ -1963,6 +1939,37 @@ paths:
       tags:
       - Ayahs
   /quran/bookmarks/ayahs:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of ayah bookmarks for the authenticated user
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bookmarks retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.BookmarkAyahListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: List bookmark ayahs by current user
+      tags:
+      - Bookmarks
     post:
       consumes:
       - application/json
@@ -2064,54 +2071,12 @@ paths:
       summary: Get bookmark ayah by ID
       tags:
       - Bookmarks
-  /quran/bookmarks/ayahs/user/{userId}:
+  /quran/bookmarks/ayahs/ayah/{ayahId}:
     get:
       consumes:
       - application/json
-      description: Get a paginated list of ayah bookmarks for a user
+      description: Get a bookmark for the authenticated user and specified ayah
       parameters:
-      - description: User ID
-        in: path
-        name: userId
-        required: true
-        type: string
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Offset
-        in: query
-        name: offset
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Bookmarks retrieved successfully
-          schema:
-            $ref: '#/definitions/quran.BookmarkAyahListSuccessResponse'
-        "400":
-          description: Bad request
-          schema:
-            $ref: '#/definitions/quran.QuranErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/quran.QuranErrorResponse'
-      summary: List bookmark ayahs by user
-      tags:
-      - Bookmarks
-  /quran/bookmarks/ayahs/user/{userId}/ayah/{ayahId}:
-    get:
-      consumes:
-      - application/json
-      description: Get a bookmark for a specific user and ayah
-      parameters:
-      - description: User ID
-        in: path
-        name: userId
-        required: true
-        type: string
       - description: Ayah ID
         in: path
         name: ayahId
@@ -2143,7 +2108,7 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/quran.QuranErrorResponse'
-      summary: Get bookmark ayah by user and ayah
+      summary: Get bookmark ayah by current user and ayah
       tags:
       - Bookmarks
   /quran/juz:

@@ -14,17 +14,13 @@ type GetLastReadByUserAndSurahQuery struct {
 }
 
 func (h *QueryHandler) GetLastReadByUserAndSurah(ctx context.Context, query GetLastReadByUserAndSurahQuery) (interface{}, error) {
-	userID, err := h.uuidGenerator.Parse(query.UserID)
-	if err != nil {
-		return nil, err
-	}
 	surahID, err := h.uuidGenerator.Parse(query.SurahID)
 	if err != nil {
 		return nil, err
 	}
 
 	var lr *quran.LastRead
-	lr, err = h.lastReadService.GetLastReadByUserAndSurah(ctx, userID, surahID)
+	lr, err = h.lastReadService.GetLastReadByUserAndSurah(ctx, query.UserID, surahID)
 	if err != nil {
 		return nil, err
 	}

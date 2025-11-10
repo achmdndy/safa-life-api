@@ -19,10 +19,6 @@ type CreateLastReadCommand struct {
 func (h *CommandHandler) CreateLastRead(ctx context.Context, command CreateLastReadCommand) (*dto.LastReadResponse, error) {
 	id := h.uuidGenerator.New()
 
-	userID, err := h.uuidGenerator.Parse(command.UserID)
-	if err != nil {
-		return nil, err
-	}
 	surahID, err := h.uuidGenerator.Parse(command.SurahID)
 	if err != nil {
 		return nil, err
@@ -34,7 +30,7 @@ func (h *CommandHandler) CreateLastRead(ctx context.Context, command CreateLastR
 
 	lr := quran.NewLastRead(
 		id,
-		userID,
+		command.UserID,
 		surahID,
 		ayahID,
 		command.AyahNumber,

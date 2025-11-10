@@ -13,17 +13,12 @@ type GetBookmarkAyahsByUserQuery struct {
 }
 
 func (h *QueryHandler) GetBookmarkAyahsByUser(ctx context.Context, query GetBookmarkAyahsByUserQuery) (*dto.BookmarkAyahListResponse, error) {
-	userID, err := h.uuidGenerator.Parse(query.UserID)
+	bookmarks, err := h.bookmarkService.GetBookmarkAyahsByUser(ctx, query.UserID, query.Limit, query.Offset)
 	if err != nil {
 		return nil, err
 	}
 
-	bookmarks, err := h.bookmarkService.GetBookmarkAyahsByUser(ctx, userID, query.Limit, query.Offset)
-	if err != nil {
-		return nil, err
-	}
-
-	count, err := h.bookmarkService.CountBookmarkAyahsByUser(ctx, userID)
+	count, err := h.bookmarkService.CountBookmarkAyahsByUser(ctx, query.UserID)
 	if err != nil {
 		return nil, err
 	}

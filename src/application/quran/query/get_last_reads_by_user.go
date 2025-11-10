@@ -15,19 +15,16 @@ type GetLastReadsByUserQuery struct {
 }
 
 func (h *QueryHandler) GetLastReadsByUser(ctx context.Context, query GetLastReadsByUserQuery) (interface{}, error) {
-	userID, err := h.uuidGenerator.Parse(query.UserID)
-	if err != nil {
-		return nil, err
-	}
+	var err error
 
 	if query.Include == "relations" {
 		var listWith []*quran.LastReadWithRelations
 		var count int64
-		listWith, err = h.lastReadService.GetLastReadsByUserWithRelations(ctx, userID, query.Limit, query.Offset)
+		listWith, err = h.lastReadService.GetLastReadsByUserWithRelations(ctx, query.UserID, query.Limit, query.Offset)
 		if err != nil {
 			return nil, err
 		}
-		count, err = h.lastReadService.CountLastReadsByUser(ctx, userID)
+		count, err = h.lastReadService.CountLastReadsByUser(ctx, query.UserID)
 		if err != nil {
 			return nil, err
 		}
@@ -43,11 +40,11 @@ func (h *QueryHandler) GetLastReadsByUser(ctx context.Context, query GetLastRead
 
 	var list []*quran.LastRead
 	var count int64
-	list, err = h.lastReadService.GetLastReadsByUser(ctx, userID, query.Limit, query.Offset)
+	list, err = h.lastReadService.GetLastReadsByUser(ctx, query.UserID, query.Limit, query.Offset)
 	if err != nil {
 		return nil, err
 	}
-	count, err = h.lastReadService.CountLastReadsByUser(ctx, userID)
+	count, err = h.lastReadService.CountLastReadsByUser(ctx, query.UserID)
 	if err != nil {
 		return nil, err
 	}

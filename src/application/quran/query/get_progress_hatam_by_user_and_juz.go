@@ -14,17 +14,13 @@ type GetProgressHatamByUserAndJuzQuery struct {
 }
 
 func (h *QueryHandler) GetProgressHatamByUserAndJuz(ctx context.Context, query GetProgressHatamByUserAndJuzQuery) (interface{}, error) {
-	userID, err := h.uuidGenerator.Parse(query.UserID)
-	if err != nil {
-		return nil, err
-	}
 	juzID, err := h.uuidGenerator.Parse(query.JuzID)
 	if err != nil {
 		return nil, err
 	}
 
 	var p *quran.ProgressHatam
-	p, err = h.progressService.GetProgressHatamByUserAndJuz(ctx, userID, juzID)
+	p, err = h.progressService.GetProgressHatamByUserAndJuz(ctx, query.UserID, juzID)
 	if err != nil {
 		return nil, err
 	}

@@ -149,7 +149,7 @@ func (AyahTranslationModel) TableName() string {
 
 type BookmarkAyahModel struct {
 	ID        uuid.UUID      `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
-	UserID    uuid.UUID      `gorm:"column:user_id;type:varchar(36);not null;index;" json:"user_id"`
+	UserID    string         `gorm:"column:user_id;type:varchar(255);not null;index;" json:"user_id"`
 	AyahID    uuid.UUID      `gorm:"column:ayah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"ayah_id"`
 	CreatedBy string         `gorm:"column:create_by;type:varchar(255);not null" json:"created_by"`
 	UpdatedBy string         `gorm:"column:update_by;type:varchar(255);not null" json:"updated_by"`
@@ -166,7 +166,7 @@ func (BookmarkAyahModel) TableName() string {
 
 type LastReadModel struct {
 	ID          uuid.UUID `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
-	UserID      uuid.UUID `gorm:"column:user_id;type:uuid;not null;index" json:"user_id"`
+	UserID      string    `gorm:"column:user_id;type:varchar(255);not null;index" json:"user_id"`
 	SurahID     uuid.UUID `gorm:"column:surah_id;type:uuid;not null;index:idx_user_surah" json:"surah_id"`
 	AyahID      uuid.UUID `gorm:"column:ayah_id;type:uuid;not null;index" json:"ayah_id"`
 	AyahNumber  int       `gorm:"column:ayah_number;type:int;not null" json:"ayah_number"`
@@ -189,7 +189,7 @@ func (LastReadModel) TableName() string {
 
 type ProgressHatamModel struct {
 	ID          uuid.UUID  `gorm:"column:id;type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
-	UserID      uuid.UUID  `gorm:"column:user_id;type:varchar(36);not null;index;" json:"user_id"`
+	UserID      string     `gorm:"column:user_id;type:varchar(255);not null;index;" json:"user_id"`
 	JuzID       uuid.UUID  `gorm:"column:juz_id;type:uuid;not null;index:idx_user_juz;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"juz_id"`
 	StartAyahID uuid.UUID  `gorm:"column:start_ayah_id;type:uuid;not null;index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"start_ayah_id"`
 	LastAyahID  uuid.UUID  `gorm:"column:last_ayah_id;type:uuid;index;constraint:OnUpdate:CASCADE,OnDelete:SET NULL" json:"last_ayah_id"`

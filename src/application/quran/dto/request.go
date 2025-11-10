@@ -249,9 +249,7 @@ type DeleteAyahAudioFileRequest struct {
 
 // BookmarkAyah Request DTOs
 type CreateBookmarkAyahRequest struct {
-	UserID    string `json:"userId" binding:"required"`
-	AyahID    string `json:"ayahId" binding:"required"`
-	CreatedBy string `json:"createdBy" binding:"required,min=1,max=255"`
+	AyahID string `json:"ayahId" binding:"required"`
 }
 
 type GetBookmarkAyahByIdRequest struct {
@@ -278,12 +276,10 @@ type DeleteBookmarkAyahRequest struct {
 
 // LastRead Request DTOs
 type CreateLastReadRequest struct {
-	UserID      string  `json:"userId" binding:"required"`
 	SurahID     string  `json:"surahId" binding:"required"`
 	AyahID      string  `json:"ayahId" binding:"required"`
 	AyahNumber  int     `json:"ayahNumber" binding:"required,min=1"`
 	ProgressPct float64 `json:"progressPct" binding:"required,min=0,max=100"`
-	CreatedBy   string  `json:"createdBy" binding:"required,min=1,max=255"`
 }
 
 type UpdateLastReadRequest struct {
@@ -318,11 +314,9 @@ type DeleteLastReadRequest struct {
 
 // ProgressHatam Request DTOs
 type CreateProgressHatamRequest struct {
-	UserID      string  `json:"userId" binding:"required"`
 	JuzID       string  `json:"juzId" binding:"required"`
 	StartAyahID string  `json:"startAyahId" binding:"required"`
 	ProgressPct float64 `json:"progressPct" binding:"required,min=0,max=100"`
-	CreatedBy   string  `json:"createdBy" binding:"required,min=1,max=255"`
 }
 
 type UpdateProgressHatamRequest struct {

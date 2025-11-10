@@ -282,7 +282,7 @@ func (j *Juz) Update(startSurahID, endSurahID, startAyahID, endAyahID core.UUID,
 // BookmarkAyah represents a user's bookmarked ayah in the domain
 type BookmarkAyah struct {
 	ID        core.UUID `json:"id"`
-	UserID    core.UUID `json:"userId"`
+	UserID    string    `json:"userId"`
 	AyahID    core.UUID `json:"ayahId"`
 	CreatedBy string    `json:"createdBy"`
 	UpdatedBy string    `json:"updatedBy"`
@@ -293,7 +293,7 @@ type BookmarkAyah struct {
 // BookmarkAyahWithAyah represents a bookmark with its related ayah
 type BookmarkAyahWithAyah struct {
 	ID        core.UUID `json:"id"`
-	UserID    core.UUID `json:"userId"`
+	UserID    string    `json:"userId"`
 	AyahID    core.UUID `json:"ayahId"`
 	CreatedBy string    `json:"createdBy"`
 	UpdatedBy string    `json:"updatedBy"`
@@ -303,7 +303,7 @@ type BookmarkAyahWithAyah struct {
 }
 
 // NewBookmarkAyah creates a new BookmarkAyah entity
-func NewBookmarkAyah(id, userID, ayahID core.UUID, createdBy string) *BookmarkAyah {
+func NewBookmarkAyah(id core.UUID, userID string, ayahID core.UUID, createdBy string) *BookmarkAyah {
 	now := time.Now()
 	return &BookmarkAyah{
 		ID:        id,
@@ -326,7 +326,7 @@ func (b *BookmarkAyah) Update(ayahID core.UUID, updatedBy string) {
 // LastRead represents a user's last read progress within a surah
 type LastRead struct {
 	ID          core.UUID `json:"id"`
-	UserID      core.UUID `json:"userId"`
+	UserID      string    `json:"userId"`
 	SurahID     core.UUID `json:"surahId"`
 	AyahID      core.UUID `json:"ayahId"`
 	AyahNumber  int       `json:"ayahNumber"`
@@ -341,7 +341,7 @@ type LastRead struct {
 // LastReadWithRelations represents last read with related surah and ayah
 type LastReadWithRelations struct {
 	ID          core.UUID `json:"id"`
-	UserID      core.UUID `json:"userId"`
+	UserID      string    `json:"userId"`
 	SurahID     core.UUID `json:"surahId"`
 	AyahID      core.UUID `json:"ayahId"`
 	AyahNumber  int       `json:"ayahNumber"`
@@ -356,7 +356,7 @@ type LastReadWithRelations struct {
 }
 
 // NewLastRead creates a new LastRead entity
-func NewLastRead(id, userID, surahID, ayahID core.UUID, ayahNumber int, progressPct float64, createdBy string) *LastRead {
+func NewLastRead(id core.UUID, userID string, surahID, ayahID core.UUID, ayahNumber int, progressPct float64, createdBy string) *LastRead {
 	now := time.Now()
 	return &LastRead{
 		ID:          id,
@@ -386,7 +386,7 @@ func (l *LastRead) Update(ayahID core.UUID, ayahNumber int, progressPct float64,
 // ProgressHatam represents a user's hatam (completion) progress across a juz
 type ProgressHatam struct {
 	ID          core.UUID  `json:"id"`
-	UserID      core.UUID  `json:"userId"`
+	UserID      string     `json:"userId"`
 	JuzID       core.UUID  `json:"juzId"`
 	StartAyahID core.UUID  `json:"startAyahId"`
 	LastAyahID  core.UUID  `json:"lastAyahId"`
@@ -403,7 +403,7 @@ type ProgressHatam struct {
 // ProgressHatamWithRelations represents progress data with related entities
 type ProgressHatamWithRelations struct {
 	ID          core.UUID  `json:"id"`
-	UserID      core.UUID  `json:"userId"`
+	UserID      string     `json:"userId"`
 	JuzID       core.UUID  `json:"juzId"`
 	StartAyahID core.UUID  `json:"startAyahId"`
 	LastAyahID  core.UUID  `json:"lastAyahId"`
@@ -421,7 +421,7 @@ type ProgressHatamWithRelations struct {
 }
 
 // NewProgressHatam creates a new ProgressHatam entity
-func NewProgressHatam(id, userID, juzID, startAyahID core.UUID, progressPct float64, createdBy string) *ProgressHatam {
+func NewProgressHatam(id core.UUID, userID string, juzID, startAyahID core.UUID, progressPct float64, createdBy string) *ProgressHatam {
 	now := time.Now()
 	return &ProgressHatam{
 		ID:          id,

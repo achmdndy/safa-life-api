@@ -615,6 +615,53 @@ const docTemplate = `{
             }
         },
         "/quran/bookmarks/ayahs": {
+            "get": {
+                "description": "Get a paginated list of ayah bookmarks for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookmarks"
+                ],
+                "summary": "List bookmark ayahs by current user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bookmarks retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.BookmarkAyahListSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Bookmark an ayah for the current user",
                 "consumes": [
@@ -660,9 +707,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/quran/bookmarks/ayahs/user/{userId}": {
+        "/quran/bookmarks/ayahs/ayah/{ayahId}": {
             "get": {
-                "description": "Get a paginated list of ayah bookmarks for a user",
+                "description": "Get a bookmark for the authenticated user and specified ayah",
                 "consumes": [
                     "application/json"
                 ],
@@ -672,71 +719,8 @@ const docTemplate = `{
                 "tags": [
                     "Bookmarks"
                 ],
-                "summary": "List bookmark ayahs by user",
+                "summary": "Get bookmark ayah by current user and ayah",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Bookmarks retrieved successfully",
-                        "schema": {
-                            "$ref": "#/definitions/quran.BookmarkAyahListSuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "$ref": "#/definitions/quran.QuranErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/quran.QuranErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/quran/bookmarks/ayahs/user/{userId}/ayah/{ayahId}": {
-            "get": {
-                "description": "Get a bookmark for a specific user and ayah",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Bookmarks"
-                ],
-                "summary": "Get bookmark ayah by user and ayah",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Ayah ID",
@@ -3088,20 +3072,10 @@ const docTemplate = `{
         "dto.CreateBookmarkAyahRequest": {
             "type": "object",
             "required": [
-                "ayahId",
-                "createdBy",
-                "userId"
+                "ayahId"
             ],
             "properties": {
                 "ayahId": {
-                    "type": "string"
-                },
-                "createdBy": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 1
-                },
-                "userId": {
                     "type": "string"
                 }
             }
@@ -3140,10 +3114,8 @@ const docTemplate = `{
             "required": [
                 "ayahId",
                 "ayahNumber",
-                "createdBy",
                 "progressPct",
-                "surahId",
-                "userId"
+                "surahId"
             ],
             "properties": {
                 "ayahId": {
@@ -3153,11 +3125,6 @@ const docTemplate = `{
                     "type": "integer",
                     "minimum": 1
                 },
-                "createdBy": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 1
-                },
                 "progressPct": {
                     "type": "number",
                     "maximum": 100,
@@ -3165,27 +3132,17 @@ const docTemplate = `{
                 },
                 "surahId": {
                     "type": "string"
-                },
-                "userId": {
-                    "type": "string"
                 }
             }
         },
         "dto.CreateProgressHatamRequest": {
             "type": "object",
             "required": [
-                "createdBy",
                 "juzId",
                 "progressPct",
-                "startAyahId",
-                "userId"
+                "startAyahId"
             ],
             "properties": {
-                "createdBy": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 1
-                },
                 "juzId": {
                     "type": "string"
                 },
@@ -3195,9 +3152,6 @@ const docTemplate = `{
                     "minimum": 0
                 },
                 "startAyahId": {
-                    "type": "string"
-                },
-                "userId": {
                     "type": "string"
                 }
             }

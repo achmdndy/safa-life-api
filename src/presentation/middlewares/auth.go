@@ -238,6 +238,8 @@ func AuthMiddleware(cfg appcore.AuthConfig) gin.HandlerFunc {
 			return
 		}
 
+		// no strict UUID validation; accept any non-empty sub as user identifier
+
 		// inject into context
 		c.Set("user_id", sub)
 		if email != "" {

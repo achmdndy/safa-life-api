@@ -15,11 +15,6 @@ type CreateBookmarkAyahCommand struct {
 
 func (h *CommandHandler) CreateBookmarkAyah(ctx context.Context, command CreateBookmarkAyahCommand) (*dto.BookmarkAyahResponse, error) {
 	id := h.uuidGenerator.New()
-
-	userID, err := h.uuidGenerator.Parse(command.UserID)
-	if err != nil {
-		return nil, err
-	}
 	ayahID, err := h.uuidGenerator.Parse(command.AyahID)
 	if err != nil {
 		return nil, err
@@ -27,7 +22,7 @@ func (h *CommandHandler) CreateBookmarkAyah(ctx context.Context, command CreateB
 
 	bookmark := quran.NewBookmarkAyah(
 		id,
-		userID,
+		command.UserID,
 		ayahID,
 		command.CreatedBy,
 	)

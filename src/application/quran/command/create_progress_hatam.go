@@ -18,10 +18,6 @@ type CreateProgressHatamCommand struct {
 func (h *CommandHandler) CreateProgressHatam(ctx context.Context, command CreateProgressHatamCommand) (*dto.ProgressHatamResponse, error) {
 	id := h.uuidGenerator.New()
 
-	userID, err := h.uuidGenerator.Parse(command.UserID)
-	if err != nil {
-		return nil, err
-	}
 	juzID, err := h.uuidGenerator.Parse(command.JuzID)
 	if err != nil {
 		return nil, err
@@ -33,7 +29,7 @@ func (h *CommandHandler) CreateProgressHatam(ctx context.Context, command Create
 
 	p := quran.NewProgressHatam(
 		id,
-		userID,
+		command.UserID,
 		juzID,
 		startAyahID,
 		command.ProgressPct,

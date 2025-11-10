@@ -15,17 +15,13 @@ type GetBookmarkAyahByUserAndAyahQuery struct {
 
 // GetBookmarkAyahByUserAndAyah retrieves a bookmark by user and ayah; if include=ayah, it returns with relation
 func (h *QueryHandler) GetBookmarkAyahByUserAndAyah(ctx context.Context, query GetBookmarkAyahByUserAndAyahQuery) (interface{}, error) {
-	userID, err := h.uuidGenerator.Parse(query.UserID)
-	if err != nil {
-		return nil, err
-	}
 	ayahID, err := h.uuidGenerator.Parse(query.AyahID)
 	if err != nil {
 		return nil, err
 	}
 
 	var b *quran.BookmarkAyah
-	b, err = h.bookmarkService.GetBookmarkAyahByUserAndAyah(ctx, userID, ayahID)
+	b, err = h.bookmarkService.GetBookmarkAyahByUserAndAyah(ctx, query.UserID, ayahID)
 	if err != nil {
 		return nil, err
 	}

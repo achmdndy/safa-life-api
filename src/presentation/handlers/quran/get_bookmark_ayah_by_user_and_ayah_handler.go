@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/application/quran/query"
 	"github.com/safalife/core-api/src/presentation/core"
 	"github.com/safalife/core-api/src/presentation/middlewares"
@@ -23,24 +22,27 @@ func NewGetBookmarkAyahByUserAndAyahHandler(queryHandler *query.QueryHandler) *G
 }
 
 // Handle processes the request
-// @Summary Get bookmark ayah by user and ayah
-// @Description Get a bookmark for a specific user and ayah
+// @Summary Get bookmark ayah by current user and ayah
+// @Description Get a bookmark for the authenticated user and specified ayah
 // @Tags Bookmarks
 // @Accept json
 // @Produce json
-// @Param userId path string true "User ID"
 // @Param ayahId path string true "Ayah ID"
 // @Param include query string false "Include related data" Enums(ayah) example(ayah)
 // @Success 200 {object} BookmarkAyahSuccessResponse "Bookmark retrieved successfully"
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 404 {object} QuranErrorResponse "Bookmark not found"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /quran/bookmarks/ayahs/user/{userId}/ayah/{ayahId} [get]
+// @Router /quran/bookmarks/ayahs/ayah/{ayahId} [get]
 func (h *GetBookmarkAyahByUserAndAyahHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()
 
-	var req dto.GetBookmarkAyahByUserAndAyahRequest
+	// Bind hanya ayahId dari URI, userId diambil dari middleware
+	var req struct {
+		AyahID  string `uri:"ayahId" binding:"required"`
+		Include string `form:"include" binding:"omitempty"`
+	}
 	if err := c.ShouldBindUri(&req); err != nil {
 		errorDetail := &core.ErrorDetail{Reason: err.Error()}
 		core.Error(c, http.StatusBadRequest, "Invalid path parameters", errorDetail, start)
