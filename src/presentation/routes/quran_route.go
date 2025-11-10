@@ -47,6 +47,7 @@ func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler, authMW gi
 
 			juzProtected := juzGroup.Group("")
 			juzProtected.Use(authMW)
+			juzProtected.GET("/with-progress", quranHandler.GetAllJuzWithUserProgressHandler().Handle)
 			juzProtected.POST("", quranHandler.CreateJuzHandler().Handle)
 			juzProtected.PUT("/:id", quranHandler.UpdateJuzHandler().Handle)
 			juzProtected.DELETE("/:id", quranHandler.DeleteJuzHandler().Handle)

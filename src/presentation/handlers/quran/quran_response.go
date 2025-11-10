@@ -67,6 +67,16 @@ type JuzListSuccessResponse struct {
 	Data         dto.JuzListResponse `json:"data"`
 }
 
+// Juz with User Progress List Response (documents the basic variant)
+type JuzWithProgressListSuccessResponse struct {
+	Success      bool                                 `json:"success" example:"true"`
+	StatusCode   int                                  `json:"status_code" example:"200"`
+	Message      string                               `json:"message" example:"Juz with progress list retrieved successfully"`
+	Timestamp    time.Time                            `json:"timestamp" example:"2024-01-01T00:00:00Z"`
+	ResponseTime string                               `json:"responseTime" example:"15.234ms"`
+	Data         dto.JuzWithProgressBasicListResponse `json:"data"`
+}
+
 // Create Response Types
 type CreateSurahSuccessResponse struct {
 	Success      bool              `json:"success" example:"true"`

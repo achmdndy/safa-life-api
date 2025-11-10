@@ -24,12 +24,13 @@ type Handler struct {
 	getAyahsByJuzHandler   *GetAyahsByJuzHandler
 
 	// Juz handlers
-	createJuzHandler      *CreateJuzHandler
-	updateJuzHandler      *UpdateJuzHandler
-	deleteJuzHandler      *DeleteJuzHandler
-	getJuzByIdHandler     *GetJuzByIdHandler
-	getJuzByNumberHandler *GetJuzByNumberHandler
-	getAllJuzHandler      *GetAllJuzHandler
+	createJuzHandler                 *CreateJuzHandler
+	updateJuzHandler                 *UpdateJuzHandler
+	deleteJuzHandler                 *DeleteJuzHandler
+	getJuzByIdHandler                *GetJuzByIdHandler
+	getJuzByNumberHandler            *GetJuzByNumberHandler
+	getAllJuzHandler                 *GetAllJuzHandler
+	getAllJuzWithUserProgressHandler *GetAllJuzWithUserProgressHandler
 
 	// Translation handlers
 	getTranslationEditionsHandler               *GetTranslationEditionsHandler
@@ -99,12 +100,13 @@ func NewHandler(
 		getAyahsByJuzHandler:   NewGetAyahsByJuzHandler(queryHandler),
 
 		// Juz handlers
-		createJuzHandler:      NewCreateJuzHandler(commandHandler),
-		updateJuzHandler:      NewUpdateJuzHandler(commandHandler),
-		deleteJuzHandler:      NewDeleteJuzHandler(commandHandler),
-		getJuzByIdHandler:     NewGetJuzByIdHandler(queryHandler),
-		getJuzByNumberHandler: NewGetJuzByNumberHandler(queryHandler),
-		getAllJuzHandler:      NewGetAllJuzHandler(queryHandler),
+		createJuzHandler:                 NewCreateJuzHandler(commandHandler),
+		updateJuzHandler:                 NewUpdateJuzHandler(commandHandler),
+		deleteJuzHandler:                 NewDeleteJuzHandler(commandHandler),
+		getJuzByIdHandler:                NewGetJuzByIdHandler(queryHandler),
+		getJuzByNumberHandler:            NewGetJuzByNumberHandler(queryHandler),
+		getAllJuzHandler:                 NewGetAllJuzHandler(queryHandler),
+		getAllJuzWithUserProgressHandler: NewGetAllJuzWithUserProgressHandler(queryHandler),
 
 		// Translation handlers
 		getTranslationEditionsHandler:               NewGetTranslationEditionsHandler(queryHandler),
@@ -225,6 +227,10 @@ func (h *Handler) GetJuzByNumberHandler() *GetJuzByNumberHandler {
 
 func (h *Handler) GetAllJuzHandler() *GetAllJuzHandler {
 	return h.getAllJuzHandler
+}
+
+func (h *Handler) GetAllJuzWithUserProgressHandler() *GetAllJuzWithUserProgressHandler {
+	return h.getAllJuzWithUserProgressHandler
 }
 
 // Translation handler getters

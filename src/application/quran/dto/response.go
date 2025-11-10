@@ -873,3 +873,87 @@ type ProgressHatamWithRelationsListResponse struct {
 	Data       []*ProgressHatamWithRelationsResponse `json:"data"`
 	Pagination *PaginationResponse                   `json:"pagination"`
 }
+
+// Juz with User Progress (Basic) Response DTOs
+type JuzWithProgressBasicResponse struct {
+	Juz           *JuzResponse           `json:"juz"`
+	ProgressHatam *ProgressHatamResponse `json:"progressHatam,omitempty"`
+}
+
+// ToJuzWithProgressBasicResponse builds basic Juz + ProgressHatam response
+func ToJuzWithProgressBasicResponse(juz *quran.Juz, ph *quran.ProgressHatam) *JuzWithProgressBasicResponse {
+	if juz == nil {
+		return nil
+	}
+	resp := &JuzWithProgressBasicResponse{
+		Juz: ToJuzResponse(juz),
+	}
+	if ph != nil {
+		resp.ProgressHatam = ToProgressHatamResponse(ph)
+	}
+	return resp
+}
+
+// ToJuzWithProgressBasicResponseSlice converts slice of domain objects to DTO slice
+func ToJuzWithProgressBasicResponseSlice(juzList []*quran.Juz, phByJuzID map[string]*quran.ProgressHatam) []*JuzWithProgressBasicResponse {
+	if juzList == nil {
+		return nil
+	}
+	outs := make([]*JuzWithProgressBasicResponse, len(juzList))
+	for i, j := range juzList {
+		var ph *quran.ProgressHatam
+		if j != nil {
+			ph = phByJuzID[j.ID.String()]
+		}
+		outs[i] = ToJuzWithProgressBasicResponse(j, ph)
+	}
+	return outs
+}
+
+// List Response for Juz with User Progress (Basic)
+type JuzWithProgressBasicListResponse struct {
+	Data       []*JuzWithProgressBasicResponse `json:"data"`
+	Pagination *PaginationResponse             `json:"pagination"`
+}
+
+// Juz with User Progress (Relations) Response DTOs
+type JuzWithProgressWithRelationsResponse struct {
+	Juz           *JuzWithRelationsResponse           `json:"juz"`
+	ProgressHatam *ProgressHatamWithRelationsResponse `json:"progressHatam,omitempty"`
+}
+
+// ToJuzWithProgressWithRelationsResponse builds relations Juz + ProgressHatam response
+func ToJuzWithProgressWithRelationsResponse(juz *quran.JuzWithRelations, ph *quran.ProgressHatamWithRelations) *JuzWithProgressWithRelationsResponse {
+	if juz == nil {
+		return nil
+	}
+	resp := &JuzWithProgressWithRelationsResponse{
+		Juz: ToJuzWithRelationsResponse(juz),
+	}
+	if ph != nil {
+		resp.ProgressHatam = ToProgressHatamWithRelationsResponse(ph)
+	}
+	return resp
+}
+
+// ToJuzWithProgressWithRelationsResponseSlice converts slice of domain objects to DTO slice
+func ToJuzWithProgressWithRelationsResponseSlice(juzList []*quran.JuzWithRelations, phByJuzID map[string]*quran.ProgressHatamWithRelations) []*JuzWithProgressWithRelationsResponse {
+	if juzList == nil {
+		return nil
+	}
+	outs := make([]*JuzWithProgressWithRelationsResponse, len(juzList))
+	for i, j := range juzList {
+		var ph *quran.ProgressHatamWithRelations
+		if j != nil {
+			ph = phByJuzID[j.ID.String()]
+		}
+		outs[i] = ToJuzWithProgressWithRelationsResponse(j, ph)
+	}
+	return outs
+}
+
+// List Response for Juz with User Progress (Relations)
+type JuzWithProgressWithRelationsListResponse struct {
+	Data       []*JuzWithProgressWithRelationsResponse `json:"data"`
+	Pagination *PaginationResponse                     `json:"pagination"`
+}
