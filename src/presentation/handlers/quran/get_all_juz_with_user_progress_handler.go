@@ -30,10 +30,8 @@ func NewGetAllJuzWithUserProgressHandler(q *query.QueryHandler) *GetAllJuzWithUs
 // @Param        offset  query   int     false  "Offset"
 // @Param        include query   string  false  "Include related data" Enums(relations) example(relations)
 // @Success      200     {object} JuzWithProgressListSuccessResponse
-// @Failure      400     {object} utils.ErrorResponse
-// @Failure      401     {object} utils.ErrorResponse
-// @Failure      404     {object} utils.ErrorResponse
-// @Failure      500     {object} utils.ErrorResponse
+// @Failure      400     {object} QuranErrorResponse "Bad request"
+// @Failure      500     {object} QuranErrorResponse "Internal server error"
 // @Router       /quran/juz/with-progress [get]
 func (h *GetAllJuzWithUserProgressHandler) Handle(c *gin.Context) {
 	start := time.Now()

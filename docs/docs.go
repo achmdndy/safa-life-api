@@ -1040,6 +1040,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/quran/juz/with-progress": {
+            "get": {
+                "description": "Returns all Juz combined with the authenticated user's hatam progress per Juz",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Juz"
+                ],
+                "summary": "List all Juz with user ProgressHatam",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "relations"
+                        ],
+                        "type": "string",
+                        "example": "relations",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/quran.JuzWithProgressListSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/quran/juz/{id}": {
             "get": {
                 "description": "Get a specific juz by its ID",
@@ -3245,6 +3304,31 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.JuzWithProgressBasicListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.JuzWithProgressBasicResponse"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationResponse"
+                }
+            }
+        },
+        "dto.JuzWithProgressBasicResponse": {
+            "type": "object",
+            "properties": {
+                "juz": {
+                    "$ref": "#/definitions/dto.JuzResponse"
+                },
+                "progressHatam": {
+                    "$ref": "#/definitions/dto.ProgressHatamResponse"
+                }
+            }
+        },
         "dto.LastReadListResponse": {
             "type": "object",
             "properties": {
@@ -4531,6 +4615,34 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Juz retrieved successfully"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "15.234ms"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                }
+            }
+        },
+        "quran.JuzWithProgressListSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.JuzWithProgressBasicListResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Juz with progress list retrieved successfully"
                 },
                 "responseTime": {
                     "type": "string",

@@ -376,6 +376,22 @@ definitions:
       updatedBy:
         type: string
     type: object
+  dto.JuzWithProgressBasicListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.JuzWithProgressBasicResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationResponse'
+    type: object
+  dto.JuzWithProgressBasicResponse:
+    properties:
+      juz:
+        $ref: '#/definitions/dto.JuzResponse'
+      progressHatam:
+        $ref: '#/definitions/dto.ProgressHatamResponse'
+    type: object
   dto.LastReadListResponse:
     properties:
       data:
@@ -1290,6 +1306,26 @@ definitions:
         $ref: '#/definitions/dto.JuzResponse'
       message:
         example: Juz retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  quran.JuzWithProgressListSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.JuzWithProgressBasicListResponse'
+      message:
+        example: Juz with progress list retrieved successfully
         type: string
       responseTime:
         example: 15.234ms
@@ -2368,6 +2404,46 @@ paths:
           schema:
             $ref: '#/definitions/quran.QuranErrorResponse'
       summary: Get juz by number
+      tags:
+      - Juz
+  /quran/juz/with-progress:
+    get:
+      consumes:
+      - application/json
+      description: Returns all Juz combined with the authenticated user's hatam progress
+        per Juz
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: Include related data
+        enum:
+        - relations
+        example: relations
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/quran.JuzWithProgressListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: List all Juz with user ProgressHatam
       tags:
       - Juz
   /quran/last-reads:
