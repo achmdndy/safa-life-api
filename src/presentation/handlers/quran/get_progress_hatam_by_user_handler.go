@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/application/quran/query"
 	"github.com/safalife/core-api/src/presentation/core"
 	"github.com/safalife/core-api/src/presentation/middlewares"
@@ -23,28 +22,27 @@ func NewGetProgressHatamByUserHandler(queryHandler *query.QueryHandler) *GetProg
 }
 
 // Handle processes the request
-// @Summary List progress hatam by user
-// @Description Get a paginated list of progress hatam entries for a user
+// @Summary List progress hatam by current user
+// @Description Get a paginated list of progress hatam entries for the authenticated user
 // @Tags ProgressHatam
 // @Accept json
 // @Produce json
-// @Param userId path string true "User ID"
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
 // @Param include query string false "Include related data" Enums(relations) example(relations)
 // @Success 200 {object} ProgressHatamListSuccessResponse "Progress hatam list retrieved successfully"
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /quran/progress-hatam/user/{userId} [get]
+// @Router /quran/progress-hatam [get]
 func (h *GetProgressHatamByUserHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()
 
-	var req dto.GetProgressHatamByUserRequest
-	if err := c.ShouldBindUri(&req); err != nil {
-		errorDetail := &core.ErrorDetail{Reason: err.Error()}
-		core.Error(c, http.StatusBadRequest, "Invalid user ID", errorDetail, start)
-		return
+	// userId diambil dari middleware; bind hanya parameter query
+	var req struct {
+		Limit   int    `form:"limit" binding:"omitempty,min=0,max=100"`
+		Offset  int    `form:"offset" binding:"omitempty,min=0"`
+		Include string `form:"include" binding:"omitempty"`
 	}
 
 	if err := c.ShouldBindQuery(&req); err != nil {

@@ -1264,6 +1264,63 @@ const docTemplate = `{
             }
         },
         "/quran/last-reads": {
+            "get": {
+                "description": "Get a paginated list of last read entries for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "LastRead"
+                ],
+                "summary": "List last reads by current user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "relations"
+                        ],
+                        "type": "string",
+                        "example": "relations",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Last reads retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.LastReadListSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new last read entry for a user",
                 "consumes": [
@@ -1309,9 +1366,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/quran/last-reads/user/{userId}": {
+        "/quran/last-reads/surah/{surahId}": {
             "get": {
-                "description": "Get a paginated list of last read entries for a user",
+                "description": "Get the last read entry for the authenticated user and surah",
                 "consumes": [
                     "application/json"
                 ],
@@ -1321,81 +1378,8 @@ const docTemplate = `{
                 "tags": [
                     "LastRead"
                 ],
-                "summary": "List last reads by user",
+                "summary": "Get last read by current user and surah",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "enum": [
-                            "relations"
-                        ],
-                        "type": "string",
-                        "example": "relations",
-                        "description": "Include related data",
-                        "name": "include",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Last reads retrieved successfully",
-                        "schema": {
-                            "$ref": "#/definitions/quran.LastReadListSuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "$ref": "#/definitions/quran.QuranErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/quran.QuranErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/quran/last-reads/user/{userId}/surah/{surahId}": {
-            "get": {
-                "description": "Get the last read entry for a specific user and surah",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "LastRead"
-                ],
-                "summary": "Get last read by user and surah",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Surah ID",
@@ -1608,6 +1592,63 @@ const docTemplate = `{
             }
         },
         "/quran/progress-hatam": {
+            "get": {
+                "description": "Get a paginated list of progress hatam entries for the authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ProgressHatam"
+                ],
+                "summary": "List progress hatam by current user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "relations"
+                        ],
+                        "type": "string",
+                        "example": "relations",
+                        "description": "Include related data",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Progress hatam list retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/quran.ProgressHatamListSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/quran.QuranErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new progress hatam entry for a user",
                 "consumes": [
@@ -1653,9 +1694,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/quran/progress-hatam/user/{userId}": {
+        "/quran/progress-hatam/juz/{juzId}": {
             "get": {
-                "description": "Get a paginated list of progress hatam entries for a user",
+                "description": "Get a progress hatam entry for the authenticated user and juz",
                 "consumes": [
                     "application/json"
                 ],
@@ -1665,81 +1706,8 @@ const docTemplate = `{
                 "tags": [
                     "ProgressHatam"
                 ],
-                "summary": "List progress hatam by user",
+                "summary": "Get progress hatam by current user and juz",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "enum": [
-                            "relations"
-                        ],
-                        "type": "string",
-                        "example": "relations",
-                        "description": "Include related data",
-                        "name": "include",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Progress hatam list retrieved successfully",
-                        "schema": {
-                            "$ref": "#/definitions/quran.ProgressHatamListSuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "$ref": "#/definitions/quran.QuranErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/quran.QuranErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/quran/progress-hatam/user/{userId}/juz/{juzId}": {
-            "get": {
-                "description": "Get a progress hatam entry for a specific user and juz",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ProgressHatam"
-                ],
-                "summary": "Get progress hatam by user and juz",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Juz ID",

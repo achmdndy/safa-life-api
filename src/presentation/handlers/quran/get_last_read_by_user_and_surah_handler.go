@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/safalife/core-api/src/application/quran/dto"
 	"github.com/safalife/core-api/src/application/quran/query"
 	"github.com/safalife/core-api/src/presentation/core"
 	"github.com/safalife/core-api/src/presentation/middlewares"
@@ -23,24 +22,27 @@ func NewGetLastReadByUserAndSurahHandler(queryHandler *query.QueryHandler) *GetL
 }
 
 // Handle processes the request
-// @Summary Get last read by user and surah
-// @Description Get the last read entry for a specific user and surah
+// @Summary Get last read by current user and surah
+// @Description Get the last read entry for the authenticated user and surah
 // @Tags LastRead
 // @Accept json
 // @Produce json
-// @Param userId path string true "User ID"
 // @Param surahId path string true "Surah ID"
 // @Param include query string false "Include related data" Enums(relations) example(relations)
 // @Success 200 {object} LastReadSuccessResponse "Last read retrieved successfully"
 // @Failure 400 {object} QuranErrorResponse "Bad request"
 // @Failure 404 {object} QuranErrorResponse "Last read not found"
 // @Failure 500 {object} QuranErrorResponse "Internal server error"
-// @Router /quran/last-reads/user/{userId}/surah/{surahId} [get]
+// @Router /quran/last-reads/surah/{surahId} [get]
 func (h *GetLastReadByUserAndSurahHandler) Handle(c *gin.Context) {
 	start := time.Now()
 	ctx := c.Request.Context()
 
-	var req dto.GetLastReadByUserAndSurahRequest
+	// Bind hanya surahId dari URI, userId diambil dari middleware
+	var req struct {
+		SurahID string `uri:"surahId" binding:"required"`
+		Include string `form:"include" binding:"omitempty"`
+	}
 	if err := c.ShouldBindUri(&req); err != nil {
 		errorDetail := &core.ErrorDetail{Reason: err.Error()}
 		core.Error(c, http.StatusBadRequest, "Invalid path parameters", errorDetail, start)

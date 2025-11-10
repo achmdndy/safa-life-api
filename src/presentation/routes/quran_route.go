@@ -115,11 +115,12 @@ func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler, authMW gi
 			lastReadGroup := quranGroup.Group("/last-reads")
 			{
 				lastReadGroup.GET("/:id", quranHandler.GetLastReadByIdHandler().Handle)
-				lastReadGroup.GET("/user/:userId", quranHandler.GetLastReadsByUserHandler().Handle)
-				lastReadGroup.GET("/user/:userId/surah/:surahId", quranHandler.GetLastReadByUserAndSurahHandler().Handle)
+				// Pindahkan GET yang bergantung pada user ke grup terlindungi dan ambil user dari middleware
 
 				lastReadProtected := lastReadGroup.Group("")
 				lastReadProtected.Use(authMW)
+				lastReadProtected.GET("", quranHandler.GetLastReadsByUserHandler().Handle)
+				lastReadProtected.GET("/surah/:surahId", quranHandler.GetLastReadByUserAndSurahHandler().Handle)
 				lastReadProtected.POST("", quranHandler.CreateLastReadHandler().Handle)
 				lastReadProtected.PUT("/:id", quranHandler.UpdateLastReadHandler().Handle)
 				lastReadProtected.DELETE("/:id", quranHandler.DeleteLastReadHandler().Handle)
@@ -129,11 +130,12 @@ func QuranRoutes(router *gin.RouterGroup, quranHandler *quran.Handler, authMW gi
 			progressHatamGroup := quranGroup.Group("/progress-hatam")
 			{
 				progressHatamGroup.GET("/:id", quranHandler.GetProgressHatamByIdHandler().Handle)
-				progressHatamGroup.GET("/user/:userId", quranHandler.GetProgressHatamByUserHandler().Handle)
-				progressHatamGroup.GET("/user/:userId/juz/:juzId", quranHandler.GetProgressHatamByUserAndJuzHandler().Handle)
+				// Pindahkan GET yang bergantung pada user ke grup terlindungi dan ambil user dari middleware
 
 				progressHatamProtected := progressHatamGroup.Group("")
 				progressHatamProtected.Use(authMW)
+				progressHatamProtected.GET("", quranHandler.GetProgressHatamByUserHandler().Handle)
+				progressHatamProtected.GET("/juz/:juzId", quranHandler.GetProgressHatamByUserAndJuzHandler().Handle)
 				progressHatamProtected.POST("", quranHandler.CreateProgressHatamHandler().Handle)
 				progressHatamProtected.PUT("/:id", quranHandler.UpdateProgressHatamHandler().Handle)
 				progressHatamProtected.DELETE("/:id", quranHandler.DeleteProgressHatamHandler().Handle)

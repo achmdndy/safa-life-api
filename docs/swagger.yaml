@@ -2371,6 +2371,45 @@ paths:
       tags:
       - Juz
   /quran/last-reads:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of last read entries for the authenticated
+        user
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: Include related data
+        enum:
+        - relations
+        example: relations
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Last reads retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.LastReadListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: List last reads by current user
+      tags:
+      - LastRead
     post:
       consumes:
       - application/json
@@ -2510,61 +2549,12 @@ paths:
       summary: Update last read
       tags:
       - LastRead
-  /quran/last-reads/user/{userId}:
+  /quran/last-reads/surah/{surahId}:
     get:
       consumes:
       - application/json
-      description: Get a paginated list of last read entries for a user
+      description: Get the last read entry for the authenticated user and surah
       parameters:
-      - description: User ID
-        in: path
-        name: userId
-        required: true
-        type: string
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Offset
-        in: query
-        name: offset
-        type: integer
-      - description: Include related data
-        enum:
-        - relations
-        example: relations
-        in: query
-        name: include
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Last reads retrieved successfully
-          schema:
-            $ref: '#/definitions/quran.LastReadListSuccessResponse'
-        "400":
-          description: Bad request
-          schema:
-            $ref: '#/definitions/quran.QuranErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/quran.QuranErrorResponse'
-      summary: List last reads by user
-      tags:
-      - LastRead
-  /quran/last-reads/user/{userId}/surah/{surahId}:
-    get:
-      consumes:
-      - application/json
-      description: Get the last read entry for a specific user and surah
-      parameters:
-      - description: User ID
-        in: path
-        name: userId
-        required: true
-        type: string
       - description: Surah ID
         in: path
         name: surahId
@@ -2596,10 +2586,49 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/quran.QuranErrorResponse'
-      summary: Get last read by user and surah
+      summary: Get last read by current user and surah
       tags:
       - LastRead
   /quran/progress-hatam:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of progress hatam entries for the authenticated
+        user
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: Include related data
+        enum:
+        - relations
+        example: relations
+        in: query
+        name: include
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Progress hatam list retrieved successfully
+          schema:
+            $ref: '#/definitions/quran.ProgressHatamListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quran.QuranErrorResponse'
+      summary: List progress hatam by current user
+      tags:
+      - ProgressHatam
     post:
       consumes:
       - application/json
@@ -2739,61 +2768,12 @@ paths:
       summary: Update progress hatam
       tags:
       - ProgressHatam
-  /quran/progress-hatam/user/{userId}:
+  /quran/progress-hatam/juz/{juzId}:
     get:
       consumes:
       - application/json
-      description: Get a paginated list of progress hatam entries for a user
+      description: Get a progress hatam entry for the authenticated user and juz
       parameters:
-      - description: User ID
-        in: path
-        name: userId
-        required: true
-        type: string
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Offset
-        in: query
-        name: offset
-        type: integer
-      - description: Include related data
-        enum:
-        - relations
-        example: relations
-        in: query
-        name: include
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Progress hatam list retrieved successfully
-          schema:
-            $ref: '#/definitions/quran.ProgressHatamListSuccessResponse'
-        "400":
-          description: Bad request
-          schema:
-            $ref: '#/definitions/quran.QuranErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/quran.QuranErrorResponse'
-      summary: List progress hatam by user
-      tags:
-      - ProgressHatam
-  /quran/progress-hatam/user/{userId}/juz/{juzId}:
-    get:
-      consumes:
-      - application/json
-      description: Get a progress hatam entry for a specific user and juz
-      parameters:
-      - description: User ID
-        in: path
-        name: userId
-        required: true
-        type: string
       - description: Juz ID
         in: path
         name: juzId
@@ -2825,7 +2805,7 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/quran.QuranErrorResponse'
-      summary: Get progress hatam by user and juz
+      summary: Get progress hatam by current user and juz
       tags:
       - ProgressHatam
   /quran/reciters:
