@@ -9,13 +9,14 @@ import (
 )
 
 type AppConfig struct {
-	App        AppInfo          `mapstructure:"app"`
-	DB         DatabaseConfig   `mapstructure:"db"`
-	Redis      RedisConfig      `mapstructure:"redis"`
-	Monitoring MonitoringConfig `mapstructure:"monitoring"`
-	JWT        JWTConfig        `mapstructure:"jwt"`
-	Storage    StorageConfig    `mapstructure:"storage"`
-	Auth       AuthConfig       `mapstructure:"auth"`
+	App         AppInfo           `mapstructure:"app"`
+	DB          DatabaseConfig    `mapstructure:"db"`
+	Redis       RedisConfig       `mapstructure:"redis"`
+	Monitoring  MonitoringConfig  `mapstructure:"monitoring"`
+	JWT         JWTConfig         `mapstructure:"jwt"`
+	Storage     StorageConfig     `mapstructure:"storage"`
+	Auth        AuthConfig        `mapstructure:"auth"`
+	PrayerTimes PrayerTimesConfig `mapstructure:"prayertimes"`
 }
 
 type AppInfo struct {
@@ -87,6 +88,17 @@ var Config AppConfig
 type AuthConfig struct {
 	BaseURL        string `mapstructure:"base_url"`
 	VerifyPath     string `mapstructure:"verify_path"`
+	TimeoutSeconds int    `mapstructure:"timeout_seconds"`
+}
+
+// PrayerTimesConfig holds external prayer times providers configuration
+type PrayerTimesConfig struct {
+	Aladhan AladhanConfig `mapstructure:"aladhan"`
+}
+
+// AladhanConfig holds Aladhan API configuration
+type AladhanConfig struct {
+	BaseURL        string `mapstructure:"base_url"`
 	TimeoutSeconds int    `mapstructure:"timeout_seconds"`
 }
 
@@ -216,6 +228,10 @@ func InitConfig(configFlag string) {
 	_ = viper.BindEnv("auth.base_url", "SAFALIFE_AUTH_BASE_URL")
 	_ = viper.BindEnv("auth.verify_path", "SAFALIFE_AUTH_VERIFY_PATH")
 	_ = viper.BindEnv("auth.timeout_seconds", "SAFALIFE_AUTH_TIMEOUT_SECONDS")
+
+	// Prayer times provider bindings (optional, primarily configured via YAML)
+	_ = viper.BindEnv("prayertimes.aladhan.base_url", "SAFALIFE_PRAYERTIMES_ALADHAN_BASE_URL")
+	_ = viper.BindEnv("prayertimes.aladhan.timeout_seconds", "SAFALIFE_PRAYERTIMES_ALADHAN_TIMEOUT_SECONDS")
 
 	viper.SetConfigFile(fullConfigPath)
 	if err := viper.ReadInConfig(); err != nil {

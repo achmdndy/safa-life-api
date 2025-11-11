@@ -435,6 +435,34 @@ definitions:
       total:
         type: integer
     type: object
+  dto.PrayerTimesListResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/dto.PrayerTimesResponse'
+        type: array
+    type: object
+  dto.PrayerTimesResponse:
+    properties:
+      asr:
+        type: string
+      date:
+        type: string
+      dhuhr:
+        type: string
+      fajr:
+        type: string
+      isha:
+        type: string
+      maghrib:
+        type: string
+      source:
+        type: string
+      sunrise:
+        type: string
+      timezone:
+        type: string
+    type: object
   dto.ProgressHatamListResponse:
     properties:
       data:
@@ -772,6 +800,66 @@ definitions:
     - revelationOrder
     - revelationPlace
     - updatedBy
+    type: object
+  prayertimes.PrayerTimesErrorResponse:
+    properties:
+      errors:
+        $ref: '#/definitions/core.ErrorDetail'
+      message:
+        example: Failed to process request
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 500
+        type: integer
+      success:
+        example: false
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  prayertimes.PrayerTimesListSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.PrayerTimesListResponse'
+      message:
+        example: Prayer times list retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  prayertimes.PrayerTimesSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.PrayerTimesResponse'
+      message:
+        example: Prayer times retrieved successfully
+        type: string
+      responseTime:
+        example: 15.234ms
+        type: string
+      status_code:
+        example: 200
+        type: integer
+      success:
+        example: true
+        type: boolean
+      timestamp:
+        example: "2024-01-01T00:00:00Z"
+        type: string
     type: object
   quran.AyahAudioFileListSuccessResponse:
     properties:
@@ -1581,6 +1669,170 @@ info:
   title: Safalife API
   version: 1.0.0
 paths:
+  /prayertimes/daily:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve daily prayer timings for a given location and date
+      parameters:
+      - description: Latitude
+        example: -6.2
+        in: query
+        name: latitude
+        required: true
+        type: number
+      - description: Longitude
+        example: 106.8166
+        in: query
+        name: longitude
+        required: true
+        type: number
+      - description: Timezone (IANA)
+        example: '"Asia/Jakarta"'
+        in: query
+        name: timezone
+        required: true
+        type: string
+      - description: Date (YYYY-MM-DD)
+        example: '"2024-01-01"'
+        in: query
+        name: date
+        type: string
+      - description: Calculation method (provider-specific)
+        example: 5
+        in: query
+        name: method
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Prayer times retrieved successfully
+          schema:
+            $ref: '#/definitions/prayertimes.PrayerTimesSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/prayertimes.PrayerTimesErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/prayertimes.PrayerTimesErrorResponse'
+      summary: Get daily prayer timings
+      tags:
+      - PrayerTimes
+  /prayertimes/monthly:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve monthly prayer timings for a given location and month/year
+      parameters:
+      - description: Latitude
+        example: -6.2
+        in: query
+        name: latitude
+        required: true
+        type: number
+      - description: Longitude
+        example: 106.8166
+        in: query
+        name: longitude
+        required: true
+        type: number
+      - description: Timezone (IANA)
+        example: '"Asia/Jakarta"'
+        in: query
+        name: timezone
+        required: true
+        type: string
+      - description: Month (1-12)
+        example: 1
+        in: query
+        name: month
+        required: true
+        type: integer
+      - description: Year
+        example: 2024
+        in: query
+        name: year
+        required: true
+        type: integer
+      - description: Calculation method (provider-specific)
+        example: 5
+        in: query
+        name: method
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Prayer times list retrieved successfully
+          schema:
+            $ref: '#/definitions/prayertimes.PrayerTimesListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/prayertimes.PrayerTimesErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/prayertimes.PrayerTimesErrorResponse'
+      summary: Get monthly prayer timings
+      tags:
+      - PrayerTimes
+  /prayertimes/yearly:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve yearly prayer timings for a given location and year
+      parameters:
+      - description: Latitude
+        example: -6.2
+        in: query
+        name: latitude
+        required: true
+        type: number
+      - description: Longitude
+        example: 106.8166
+        in: query
+        name: longitude
+        required: true
+        type: number
+      - description: Timezone (IANA)
+        example: '"Asia/Jakarta"'
+        in: query
+        name: timezone
+        required: true
+        type: string
+      - description: Year
+        example: 2024
+        in: query
+        name: year
+        required: true
+        type: integer
+      - description: Calculation method (provider-specific)
+        example: 5
+        in: query
+        name: method
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Prayer times list retrieved successfully
+          schema:
+            $ref: '#/definitions/prayertimes.PrayerTimesListSuccessResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/prayertimes.PrayerTimesErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/prayertimes.PrayerTimesErrorResponse'
+      summary: Get yearly prayer timings
+      tags:
+      - PrayerTimes
   /quran/audio/ayahs:
     post:
       consumes:
@@ -3429,3 +3681,24 @@ tags:
 - description: Juz (Para) management operations including creation, retrieval, updates,
     and deletion of Quran sections
   name: Juz
+- description: Operations for managing and retrieving Quran recitations (audio) from
+    various reciters.
+  name: Audio
+- description: Operations related to managing user bookmarks for Quran verses (add,
+    retrieve, update, delete).
+  name: Bookmarks
+- description: Operations for saving and retrieving the user's last read verse or
+    surah in the Quran.
+  name: LastRead
+- description: Operations for tracking and managing user progress in completing Quran
+    reading (Khatam progress).
+  name: ProgressHatam
+- description: Operations for managing and retrieving information about Quran reciters
+    and their available audio sets.
+  name: Reciters
+- description: Operations for managing and retrieving Quran verse translations in
+    various languages.
+  name: Translations
+- description: Operations for retrieving and managing daily prayer times based on
+    geographic coordinates and calculation methods.
+  name: PrayerTimes

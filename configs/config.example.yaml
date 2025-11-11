@@ -53,3 +53,9 @@ auth:
   base_url: "http://localhost:3001"
   verify_path: "/auth/v1/jwt/jwks"
   timeout_seconds: 3
+
+# Prayer times providers configuration
+prayertimes:
+  aladhan:
+    base_url: "https://api.aladhan.com/v1"
+    timeout_seconds: 15

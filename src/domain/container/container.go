@@ -3,6 +3,7 @@ package container
 import (
 	"github.com/safalife/core-api/src/domain/core"
 	"github.com/safalife/core-api/src/domain/monitoring"
+	prayertimes "github.com/safalife/core-api/src/domain/prayertimes"
 	"github.com/safalife/core-api/src/domain/quran"
 	domStorage "github.com/safalife/core-api/src/domain/storage"
 )
@@ -18,6 +19,9 @@ type DomainContainer struct {
 
 	// Storage
 	StorageService domStorage.StorageServiceInterface
+
+	// PrayerTimes service
+	PrayerTimesService prayertimes.PrayerTimesServiceInterface
 
 	// Quran services
 	SurahService              quran.SurahServiceInterface
@@ -38,6 +42,7 @@ func NewDomainContainer(
 	transactionManager core.ContextTransactionManager,
 	idGenerator core.UUIDGenerator,
 	storageService domStorage.StorageServiceInterface,
+	prayerTimesRepo prayertimes.PrayerTimesRepositoryInterface,
 	surahRepo quran.SurahRepositoryInterface,
 	ayahRepo quran.AyahRepositoryInterface,
 	juzRepo quran.JuzRepositoryInterface,
@@ -49,6 +54,9 @@ func NewDomainContainer(
 	lastReadRepo quran.LastReadRepositoryInterface,
 	progressHatamRepo quran.ProgressHatamRepositoryInterface,
 ) *DomainContainer {
+	// Create PrayerTimes service
+	prayerService := prayertimes.NewPrayerTimesService(prayerTimesRepo)
+
 	// Create Quran services
 	surahService := quran.NewSurahService(surahRepo)
 	ayahService := quran.NewAyahService(ayahRepo)
@@ -71,6 +79,9 @@ func NewDomainContainer(
 
 		// Storage
 		StorageService: storageService,
+
+		// PrayerTimes
+		PrayerTimesService: prayerService,
 
 		// Quran services
 		SurahService:              surahService,

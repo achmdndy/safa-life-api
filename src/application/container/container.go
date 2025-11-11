@@ -1,6 +1,7 @@
 package container
 
 import (
+	prayerQuery "github.com/safalife/core-api/src/application/prayertimes/query"
 	quranCommand "github.com/safalife/core-api/src/application/quran/command"
 	quranQuery "github.com/safalife/core-api/src/application/quran/query"
 	domainContainer "github.com/safalife/core-api/src/domain/container"
@@ -14,6 +15,9 @@ type ApplicationContainer struct {
 	QuranQueryHandler   *quranQuery.QueryHandler
 
 	Monitoring interface{} // Single field for both MonitoringService and MonitoringHandlers
+
+	// PrayerTimes handlers
+	PrayerTimesQueryHandler *prayerQuery.QueryHandler
 }
 
 // NewApplicationContainer creates a new application container with dependency injection
@@ -46,12 +50,18 @@ func NewApplicationContainer(domainContainer *domainContainer.DomainContainer) *
 		domainContainer.IDGenerator,
 	)
 
+	// Create PrayerTimes command and query handlers
+	ptQueryHandler := prayerQuery.NewQueryHandler(domainContainer.PrayerTimesService)
+
 	return &ApplicationContainer{
 		// Quran handlers
 		QuranCommandHandler: quranCommandHandler,
 		QuranQueryHandler:   quranQueryHandler,
 
 		Monitoring: domainContainer.MonitoringService,
+
+		// PrayerTimes handlers
+		PrayerTimesQueryHandler: ptQueryHandler,
 	}
 }
 

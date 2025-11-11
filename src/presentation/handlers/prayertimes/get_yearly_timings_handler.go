@@ -1,0 +1,58 @@
+package prayertimes
+
+import (
+	"net/http"
+	"time"
+
+	"github.com/gin-gonic/gin"
+
+	appdto "github.com/safalife/core-api/src/application/prayertimes/dto"
+	appquery "github.com/safalife/core-api/src/application/prayertimes/query"
+	"github.com/safalife/core-api/src/presentation/core"
+)
+
+// GetYearlyTimingsHandler handles the get yearly prayer timings request
+type GetYearlyTimingsHandler struct {
+	queryHandler *appquery.QueryHandler
+}
+
+// NewGetYearlyTimingsHandler creates a new handler
+func NewGetYearlyTimingsHandler(queryHandler *appquery.QueryHandler) *GetYearlyTimingsHandler {
+	return &GetYearlyTimingsHandler{queryHandler: queryHandler}
+}
+
+// Handle processes the get yearly prayer timings request
+// @Summary Get yearly prayer timings
+// @Description Retrieve yearly prayer timings for a given location and year
+// @Tags PrayerTimes
+// @Accept json
+// @Produce json
+// @Param latitude query number true "Latitude" example(-6.2000)
+// @Param longitude query number true "Longitude" example(106.8166)
+// @Param timezone query string true "Timezone (IANA)" example("Asia/Jakarta")
+// @Param year query int true "Year" example(2024)
+// @Param method query int false "Calculation method (provider-specific)" example(5)
+// @Success 200 {object} PrayerTimesListSuccessResponse "Prayer times list retrieved successfully"
+// @Failure 400 {object} PrayerTimesErrorResponse "Bad request"
+// @Failure 500 {object} PrayerTimesErrorResponse "Internal server error"
+// @Router /prayertimes/yearly [get]
+func (h *GetYearlyTimingsHandler) Handle(c *gin.Context) {
+	start := time.Now()
+	ctx := c.Request.Context()
+
+	var req appdto.GetYearlyTimingsRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		errorDetail := &core.ErrorDetail{Reason: err.Error()}
+		core.Error(c, http.StatusBadRequest, "Invalid query parameters", errorDetail, start)
+		return
+	}
+
+	result, err := h.queryHandler.GetYearlyTimings(ctx, &req)
+	if err != nil {
+		errorDetail := &core.ErrorDetail{Reason: err.Error()}
+		core.Error(c, http.StatusInternalServerError, "Failed to get yearly prayer times", errorDetail, start)
+		return
+	}
+
+	core.Success(c, http.StatusOK, "Prayer times list retrieved successfully", result, start)
+}

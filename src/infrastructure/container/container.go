@@ -3,15 +3,20 @@ package container
 import (
 	"context"
 	"database/sql"
+	"net/http"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
 	"github.com/safalife/core-api/src/domain/core"
+	domPrayer "github.com/safalife/core-api/src/domain/prayertimes"
 	"github.com/safalife/core-api/src/domain/quran"
 	domStorage "github.com/safalife/core-api/src/domain/storage"
+	infraConfigs "github.com/safalife/core-api/src/infrastructure/configs"
 	infraCore "github.com/safalife/core-api/src/infrastructure/core"
 	"github.com/safalife/core-api/src/infrastructure/monitoring"
+	infraPrayer "github.com/safalife/core-api/src/infrastructure/prayertimes"
 	infraQuran "github.com/safalife/core-api/src/infrastructure/quran"
 	infraStorage "github.com/safalife/core-api/src/infrastructure/storage"
 )
@@ -26,6 +31,9 @@ type InfrastructureContainer struct {
 
 	// Storage service
 	StorageService domStorage.StorageServiceInterface
+
+	// Prayer times repository
+	PrayerTimesRepository domPrayer.PrayerTimesRepositoryInterface
 
 	// Quran repositories
 	SurahRepository              quran.SurahRepositoryInterface
@@ -42,7 +50,7 @@ type InfrastructureContainer struct {
 }
 
 // NewInfrastructureContainer creates a new infrastructure container
-func NewInfrastructureContainer(ctx context.Context, db *sql.DB, gormDB *gorm.DB, redisClient *redis.Client, monitoringService *monitoring.MonitoringService, jwtSecret string, accessTokenTTL int, refreshTokenTTL int, issuer string, s3Cfg infraStorage.S3Config) *InfrastructureContainer {
+func NewInfrastructureContainer(ctx context.Context, db *sql.DB, gormDB *gorm.DB, redisClient *redis.Client, monitoringService *monitoring.MonitoringService, jwtSecret string, accessTokenTTL int, refreshTokenTTL int, issuer string, s3Cfg infraStorage.S3Config, ptCfg infraConfigs.PrayerTimesProvidersConfig) *InfrastructureContainer {
 	// Initialize core infrastructure
 	transactionManager := infraCore.NewGormContextTransactionManager()
 	uuidGenerator := infraCore.NewUUIDGenerator()
@@ -70,6 +78,17 @@ func NewInfrastructureContainer(ctx context.Context, db *sql.DB, gormDB *gorm.DB
 	progressHatamRepo := infraQuran.NewProgressHatamRepository(gormDB, quranMapper)
 	quranRepo := quran.NewQuranRepository(surahRepo, ayahRepo, juzRepo, transactionManager)
 
+	// Initialize PrayerTimes providers and repository
+	var aladhanHTTP *http.Client
+	if ptCfg.AladhanTimeoutSeconds > 0 {
+		aladhanHTTP = &http.Client{Timeout: time.Duration(ptCfg.AladhanTimeoutSeconds) * time.Second}
+	} else {
+		aladhanHTTP = &http.Client{Timeout: 15 * time.Second}
+	}
+	hablullahProvider := infraPrayer.NewHablullahProvider()
+	aladhanProvider := infraPrayer.NewAladhanProvider(aladhanHTTP, ptCfg.AladhanBaseURL)
+	prayerRepo := infraPrayer.NewCompositePrayerTimesRepository(hablullahProvider, aladhanProvider)
+
 	return &InfrastructureContainer{
 		MonitoringService: monitoringService,
 
@@ -79,6 +98,9 @@ func NewInfrastructureContainer(ctx context.Context, db *sql.DB, gormDB *gorm.DB
 
 		// Storage service
 		StorageService: storageService,
+
+		// Prayer times repository
+		PrayerTimesRepository: prayerRepo,
 
 		// Quran repositories
 		SurahRepository:              surahRepo,

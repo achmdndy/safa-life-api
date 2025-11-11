@@ -31,6 +31,27 @@ package commands
 // @tag.name Juz
 // @tag.description Juz (Para) management operations including creation, retrieval, updates, and deletion of Quran sections
 
+// @tag.name Audio
+// @tag.description Operations for managing and retrieving Quran recitations (audio) from various reciters.
+
+// @tag.name Bookmarks
+// @tag.description Operations related to managing user bookmarks for Quran verses (add, retrieve, update, delete).
+
+// @tag.name LastRead
+// @tag.description Operations for saving and retrieving the user's last read verse or surah in the Quran.
+
+// @tag.name ProgressHatam
+// @tag.description Operations for tracking and managing user progress in completing Quran reading (Khatam progress).
+
+// @tag.name Reciters
+// @tag.description Operations for managing and retrieving information about Quran reciters and their available audio sets.
+
+// @tag.name Translations
+// @tag.description Operations for managing and retrieving Quran verse translations in various languages.
+
+// @tag.name PrayerTimes
+// @tag.description Operations for retrieving and managing daily prayer times based on geographic coordinates and calculation methods.
+
 // @externalDocs.description Safalife API Documentation
 // @externalDocs.url https://docs.safalife.com/api
 
@@ -157,6 +178,12 @@ func RunServer() {
 		PublicURLBase:   core.Config.Storage.S3.PublicURLBase,
 	}
 
+	// Build prayer times providers config from loaded app config
+	ptCfg := configs.PrayerTimesProvidersConfig{
+		AladhanBaseURL:        core.Config.PrayerTimes.Aladhan.BaseURL,
+		AladhanTimeoutSeconds: core.Config.PrayerTimes.Aladhan.TimeoutSeconds,
+	}
+
 	infraCont := infraContainer.NewInfrastructureContainer(
 		context.Background(),
 		sqlDB,
@@ -168,12 +195,14 @@ func RunServer() {
 		core.Config.JWT.RefreshTokenTTL,
 		core.Config.JWT.Issuer,
 		s3Cfg,
+		ptCfg,
 	)
 	domainCont := domainContainer.NewDomainContainer(
 		infraCont.MonitoringService,
 		infraCont.TransactionManager,
 		infraCont.UUIDGenerator,
 		infraCont.StorageService,
+		infraCont.PrayerTimesRepository,
 		infraCont.SurahRepository,
 		infraCont.AyahRepository,
 		infraCont.JuzRepository,

@@ -1,7 +1,6 @@
 package core
 
 // UUID represents a universally unique identifier
-// Domain layer tidak boleh import module external
 type UUID interface {
 	// String returns the string representation of the UUID
 	String() string

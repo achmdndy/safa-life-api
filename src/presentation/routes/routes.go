@@ -54,5 +54,8 @@ func SetupRoutes(router *gin.Engine, presentationContainer *container.Presentati
 	{
 		// Quran routes
 		QuranRoutes(v1, presentationContainer.QuranHandler, presentationContainer.GetAuthMiddleware())
+
+		// Prayer Times routes
+		PrayerTimesRoutes(v1, presentationContainer.PrayerTimesHandler)
 	}
 }

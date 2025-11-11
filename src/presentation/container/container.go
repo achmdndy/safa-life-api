@@ -5,15 +5,17 @@ import (
 	appcore "github.com/safalife/core-api/cli/core"
 	appContainer "github.com/safalife/core-api/src/application/container"
 	"github.com/safalife/core-api/src/domain/monitoring"
+	prayHandlers "github.com/safalife/core-api/src/presentation/handlers/prayertimes"
 	"github.com/safalife/core-api/src/presentation/handlers/quran"
 	"github.com/safalife/core-api/src/presentation/middlewares"
 )
 
 // PresentationContainer holds presentation dependencies
 type PresentationContainer struct {
-	QuranHandler *quran.Handler
-	Monitoring   interface{} // Single field for both MonitoringService and MonitoringHandlers
-	AuthMW       gin.HandlerFunc
+	QuranHandler       *quran.Handler
+	PrayerTimesHandler *prayHandlers.Handler
+	Monitoring         interface{} // Single field for both MonitoringService and MonitoringHandlers
+	AuthMW             gin.HandlerFunc
 }
 
 // NewPresentationContainer creates a new presentation container
@@ -23,10 +25,15 @@ func NewPresentationContainer(appContainer *appContainer.ApplicationContainer, a
 		appContainer.QuranQueryHandler,
 	)
 
+	prayerTimesHandler := prayHandlers.NewHandler(
+		appContainer.PrayerTimesQueryHandler,
+	)
+
 	return &PresentationContainer{
-		QuranHandler: quranHandler,
-		Monitoring:   appContainer.Monitoring,
-		AuthMW:       middlewares.AuthMiddleware(authCfg),
+		QuranHandler:       quranHandler,
+		PrayerTimesHandler: prayerTimesHandler,
+		Monitoring:         appContainer.Monitoring,
+		AuthMW:             middlewares.AuthMiddleware(authCfg),
 	}
 }
 
