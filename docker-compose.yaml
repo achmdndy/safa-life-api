@@ -24,11 +24,6 @@ services:
     networks:
       - safalife-net
       - kong-net
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${APP_PORT:-8080}/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   db-migrator:
     container_name: safalife-core-migrator
@@ -66,11 +61,6 @@ services:
       - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - safalife-net
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-safalife_core_db}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   redis:
     image: redis:6-alpine
@@ -82,12 +72,6 @@ services:
       - safalife-core-redis-data:/data
     networks:
       - safalife-net
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   jaeger:
     image: jaegertracing/all-in-one:latest
     container_name: safalife-core-jaeger
@@ -103,11 +87,6 @@ services:
     environment:
       - COLLECTOR_OTLP_ENABLED=true
       - COLLECTOR_ZIPKIN_HOST_PORT=:9411
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:16686/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   prometheus:
     image: prom/prometheus:latest
@@ -127,11 +106,6 @@ services:
     depends_on:
       jaeger:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   grafana:
     image: grafana/grafana:latest
@@ -154,10 +128,6 @@ services:
         condition: service_healthy
       jaeger:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1"]
-      interval: 30s
-      timeout: 10s
       retries: 3
 
 volumes:
