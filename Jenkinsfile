@@ -23,7 +23,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'vps-login', usernameVariable: 'VPS_USER', passwordVariable: 'VPS_PASS')]) {
                          sh """
                             sshpass -p '\$VPS_PASS' ssh -o StrictHostKeyChecking=no \$VPS_USER@\${DEPLOY_HOST##*@} << EOF
-                                cd ${DEPLOY_ROOT_DIR}/core
+                                cd ${DEPLOY_DIR_CORE}
                                 git pull origin main
                                 # Rebuild/Restart
                                 docker compose up -d --build --no-deps ${SERVICE_NAME}-api
