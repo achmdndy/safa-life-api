@@ -15,11 +15,11 @@ services:
       db-migrator:
         condition: service_completed_successfully
       postgres:
-        condition: service_healthy
+        condition: service_started
       redis:
-        condition: service_healthy
+        condition: service_started
       jaeger:
-        condition: service_healthy
+        condition: service_started
     restart: always
     networks:
       - safalife-net
@@ -35,7 +35,7 @@ services:
       - .env
     depends_on:
       postgres:
-        condition: service_healthy
+        condition: service_started
     networks:
       - safalife-net
     command: >
@@ -105,7 +105,7 @@ services:
       - safalife-net
     depends_on:
       jaeger:
-        condition: service_healthy
+        condition: service_started
 
   grafana:
     image: grafana/grafana:latest
@@ -125,10 +125,9 @@ services:
       - safalife-net
     depends_on:
       prometheus:
-        condition: service_healthy
+        condition: service_started
       jaeger:
-        condition: service_healthy
-      retries: 3
+        condition: service_started
 
 volumes:
   safalife-core-postgres-data:
