@@ -294,3 +294,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **✨ Built with Clean Architecture principles to create maintainable and scalable Islamic lifestyle applications.**
+
+<!-- TEST FOR JENKINS -->
